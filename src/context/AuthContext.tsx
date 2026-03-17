@@ -75,7 +75,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
 
     if (session) {
-      sessionIdRef.current = session.id
+      sessionIdRef.current = (session as any).id
 
       // Heartbeat every 30 seconds
       heartbeatRef.current = setInterval(async () => {
