@@ -61,10 +61,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     console.log('--- Auth: fetchProfile starting for', userId)
     const start = Date.now()
     try {
-      // Direct diagnostic check on first run
-      if (start % 1000 === 0) { // arbitrary throttle
-        checkSupabaseConnectivity(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!)
-      }
+      // Direct diagnostic check
+      console.log('--- Auth: Env Check:', { 
+        url: process.env.NEXT_PUBLIC_SUPABASE_URL?.slice(0, 15) + '...',
+        key: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ? 'Present (starts with ' + process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY.slice(0, 10) + '...)' : 'MISSING'
+      })
+      
+      checkSupabaseConnectivity(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!)
 
       const result = await withTimeout(
         supabase
