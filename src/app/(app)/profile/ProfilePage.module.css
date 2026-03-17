@@ -1,0 +1,109 @@
+.page { display: flex; flex-direction: column; height: 100%; }
+
+.header {
+  padding: var(--space-4) var(--space-6);
+  border-bottom: 2px solid var(--moss-dark);
+  background: rgba(0,0,0,0.2);
+}
+.title { font-size: 0.6rem !important; }
+
+.body {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--space-6);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+  max-width: 700px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.myCard {
+  padding: var(--space-6);
+  display: flex;
+  gap: var(--space-6);
+  align-items: flex-start;
+}
+
+.avatarWrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
+  flex-shrink: 0;
+}
+.uploadBtn { font-size: 0.45rem !important; }
+
+.viewProfile {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.profileUsername {
+  font-size: 0.7rem !important;
+  color: var(--gold-light) !important;
+}
+
+.joined {
+  font-family: 'VT323', monospace;
+  font-size: 1rem;
+  color: var(--text-on-dark-muted);
+}
+
+.editForm {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.editActions { display: flex; gap: var(--space-3); }
+
+.error {
+  font-family: 'VT323', monospace;
+  color: #e74c3c;
+  font-size: 1rem;
+}
+
+.membersSection { display: flex; flex-direction: column; gap: var(--space-3); }
+.sectionTitle { font-size: 0.55rem !important; }
+
+.memberGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: var(--space-3);
+}
+
+.memberCard {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3);
+}
+
+.memberInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.memberName {
+  font-family: 'VT323', monospace;
+  font-size: 1.1rem;
+  color: var(--cream);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.youBadge {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 0.35rem;
+  color: var(--moss-light);
+  background: rgba(90,122,58,0.2);
+  padding: 2px 4px;
+  border: 1px solid var(--moss-dark);
+}

@@ -1,0 +1,120 @@
+.container {
+  min-height: 100vh;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: var(--space-6) var(--space-4);
+  overflow-y: auto;
+  background:
+    radial-gradient(circle at 20% 30%, rgba(90,122,58,0.12) 0%, transparent 50%),
+    var(--night);
+}
+
+.card {
+  width: 100%;
+  max-width: 520px;
+  padding: var(--space-8);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  margin: auto;
+}
+
+.header {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.icon { font-size: 2.5rem; }
+
+.sub {
+  font-family: 'VT323', monospace;
+  font-size: 1.1rem;
+  color: var(--text-on-dark-muted);
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  border: 2px solid var(--moss-dark);
+  background: rgba(0,0,0,0.2);
+  margin-bottom: var(--space-2);
+}
+
+.avatarRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.avatarPreview {
+  border: 2px solid var(--moss);
+}
+
+.charPreview {
+  display: flex;
+  justify-content: center;
+  padding: var(--space-3) 0;
+}
+
+.swatchRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+
+.swatchLabel {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 0.4rem;
+  color: var(--text-muted);
+  width: 38px;
+  flex-shrink: 0;
+}
+
+.swatch {
+  width: 18px;
+  height: 18px;
+  border: 2px solid var(--border-dark);
+  cursor: pointer;
+  transition: transform 0.08s;
+}
+
+.swatch:hover { transform: scale(1.2); }
+
+.swatchActive {
+  border-color: var(--gold-light) !important;
+  box-shadow: 0 0 0 1px var(--gold), 2px 2px 0 var(--brown-dark);
+  transform: scale(1.15);
+}
+
+.tagBtn {
+  font-size: 0.45rem !important;
+  padding: var(--space-1) var(--space-2) !important;
+}
+
+.tagActive {
+  border-color: var(--moss) !important;
+  color: var(--gold-light) !important;
+  background: rgba(90,122,58,0.2) !important;
+}
+
+.error {
+  font-family: 'VT323', monospace;
+  font-size: 1rem;
+  color: #e74c3c;
+  padding: var(--space-2);
+  border: 2px solid #e74c3c;
+  background: rgba(231,76,60,0.1);
+}

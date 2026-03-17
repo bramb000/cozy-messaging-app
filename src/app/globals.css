@@ -1,42 +1,520 @@
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323:wght@400&display=swap');
+
+/* ============================================================
+   DESIGN TOKENS
+   ============================================================ */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Colour palette — warm Stardew Valley tones */
+  --cream: #F5E6C8;
+  --cream-dark: #E8D5A3;
+  --parchment: #DFC98A;
+  --moss: #5A7A3A;
+  --moss-dark: #3D5427;
+  --moss-light: #7FA854;
+  --brown: #8B5E3C;
+  --brown-dark: #6B4423;
+  --brown-light: #B07D52;
+  --sky: #87CEEB;
+  --sky-dark: #5BA3C9;
+  --night: #1A1A2E;
+  --night-mid: #16213E;
+  --night-panel: #0F3460;
+  --gold: #D4AF37;
+  --gold-light: #F0CB5A;
+  --red: #C0392B;
+  --text-primary: #2C1810;
+  --text-secondary: #6B4423;
+  --text-muted: #9B7A5A;
+  --text-on-dark: #F5E6C8;
+  --text-on-dark-muted: #A8B8C8;
+
+  /* Pixel border colours */
+  --border-light: #E8D5A3;
+  --border-mid: #C4A97A;
+  --border-dark: #8B5E3C;
+
+  /* Spacing */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+
+  /* Layout */
+  --sidebar-width: 260px;
+  --chat-max-width: 800px;
+  --nav-height: 60px;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
-html,
-body {
-  max-width: 100vw;
-  overflow-x: hidden;
-}
-
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-* {
+/* ============================================================
+   RESET & BASE
+   ============================================================ */
+*, *::before, *::after {
   box-sizing: border-box;
-  padding: 0;
   margin: 0;
+  padding: 0;
 }
+
+html, body {
+  height: 100%;
+  font-family: 'VT323', monospace;
+  font-size: 18px;
+  line-height: 1.5;
+  background-color: var(--night);
+  color: var(--text-on-dark);
+  image-rendering: pixelated;
+  -webkit-font-smoothing: none;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: var(--night-mid); }
+::-webkit-scrollbar-thumb {
+  background: var(--moss-dark);
+  border: 2px solid var(--night-mid);
+}
+::-webkit-scrollbar-thumb:hover { background: var(--moss); }
+
+/* ============================================================
+   PIXEL BORDER UTILITY
+   A CSS-only pixel-art border effect
+   ============================================================ */
+.pixel-border {
+  border: 3px solid var(--border-dark);
+  box-shadow:
+    0 0 0 1px var(--border-mid),
+    inset 0 0 0 1px var(--border-mid),
+    3px 3px 0 0 var(--brown-dark);
+  image-rendering: pixelated;
+}
+
+.pixel-border-light {
+  border: 2px solid var(--border-mid);
+  box-shadow:
+    0 0 0 1px var(--border-light),
+    inset 0 0 0 1px rgba(255,255,255,0.1),
+    2px 2px 0 0 rgba(0,0,0,0.3);
+}
+
+/* ============================================================
+   PIXEL PANEL (semi-transparent parchment card)
+   ============================================================ */
+.pixel-panel {
+  background: rgba(26, 26, 46, 0.92);
+  border: 3px solid var(--moss-dark);
+  box-shadow:
+    0 0 0 1px var(--moss),
+    inset 0 0 0 1px rgba(90,122,58,0.2),
+    4px 4px 0 0 rgba(0,0,0,0.5);
+  backdrop-filter: blur(4px);
+}
+
+.pixel-panel-warm {
+  background: rgba(139, 94, 60, 0.15);
+  border: 3px solid var(--brown);
+  box-shadow:
+    0 0 0 1px var(--brown-light),
+    inset 0 0 0 1px rgba(212,175,55,0.1),
+    4px 4px 0 0 rgba(0,0,0,0.5);
+}
+
+/* ============================================================
+   TYPOGRAPHY
+   ============================================================ */
+.font-pixel { font-family: 'Press Start 2P', monospace; }
+.font-mono  { font-family: 'VT323', monospace; }
+
+h1, h2, h3 {
+  font-family: 'Press Start 2P', monospace;
+  line-height: 1.6;
+  color: var(--gold-light);
+  text-shadow: 2px 2px 0 var(--brown-dark);
+}
+
+h1 { font-size: 1rem; }
+h2 { font-size: 0.8rem; }
+h3 { font-size: 0.65rem; }
 
 a {
-  color: inherit;
+  color: var(--sky);
+  text-decoration: none;
+}
+a:hover { color: var(--gold-light); }
+
+/* ============================================================
+   BUTTONS
+   ============================================================ */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  font-family: 'Press Start 2P', monospace;
+  font-size: 0.6rem;
+  cursor: pointer;
+  border: none;
+  transition: transform 0.08s, box-shadow 0.08s;
+  image-rendering: pixelated;
+  white-space: nowrap;
   text-decoration: none;
 }
 
-@media (prefers-color-scheme: dark) {
-  html {
-    color-scheme: dark;
-  }
+.btn:active {
+  transform: translate(2px, 2px);
+  box-shadow: none !important;
 }
+
+.btn-primary {
+  background: var(--moss);
+  color: var(--cream);
+  border: 2px solid var(--moss-dark);
+  box-shadow: 3px 3px 0 0 var(--moss-dark);
+}
+.btn-primary:hover {
+  background: var(--moss-light);
+  color: var(--cream);
+}
+
+.btn-secondary {
+  background: var(--brown);
+  color: var(--cream);
+  border: 2px solid var(--brown-dark);
+  box-shadow: 3px 3px 0 0 var(--brown-dark);
+}
+.btn-secondary:hover { background: var(--brown-light); color: var(--cream); }
+
+.btn-danger {
+  background: var(--red);
+  color: var(--cream);
+  border: 2px solid #922b21;
+  box-shadow: 3px 3px 0 0 #922b21;
+}
+
+.btn-ghost {
+  background: transparent;
+  color: var(--text-on-dark-muted);
+  border: 2px solid transparent;
+  box-shadow: none;
+}
+.btn-ghost:hover {
+  color: var(--cream);
+  border-color: var(--border-mid);
+}
+
+.btn-full { width: 100%; justify-content: center; }
+
+.btn-icon {
+  padding: var(--space-2);
+  background: transparent;
+  border: 2px solid transparent;
+  color: var(--text-on-dark-muted);
+  box-shadow: none;
+}
+.btn-icon:hover {
+  color: var(--cream);
+  border-color: var(--border-mid);
+  background: rgba(255,255,255,0.05);
+}
+
+/* ============================================================
+   FORM INPUTS
+   ============================================================ */
+.input {
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  font-family: 'VT323', monospace;
+  font-size: 1.1rem;
+  background: rgba(0, 0, 0, 0.4);
+  color: var(--cream);
+  border: 2px solid var(--border-dark);
+  box-shadow: inset 2px 2px 0 rgba(0,0,0,0.3);
+  outline: none;
+  transition: border-color 0.1s;
+}
+
+.input:focus {
+  border-color: var(--moss);
+  box-shadow: inset 2px 2px 0 rgba(0,0,0,0.3), 0 0 0 1px var(--moss);
+}
+
+.input::placeholder {
+  color: var(--text-muted);
+  opacity: 0.7;
+}
+
+.input-label {
+  display: block;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 0.55rem;
+  color: var(--gold-light);
+  margin-bottom: var(--space-2);
+  text-shadow: 1px 1px 0 var(--brown-dark);
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  margin-bottom: var(--space-4);
+}
+
+/* ============================================================
+   LAYOUT
+   ============================================================ */
+.app-shell {
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+  background: var(--night);
+}
+
+.sidebar {
+  width: var(--sidebar-width);
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--night-mid);
+  border-right: 3px solid var(--moss-dark);
+  flex-shrink: 0;
+}
+
+.main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* ============================================================
+   NAVIGATION
+   ============================================================ */
+.nav-logo {
+  padding: var(--space-4) var(--space-4) var(--space-3);
+  border-bottom: 2px solid var(--moss-dark);
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.nav-logo-icon {
+  font-size: 1.5rem;
+}
+
+.nav-logo-text {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 0.55rem;
+  color: var(--gold-light);
+  text-shadow: 1px 1px 0 var(--brown-dark);
+  line-height: 1.8;
+}
+
+.nav-items {
+  flex: 1;
+  padding: var(--space-4) var(--space-2);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  overflow-y: auto;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-3);
+  font-family: 'Press Start 2P', monospace;
+  font-size: 0.5rem;
+  color: var(--text-on-dark-muted);
+  border: 2px solid transparent;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.1s;
+  line-height: 1.6;
+}
+
+.nav-item:hover {
+  color: var(--cream);
+  background: rgba(90, 122, 58, 0.15);
+  border-color: var(--moss-dark);
+}
+
+.nav-item.active {
+  color: var(--gold-light);
+  background: rgba(90, 122, 58, 0.25);
+  border-color: var(--moss);
+  box-shadow: 2px 2px 0 0 var(--moss-dark);
+}
+
+.nav-item-icon { font-size: 1.2rem; flex-shrink: 0; }
+
+.nav-section-label {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 0.4rem;
+  color: var(--text-muted);
+  padding: var(--space-4) var(--space-3) var(--space-1);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.nav-footer {
+  padding: var(--space-3);
+  border-top: 2px solid var(--moss-dark);
+}
+
+/* Online badge */
+.online-count {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-family: 'VT323', monospace;
+  font-size: 1rem;
+  color: var(--text-on-dark-muted);
+  padding: var(--space-2) var(--space-3);
+}
+
+.online-dot {
+  width: 8px;
+  height: 8px;
+  background: var(--moss-light);
+  border: 1px solid var(--moss-dark);
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+/* ============================================================
+   PIXEL ART TILING BACKGROUND
+   ============================================================ */
+.pixel-bg {
+  background-color: var(--night);
+  background-image:
+    radial-gradient(circle at 20% 20%, rgba(90,122,58,0.08) 0%, transparent 50%),
+    radial-gradient(circle at 80% 80%, rgba(139,94,60,0.06) 0%, transparent 50%);
+}
+
+/* ============================================================
+   AVATAR / CHARACTER
+   ============================================================ */
+.avatar {
+  width: 40px;
+  height: 40px;
+  border: 2px solid var(--border-dark);
+  background: var(--night-mid);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  overflow: hidden;
+  flex-shrink: 0;
+  image-rendering: pixelated;
+}
+
+.avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  image-rendering: pixelated;
+}
+
+.avatar-sm { width: 28px; height: 28px; font-size: 0.9rem; }
+.avatar-lg { width: 64px; height: 64px; font-size: 2rem; }
+.avatar-xl { width: 96px; height: 96px; font-size: 3rem; }
+
+/* ============================================================
+   LOADING / SPINNER
+   ============================================================ */
+.loading-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  gap: var(--space-6);
+}
+
+.pixel-spinner {
+  width: 32px;
+  height: 32px;
+  border: 4px solid var(--moss-dark);
+  border-top-color: var(--moss-light);
+  animation: spin 0.6s steps(8) infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ============================================================
+   TOAST / NOTIFICATIONS
+   ============================================================ */
+.toast {
+  position: fixed;
+  bottom: var(--space-6);
+  right: var(--space-6);
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.toast-item {
+  padding: var(--space-3) var(--space-4);
+  font-family: 'Press Start 2P', monospace;
+  font-size: 0.5rem;
+  line-height: 1.8;
+  border: 2px solid var(--moss);
+  background: var(--night-mid);
+  box-shadow: 3px 3px 0 0 var(--moss-dark);
+  animation: slideIn 0.15s steps(4);
+  max-width: 280px;
+}
+
+@keyframes slideIn {
+  from { transform: translateX(20px); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+/* ============================================================
+   UTILITIES
+   ============================================================ */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0,0,0,0);
+  border: 0;
+}
+
+.flex { display: flex; }
+.flex-col { flex-direction: column; }
+.items-center { align-items: center; }
+.justify-center { justify-content: center; }
+.justify-between { justify-content: space-between; }
+.gap-2 { gap: var(--space-2); }
+.gap-3 { gap: var(--space-3); }
+.gap-4 { gap: var(--space-4); }
+.gap-6 { gap: var(--space-6); }
+.w-full { width: 100%; }
+.h-full { height: 100%; }
+.flex-1 { flex: 1; }
+.overflow-hidden { overflow: hidden; }
+.overflow-y-auto { overflow-y: auto; }
+.text-center { text-align: center; }
+.text-muted { color: var(--text-on-dark-muted); }
+.text-gold { color: var(--gold-light); }
+.text-cream { color: var(--cream); }
+.mt-2 { margin-top: var(--space-2); }
+.mt-4 { margin-top: var(--space-4); }
+.p-3 { padding: var(--space-3); }
+.p-4 { padding: var(--space-4); }
+.p-6 { padding: var(--space-6); }
