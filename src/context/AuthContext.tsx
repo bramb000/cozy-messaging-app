@@ -53,42 +53,43 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }
 
   async function startSession(userId: string) {
-    // First expire old sessions
-    await supabase.rpc('expire_sessions')
+    console.log('--- Auth: Starting Session for', userId)
+    try {
+      // First expire old sessions
+      await supabase.rpc('expire_sessions')
 
-    // Check concurrent user count (25 max)
-    const { data: count } = await supabase.rpc('active_session_count')
-    if (count && count >= 25) {
-      // Already signed in users continue — new sessions blocked at session creation
-      // (checked at login rather than here to avoid self-blocking on refresh)
-    }
+      // Check concurrent user count (25 max)
+      const { data: count, error: countErr } = await supabase.rpc('active_session_count')
+      console.log('--- Auth: Current count check:', count, countErr || '')
+      
+      const { data: session, error: sessionError } = await supabase
+        .from('sessions')
+        // @ts-expect-error Supabase types misaligned
+        .insert({ user_id: userId, active: true, last_seen: new Date().toISOString() })
+        .select()
+        .single()
 
-    const { data: session, error: sessionError } = await supabase
-      .from('sessions')
-      // @ts-expect-error Supabase types misaligned
-      .insert({ user_id: userId, active: true, last_seen: new Date().toISOString() })
-      .select()
-      .single()
+      if (sessionError) {
+        console.error('--- Auth: Session insert error:', sessionError)
+      } else if (session) {
+        console.log('--- Auth: Session created successfully:', (session as any).id)
+        sessionIdRef.current = (session as any).id
 
-    if (sessionError) {
-      console.error('Error starting session:', sessionError)
-    }
-
-
-
-    if (session) {
-      sessionIdRef.current = (session as any).id
-
-      // Heartbeat every 30 seconds
-      heartbeatRef.current = setInterval(async () => {
-        if (sessionIdRef.current) {
-          await supabase
-            .from('sessions')
-            // @ts-expect-error Supabase types misaligned
-            .update({ last_seen: new Date().toISOString() })
-            .eq('id', sessionIdRef.current)
-        }
-      }, 30_000)
+        // Heartbeat every 30 seconds
+        heartbeatRef.current = setInterval(async () => {
+          if (sessionIdRef.current) {
+            const { error: hbErr } = await supabase
+              .from('sessions')
+              // @ts-expect-error Supabase types misaligned
+              .update({ last_seen: new Date().toISOString() })
+              .eq('id', sessionIdRef.current)
+            
+            if (hbErr) console.error('--- Auth: Heartbeat error:', hbErr)
+          }
+        }, 30_000)
+      }
+    } catch (err) {
+      console.error('--- Auth: startSession exception:', err)
     }
   }
 
@@ -98,6 +99,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       heartbeatRef.current = null
     }
     if (sessionIdRef.current) {
+      console.log('--- Auth: Ending session:', sessionIdRef.current)
       await supabase
         .from('sessions')
         // @ts-expect-error Supabase types misaligned
@@ -119,7 +121,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }
 
   useEffect(() => {
+    console.log('--- AuthProvider mounted')
     supabase.auth.getUser().then(({ data: { user } }) => {
+      console.log('--- Auth: Initial getUser:', user?.id || 'none')
       setUser(user)
       if (user) {
         fetchProfile(user.id)
@@ -129,11 +133,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     })
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, sess) => {
+      console.log('--- Auth: State change event:', event, sess?.user?.id || 'no user')
       const u = sess?.user ?? null
       setUser(u)
       if (u) {
         await fetchProfile(u.id)
-        if (event === 'SIGNED_IN') await startSession(u.id)
+        if (event === 'SIGNED_IN') {
+          console.log('--- Auth: Triggering startSession from SIGNED_IN event')
+          await startSession(u.id)
+        }
       } else {
         setProfile(null)
       }

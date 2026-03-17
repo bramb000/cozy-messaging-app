@@ -7,7 +7,9 @@ export default function OnlineCount() {
   const supabase = createClient()
 
   async function fetchCount() {
-    const { data } = await supabase.rpc('active_session_count')
+    const { data, error } = await supabase.rpc('active_session_count')
+    if (error) console.error('OnlineCount: fetch error', error)
+    else console.log('OnlineCount: current total', data)
     setCount(data ?? 0)
   }
 
