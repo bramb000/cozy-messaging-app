@@ -1,3 +1,5 @@
+'use client';
+
 import React from 'react';
 import styles from './PhysicalCard.module.css';
 import { motion, HTMLMotionProps } from 'framer-motion';
