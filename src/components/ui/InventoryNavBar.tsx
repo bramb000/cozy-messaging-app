@@ -13,10 +13,10 @@ interface NavItem {
 }
 
 const navItems: NavItem[] = [
-  { label: 'Home', href: '/', icon: '🏠' },
   { label: 'Chat', href: '/chat', icon: '💬' },
-  { label: 'Avatar', href: '/avatar', icon: '👤' },
-  { label: 'Settings', href: '/onboarding', icon: '⚙️' },
+  { label: 'Voice', href: '/voice', icon: '🎙️' },
+  { label: 'World', href: '/world', icon: '🗺️' },
+  { label: 'Avatar', href: '/avatar', icon: '🎨' },
 ];
 
 export const InventoryNavBar: React.FC = () => {

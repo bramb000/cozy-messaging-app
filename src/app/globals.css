@@ -33,19 +33,19 @@
   --border-mid: #C4A97A;
   --border-dark: #8B5E3C;
 
-  /* Spacing */
-  --space-1: 4px;
-  --space-2: 8px;
-  --space-3: 12px;
-  --space-4: 16px;
-  --space-5: 20px;
-  --space-6: 24px;
-  --space-8: 32px;
-  --space-10: 40px;
-  --space-12: 48px;
+  /* Spacing (Strict 8px Grid) */
+  --space-1: 4px;   /* Half-step for micro adjustments */
+  --space-2: 8px;   /* Base grid unit */
+  --space-3: 16px;
+  --space-4: 24px;
+  --space-5: 32px;
+  --space-6: 40px;
+  --space-8: 48px;
+  --space-10: 64px;
+  --space-12: 80px;
 
   /* Layout */
-  --sidebar-width: 260px;
+  --sidebar-width: 256px; /* 32 * 8 */
   --chat-max-width: 800px;
   --nav-height: 60px;
 }
@@ -282,6 +282,16 @@ a:hover { color: var(--gold-light); }
   flex-shrink: 0;
 }
 
+.roster-sidebar {
+  width: var(--sidebar-width);
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--night-mid);
+  border-left: 3px solid var(--moss-dark);
+  flex-shrink: 0;
+}
+
 .main-content {
   flex: 1;
   display: flex;
@@ -290,8 +300,14 @@ a:hover { color: var(--gold-light); }
   padding-bottom: 0;
 }
 
+@media (max-width: 1024px) {
+  .roster-sidebar {
+    display: none;
+  }
+}
+
 @media (max-width: 767px) {
-  .sidebar {
+  .sidebar, .roster-sidebar {
     display: none;
   }
   .main-content {

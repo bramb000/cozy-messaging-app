@@ -17,6 +17,11 @@ interface PlayerState {
   y: number
   direction: string
   skinTone?: string
+  hairColor?: string
+  hairStyle?: number
+  outfitColor?: string
+  pantsColor?: string
+  hatIndex?: number
 }
 
 export default function WorldPage() {
@@ -49,6 +54,11 @@ export default function WorldPage() {
             y: (p.y ?? 10) * TILE,
             direction: p.direction ?? 'down',
             skinTone: p.profile?.character_config?.skinTone,
+            hairColor: p.profile?.character_config?.hairColor,
+            hairStyle: p.profile?.character_config?.hairStyle,
+            outfitColor: p.profile?.character_config?.outfitColor,
+            pantsColor: p.profile?.character_config?.pantsColor,
+            hatIndex: p.profile?.character_config?.hatIndex,
           })
         })
       }
@@ -79,6 +89,11 @@ export default function WorldPage() {
       y: myPosRef.current.y,
       direction: myPosRef.current.direction,
       skinTone: (profile.character_config as any)?.skinTone,
+      hairColor: (profile.character_config as any)?.hairColor,
+      hairStyle: (profile.character_config as any)?.hairStyle,
+      outfitColor: (profile.character_config as any)?.outfitColor,
+      pantsColor: (profile.character_config as any)?.pantsColor,
+      hatIndex: (profile.character_config as any)?.hatIndex,
     })
 
     // --- Key handling ---
@@ -139,29 +154,104 @@ export default function WorldPage() {
     }
 
     function drawPlayer(p: PlayerState, isMe: boolean) {
-      const skin = p.skinTone ?? '#FDBCB4'
       const cx = p.x + TILE / 2
       const cy = p.y + TILE / 2
 
+      const skinTone = p.skinTone ?? '#FDBCB4'
+      const hairColor = p.hairColor ?? '#4A3728'
+      const hairStyle = p.hairStyle ?? 0
+      const outfitColor = p.outfitColor ?? '#5A7A3A'
+      const pantsColor = p.pantsColor ?? '#8B5E3C'
+      const hatIndex = p.hatIndex ?? -1
+      const hat = ['','🎩','⛑️','👒','🎓','🪖'][hatIndex] || ''
+
       // Shadow
       ctx.fillStyle = 'rgba(0,0,0,0.2)'
+      ctx.beginPath()
       ctx.ellipse(cx, p.y + TILE - 4, 10, 5, 0, 0, Math.PI * 2)
       ctx.fill()
 
-      // Body
-      ctx.fillStyle = isMe ? '#5A7A3A' : '#8B5E3C'
-      ctx.fillRect(p.x + 9, p.y + 16, 14, 12)
+      // The character sprite is 48x64. We scale it by 0.5 to 24x32.
+      ctx.save()
+      ctx.translate(p.x + 4, p.y - 4)
+      ctx.scale(0.5, 0.5)
+
+      // Pants
+      ctx.fillStyle = pantsColor
+      ctx.fillRect(14, 42, 9, 18)
+      ctx.fillRect(25, 42, 9, 18)
+      // Pants Shading
+      ctx.fillStyle = 'rgba(0,0,0,0.1)'
+      ctx.fillRect(14, 55, 9, 5)
+      ctx.fillRect(25, 55, 9, 5)
+
+      // Shirt
+      ctx.fillStyle = outfitColor
+      ctx.fillRect(12, 26, 24, 18)
+      // Shirt Shading
+      ctx.fillStyle = 'rgba(0,0,0,0.1)'
+      ctx.fillRect(12, 40, 24, 4)
+
+      // Arms
+      ctx.fillStyle = skinTone
+      ctx.fillRect(6, 28, 6, 14)
+      ctx.fillRect(36, 28, 6, 14)
 
       // Head
-      ctx.fillStyle = skin
-      ctx.fillRect(p.x + 8, p.y + 6, 16, 14)
-
-      // Eyes
-      ctx.fillStyle = '#2C1810'
+      ctx.fillStyle = skinTone
+      ctx.fillRect(14, 8, 20, 20)
+      
+      // Face (Blush) - don't show if walking up
       if (p.direction !== 'up') {
-        ctx.fillRect(p.x + 11, p.y + 12, 3, 3)
-        ctx.fillRect(p.x + 18, p.y + 12, 3, 3)
+        ctx.fillStyle = 'rgba(255,0,0,0.1)'
+        ctx.fillRect(17, 21, 4, 2)
+        ctx.fillRect(27, 21, 4, 2)
       }
+
+      // Hair
+      ctx.fillStyle = hairColor
+      if (hairStyle === 0) { // Short
+        ctx.fillRect(14, 8, 20, 6)
+        if (p.direction !== 'up') { ctx.fillRect(12, 12, 2, 4); ctx.fillRect(34, 12, 2, 4); }
+      } 
+      else if (hairStyle === 1) { // Medium
+        ctx.fillRect(12, 8, 24, 8)
+        if (p.direction !== 'up') { ctx.fillRect(12, 16, 4, 6); ctx.fillRect(32, 16, 4, 6); }
+      } 
+      else if (hairStyle === 2) { // Long
+        ctx.fillRect(10, 8, 28, 10)
+        ctx.fillRect(10, 18, 4, 18)
+        ctx.fillRect(34, 18, 4, 18)
+      } 
+      else if (hairStyle === 3) { // Curly
+        ctx.fillRect(12, 6, 24, 10)
+        ctx.fillRect(10, 12, 6, 12)
+        ctx.fillRect(32, 12, 6, 12)
+        if (p.direction !== 'up') ctx.fillRect(14, 4, 20, 2);
+      } 
+      else { // Braids
+        ctx.fillRect(14, 8, 20, 6)
+        ctx.fillRect(14, 14, 4, 28)
+        ctx.fillRect(30, 14, 4, 28)
+      } 
+
+      // Eyes - don't show if walking up
+      if (p.direction !== 'up') {
+        ctx.fillStyle = '#2C1810'
+        ctx.fillRect(18, 17, 3, 3)
+        ctx.fillRect(27, 17, 3, 3)
+      }
+
+      // Hat
+      if (hat) {
+        ctx.font = '18px serif'
+        ctx.textAlign = 'center'
+        // Slight offset if walking up
+        const hatY = p.direction === 'up' ? 10 : 12
+        ctx.fillText(hat, 24, hatY)
+      }
+
+      ctx.restore()
 
       // Nametag
       ctx.fillStyle = isMe ? 'rgba(90,122,58,0.85)' : 'rgba(26,26,46,0.85)'
@@ -205,7 +295,18 @@ export default function WorldPage() {
           const tileY = Math.round(ny / TILE)
           // @ts-expect-error Supabase types misaligned
           supabase.from('world_positions').upsert({ user_id: user!.id, x: tileX, y: tileY, direction: dir, updated_at: new Date().toISOString() })
-          channel.send({ type: 'broadcast', event: 'move', payload: { userId: user!.id, username: profile!.username, x: nx, y: ny, direction: dir, skinTone: (profile!.character_config as any)?.skinTone } })
+          const payloadData = { 
+             userId: user!.id, 
+             username: profile!.username, 
+             x: nx, y: ny, direction: dir, 
+             skinTone: (profile!.character_config as any)?.skinTone,
+             hairColor: (profile!.character_config as any)?.hairColor,
+             hairStyle: (profile!.character_config as any)?.hairStyle,
+             outfitColor: (profile!.character_config as any)?.outfitColor,
+             pantsColor: (profile!.character_config as any)?.pantsColor,
+             hatIndex: (profile!.character_config as any)?.hatIndex
+          }
+          channel.send({ type: 'broadcast', event: 'move', payload: payloadData })
         }
       }
 

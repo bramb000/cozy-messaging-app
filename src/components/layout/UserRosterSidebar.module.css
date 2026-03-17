@@ -1,0 +1,98 @@
+.sidebar {
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  padding: var(--space-4);
+  border-bottom: 2px solid var(--moss-dark);
+  text-align: center;
+}
+
+.title {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 0.55rem;
+  color: var(--gold-light);
+  text-shadow: 1px 1px 0 var(--brown-dark);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.content {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--space-4) var(--space-2);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.heading {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 0.4rem;
+  color: var(--text-muted);
+  padding: 0 var(--space-2);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.userCard {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-2);
+  border-radius: 4px;
+  cursor: default;
+  transition: background 0.1s;
+}
+
+.userCard:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.offlineCard {
+  opacity: 0.6;
+}
+
+.avatarWrap {
+  position: relative;
+}
+
+.statusDot {
+  position: absolute;
+  bottom: -2px;
+  right: -2px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 2px solid var(--night-mid);
+}
+
+.online {
+  background: var(--moss-light);
+}
+
+.offline {
+  background: var(--text-muted);
+}
+
+.username {
+  font-family: 'VT323', monospace;
+  font-size: 1.1rem;
+  color: var(--text-on-dark);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

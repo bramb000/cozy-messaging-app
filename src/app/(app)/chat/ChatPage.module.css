@@ -32,66 +32,92 @@
   padding: var(--space-4) var(--space-6);
   display: flex;
   flex-direction: column;
-  gap: var(--space-3);
 }
 
-.message {
+/* Discord-Style Grouping */
+.messageRow {
   display: flex;
-  gap: var(--space-2);
-  align-items: flex-end;
+  gap: var(--space-3);
+  padding: 2px 0;
 }
 
-.mine {
-  flex-direction: row-reverse;
+.groupStart {
+  margin-top: var(--space-3);
+}
+
+.groupFollowup {
+  margin-top: 0;
 }
 
 .avatarCol {
-  width: 28px;
+  width: 32px;
   flex-shrink: 0;
   display: flex;
-  align-items: flex-end;
+  justify-content: center;
 }
 
-.bubble {
+.messageBody {
   display: flex;
   flex-direction: column;
   gap: 2px;
-  max-width: 65%;
+  min-width: 0; /* allows text wrapping */
 }
 
-.mine .bubble {
-  align-items: flex-end;
+.messageHeader {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-2);
+  margin-bottom: var(--space-1);
 }
 
 .msgUsername {
   font-family: 'Press Start 2P', monospace;
-  font-size: 0.4rem;
+  font-size: 0.45rem;
   color: var(--moss-light);
-  margin-left: var(--space-2);
-}
-
-.msgContent {
-  padding: var(--space-2) var(--space-3);
-  background: rgba(26,26,46,0.8);
-  font-family: 'VT323', monospace;
-  font-size: 1.1rem;
-  line-height: 1.4;
-  color: var(--cream);
-  word-break: break-word;
-}
-
-.msgContent p { margin: 0; }
-
-.msgContentMine {
-  background: rgba(90,122,58,0.3);
-  border-color: var(--moss) !important;
 }
 
 .time {
   font-family: 'VT323', monospace;
   font-size: 0.8rem;
   color: var(--text-muted);
-  margin: 0 var(--space-2);
+}
+
+.msgContent {
+  padding: var(--space-2) var(--space-3);
+  background: rgba(26,26,46,0.6);
+  font-family: 'VT323', monospace;
+  font-size: 1.1rem;
+  line-height: 1.4;
+  color: var(--cream);
+  word-break: break-word;
+  max-width: fit-content;
+}
+
+.msgContent p { margin: 0; }
+
+/* Unread Divider */
+.unreadDivider {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  margin: var(--space-3) 0;
+  color: var(--red);
+  font-family: 'Press Start 2P', monospace;
+  font-size: 0.45rem;
+}
+
+.unreadDivider::before,
+.unreadDivider::after {
+  content: '';
+  flex: 1;
+  border-bottom: 1px solid var(--red);
+}
+
+.unreadDivider::before {
+  margin-right: var(--space-3);
+}
+.unreadDivider::after {
+  margin-left: var(--space-3);
 }
 
 .inputArea {
@@ -161,4 +187,18 @@
   font-size: 0.85rem;
   color: var(--text-muted);
   margin-top: var(--space-1);
+}
+
+/* Emoji Picker Positioning */
+.emojiWrapper {
+  position: relative;
+}
+
+.emojiPickerMenu {
+  position: absolute;
+  bottom: 100%;
+  left: 0;
+  margin-bottom: var(--space-2);
+  z-index: 50;
+  box-shadow: 4px 4px 0 0 rgba(0,0,0,0.5);
 }
