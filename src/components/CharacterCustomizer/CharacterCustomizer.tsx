@@ -3,6 +3,9 @@ import { useState, useRef } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { useAuth } from '@/context/AuthContext'
 import styles from './CharacterCustomizer.module.css'
+import { PhysicalCard } from '../ui/PhysicalCard'
+import { TactileButton } from '../ui/TactileButton'
+import { RevealText } from '../ui/RevealText'
 
 const SKIN_TONES = ['#FDBCB4','#F1C27D','#E0AC69','#C68642','#8D5524','#4A2912']
 const HAIR_COLORS = ['#4A3728','#2C1810','#8B4513','#D2691E','#F4C430','#FF6B6B','#9B59B6','#2ECC71','#ECF0F1']
@@ -95,8 +98,13 @@ export default function CharacterCustomizer({ initialData, onComplete, buttonTex
   }
 
   return (
-    <form onSubmit={handleSubmit} className={styles.form}>
-      {/* Username */}
+    <PhysicalCard variant="parchment" animateEntrance={true}>
+      <form onSubmit={handleSubmit} className={styles.form}>
+        <div style={{ textAlign: 'center', marginBottom: '1rem' }}>
+          <RevealText text="Character Profile" className="input-label" speed={0.05} />
+        </div>
+
+        {/* Username */}
       <div className="form-group">
         <label className="input-label" htmlFor="username">Choose a Username</label>
         <input
@@ -119,9 +127,9 @@ export default function CharacterCustomizer({ initialData, onComplete, buttonTex
               ? <img src={avatarPreview} alt="preview" />
               : <span>🌱</span>}
           </div>
-          <button type="button" className="btn btn-secondary" onClick={() => fileRef.current?.click()}>
+          <TactileButton type="button" variant="secondary" onClick={() => fileRef.current?.click()}>
             Upload Image
-          </button>
+          </TactileButton>
           <input ref={fileRef} type="file" accept="image/*" className="sr-only" onChange={handleAvatarChange} />
         </div>
       </div>
@@ -154,9 +162,9 @@ export default function CharacterCustomizer({ initialData, onComplete, buttonTex
         <div className={styles.swatchRow}>
           <span className={styles.swatchLabel}>Style</span>
           {HAIR_STYLES.map((s, i) => (
-            <button key={s} type="button"
-              className={`btn btn-ghost ${styles.tagBtn} ${hairStyle === i ? styles.tagActive : ''}`}
-              onClick={() => setHairStyle(i)}>{s}</button>
+            <TactileButton key={s} type="button" variant="ghost"
+              className={`${styles.tagBtn} ${hairStyle === i ? styles.tagActive : ''}`}
+              onClick={() => setHairStyle(i)}>{s}</TactileButton>
           ))}
         </div>
 
@@ -181,19 +189,20 @@ export default function CharacterCustomizer({ initialData, onComplete, buttonTex
         <div className={styles.swatchRow}>
           <span className={styles.swatchLabel}>Hat</span>
           {HATS.map((h, i) => (
-            <button key={i} type="button"
-              className={`btn btn-ghost ${styles.tagBtn} ${hatIndex === i ? styles.tagActive : ''}`}
-              onClick={() => setHatIndex(i)}>{h}</button>
+            <TactileButton key={i} type="button" variant="ghost"
+              className={`${styles.tagBtn} ${hatIndex === i ? styles.tagActive : ''}`}
+              onClick={() => setHatIndex(i)}>{h}</TactileButton>
           ))}
         </div>
       </div>
 
       {error && <p className={styles.error}>⚠ {error}</p>}
 
-      <button type="submit" className="btn btn-primary btn-full" disabled={loading} id="save-character-btn">
+      <TactileButton type="submit" variant="primary" fullWidth disabled={loading} id="save-character-btn">
         {loading ? 'Saving...' : buttonText}
-      </button>
+      </TactileButton>
     </form>
+  </PhysicalCard>
   )
 }
 
@@ -208,28 +217,78 @@ function CharacterPreview({ skinTone, hairColor, hairStyle, outfitColor, pantsCo
       ref={canvas => {
         if (!canvas) return
         const ctx = canvas.getContext('2d')!
+        ctx.imageSmoothingEnabled = false;
         ctx.clearRect(0,0,48,64)
+        
+        // Pants
         ctx.fillStyle = pantsColor
         ctx.fillRect(14, 42, 9, 18)
         ctx.fillRect(25, 42, 9, 18)
+        // Pants Shading
+        ctx.fillStyle = 'rgba(0,0,0,0.1)'
+        ctx.fillRect(14, 55, 9, 5)
+        ctx.fillRect(25, 55, 9, 5)
+
+        // Shirt
         ctx.fillStyle = outfitColor
         ctx.fillRect(12, 26, 24, 18)
+        // Shirt Shading
+        ctx.fillStyle = 'rgba(0,0,0,0.1)'
+        ctx.fillRect(12, 40, 24, 4)
+
+        // Arms
         ctx.fillStyle = skinTone
         ctx.fillRect(6, 28, 6, 14)
         ctx.fillRect(36, 28, 6, 14)
+
+        // Head
         ctx.fillStyle = skinTone
         ctx.fillRect(14, 8, 20, 20)
+        
+        // Face (Blush)
+        ctx.fillStyle = 'rgba(255,0,0,0.1)'
+        ctx.fillRect(17, 21, 4, 2)
+        ctx.fillRect(27, 21, 4, 2)
+
+        // Hair
         ctx.fillStyle = hairColor
-        if (hairStyle === 0) { ctx.fillRect(14,8,20,6) } 
-        else if (hairStyle === 1) { ctx.fillRect(12,8,24,8) } 
-        else if (hairStyle === 2) { ctx.fillRect(10,8,28,10); ctx.fillRect(10,18,4,12); ctx.fillRect(34,18,4,12) } 
-        else if (hairStyle === 3) { ctx.fillRect(12,6,24,10); ctx.fillRect(10,12,6,8); ctx.fillRect(32,12,6,8) } 
-        else { ctx.fillRect(14,8,4,22); ctx.fillRect(30,8,4,22) } 
+        if (hairStyle === 0) { // Short
+          ctx.fillRect(14, 8, 20, 6)
+          ctx.fillRect(12, 12, 2, 4)
+          ctx.fillRect(34, 12, 2, 4)
+        } 
+        else if (hairStyle === 1) { // Medium
+          ctx.fillRect(12, 8, 24, 8)
+          ctx.fillRect(12, 16, 4, 6)
+          ctx.fillRect(32, 16, 4, 6)
+        } 
+        else if (hairStyle === 2) { // Long
+          ctx.fillRect(10, 8, 28, 10)
+          ctx.fillRect(10, 18, 4, 18)
+          ctx.fillRect(34, 18, 4, 18)
+        } 
+        else if (hairStyle === 3) { // Curly
+          ctx.fillRect(12, 6, 24, 10)
+          ctx.fillRect(10, 12, 6, 12)
+          ctx.fillRect(32, 12, 6, 12)
+          ctx.fillRect(14, 4, 20, 2)
+        } 
+        else { // Braids
+          ctx.fillRect(14, 8, 20, 6)
+          ctx.fillRect(14, 14, 4, 28)
+          ctx.fillRect(30, 14, 4, 28)
+        } 
+
+        // Eyes
         ctx.fillStyle = '#2C1810'
-        ctx.fillRect(17,16,4,3); ctx.fillRect(27,16,4,3)
+        ctx.fillRect(18, 17, 3, 3)
+        ctx.fillRect(27, 17, 3, 3)
+
+        // Hat
         if (hat) {
-          ctx.font = '14px serif'
-          ctx.fillText(hat, 13, 10)
+          ctx.font = '18px serif'
+          ctx.textAlign = 'center'
+          ctx.fillText(hat, 24, 12)
         }
       }}
       style={{ imageRendering: 'pixelated', width: 96, height: 128 }}

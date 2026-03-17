@@ -1,5 +1,6 @@
 import { AuthProvider } from '@/context/AuthContext'
 import Sidebar from '@/components/layout/Sidebar'
+import { InventoryNavBar } from '@/components/ui/InventoryNavBar'
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -9,6 +10,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
         <main className="main-content">
           {children}
         </main>
+        <InventoryNavBar />
       </div>
     </AuthProvider>
   )

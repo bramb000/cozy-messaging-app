@@ -287,6 +287,16 @@ a:hover { color: var(--gold-light); }
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  padding-bottom: 0;
+}
+
+@media (max-width: 767px) {
+  .sidebar {
+    display: none;
+  }
+  .main-content {
+    padding-bottom: 80px; /* Space for InventoryNavBar */
+  }
 }
 
 /* ============================================================
