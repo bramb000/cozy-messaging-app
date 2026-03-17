@@ -21,6 +21,34 @@ const AuthContext = createContext<AuthContextType>({
   refreshProfile: async () => {},
 })
 
+// Help diagnose connectivity
+async function checkSupabaseConnectivity(url: string, key: string) {
+  console.log('--- Diagnostic: Testing direct fetch to Supabase...')
+  try {
+    const start = Date.now()
+    const res = await fetch(`${url}/rest/v1/profiles?select=count`, {
+      headers: {
+        'apikey': key,
+        'Authorization': `Bearer ${key}`
+      }
+    })
+    console.log(`--- Diagnostic: Direct fetch result: ${res.status} ${res.statusText} (${Date.now() - start}ms)`)
+    return res.ok
+  } catch (err) {
+    console.error('--- Diagnostic: Direct fetch FAILED:', err)
+    return false
+  }
+}
+
+async function withTimeout<T>(promise: Promise<T> | { then: (onfulfilled: (value: T) => any) => any }, timeoutMs: number = 5000): Promise<T> {
+  let timeoutId: any
+  const timeoutPromise = new Promise<never>((_, reject) => {
+    timeoutId = setTimeout(() => reject(new Error('TIMEOUT')), timeoutMs)
+  })
+  // Cast to Promise to ensure .race works with Supabase thenables
+  return Promise.race([Promise.resolve(promise as Promise<T>), timeoutPromise]).finally(() => clearTimeout(timeoutId))
+}
+
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const supabase = createClient()
   const [user, setUser] = useState<User | null>(null)
@@ -33,16 +61,25 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     console.log('--- Auth: fetchProfile starting for', userId)
     const start = Date.now()
     try {
-      const { data, error } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('id', userId)
-        .single()
+      // Direct diagnostic check on first run
+      if (start % 1000 === 0) { // arbitrary throttle
+        checkSupabaseConnectivity(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!)
+      }
+
+      const result = await withTimeout(
+        supabase
+          .from('profiles')
+          .select('*')
+          .eq('id', userId)
+          .single()
+      )
+      const data = (result as any).data
+      const error = (result as any).error
       
       console.log(`--- Auth: fetchProfile finished in ${Date.now() - start}ms`)
       
       if (error) {
-        console.error('--- Auth: fetchProfile error:', error.message, error.details)
+        console.error('--- Auth: fetchProfile error:', error.message)
         setProfile(null)
         return null
       }
@@ -51,7 +88,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setProfile(data as Profile)
       return data
     } catch (err) {
-      console.error('--- Auth: fetchProfile exception:', err)
+      if (err instanceof Error && err.message === 'TIMEOUT') {
+        console.error(`--- Auth: fetchProfile HANGED (Timed out after 5s)`)
+      } else {
+        console.error('--- Auth: fetchProfile exception:', err)
+      }
       setProfile(null)
       return null
     }
