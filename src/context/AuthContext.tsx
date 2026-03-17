@@ -21,34 +21,6 @@ const AuthContext = createContext<AuthContextType>({
   refreshProfile: async () => {},
 })
 
-// Help diagnose connectivity
-async function checkSupabaseConnectivity(url: string, key: string) {
-  console.log('--- Diagnostic: Testing direct fetch to Supabase...')
-  try {
-    const start = Date.now()
-    const res = await fetch(`${url}/rest/v1/profiles?select=count`, {
-      headers: {
-        'apikey': key,
-        'Authorization': `Bearer ${key}`
-      }
-    })
-    console.log(`--- Diagnostic: Direct fetch result: ${res.status} ${res.statusText} (${Date.now() - start}ms)`)
-    return res.ok
-  } catch (err) {
-    console.error('--- Diagnostic: Direct fetch FAILED:', err)
-    return false
-  }
-}
-
-async function withTimeout<T>(promise: Promise<T> | { then: (onfulfilled: (value: T) => any) => any }, timeoutMs: number = 5000): Promise<T> {
-  let timeoutId: any
-  const timeoutPromise = new Promise<never>((_, reject) => {
-    timeoutId = setTimeout(() => reject(new Error('TIMEOUT')), timeoutMs)
-  })
-  // Cast to Promise to ensure .race works with Supabase thenables
-  return Promise.race([Promise.resolve(promise as Promise<T>), timeoutPromise]).finally(() => clearTimeout(timeoutId))
-}
-
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const supabase = createClient()
   const [user, setUser] = useState<User | null>(null)
@@ -58,59 +30,33 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const heartbeatRef = useRef<ReturnType<typeof setInterval> | null>(null)
 
   async function fetchProfile(userId: string) {
-    console.log('--- Auth: fetchProfile starting for', userId)
-    const start = Date.now()
     try {
-      // Direct diagnostic check
-      console.log('--- Auth: Env Check:', { 
-        url: process.env.NEXT_PUBLIC_SUPABASE_URL?.slice(0, 15) + '...',
-        key: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ? 'Present (starts with ' + process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY.slice(0, 10) + '...)' : 'MISSING'
-      })
-      
-      checkSupabaseConnectivity(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!)
-
-      const result = await withTimeout(
-        supabase
-          .from('profiles')
-          .select('*')
-          .eq('id', userId)
-          .single()
-      )
-      const data = (result as any).data
-      const error = (result as any).error
-      
-      console.log(`--- Auth: fetchProfile finished in ${Date.now() - start}ms`)
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', userId)
+        .single()
       
       if (error) {
-        console.error('--- Auth: fetchProfile error:', error.message)
+        console.error('Error fetching profile:', error.message)
         setProfile(null)
         return null
       }
       
-      console.log('--- Auth: fetchProfile success:', (data as any)?.username)
       setProfile(data as Profile)
       return data
     } catch (err) {
-      if (err instanceof Error && err.message === 'TIMEOUT') {
-        console.error(`--- Auth: fetchProfile HANGED (Timed out after 5s)`)
-      } else {
-        console.error('--- Auth: fetchProfile exception:', err)
-      }
+      console.error('Unexpected error in fetchProfile:', err)
       setProfile(null)
       return null
     }
   }
 
   async function startSession(userId: string) {
-    console.log('--- Auth: Starting Session for', userId)
     try {
       // First expire old sessions
       await supabase.rpc('expire_sessions')
 
-      // Check concurrent user count (25 max)
-      const { data: count, error: countErr } = await supabase.rpc('active_session_count')
-      console.log('--- Auth: Current count check:', count, countErr || '')
-      
       const { data: session, error: sessionError } = await supabase
         .from('sessions')
         // @ts-expect-error Supabase types misaligned
@@ -119,26 +65,23 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         .single()
 
       if (sessionError) {
-        console.error('--- Auth: Session insert error:', sessionError)
+        console.error('Error starting session:', sessionError)
       } else if (session) {
-        console.log('--- Auth: Session created successfully:', (session as any).id)
         sessionIdRef.current = (session as any).id
 
         // Heartbeat every 30 seconds
         heartbeatRef.current = setInterval(async () => {
           if (sessionIdRef.current) {
-            const { error: hbErr } = await supabase
+            await supabase
               .from('sessions')
               // @ts-expect-error Supabase types misaligned
               .update({ last_seen: new Date().toISOString() })
               .eq('id', sessionIdRef.current)
-            
-            if (hbErr) console.error('--- Auth: Heartbeat error:', hbErr)
           }
         }, 30_000)
       }
     } catch (err) {
-      console.error('--- Auth: startSession exception:', err)
+      console.error('Error in startSession:', err)
     }
   }
 
@@ -170,39 +113,32 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }
 
   useEffect(() => {
-    console.log('--- AuthProvider mounted')
+    // We use setTimeout(..., 0) to push data fetching to the next tick of the event loop.
+    // This resolves a deadlock on HTTPS where the Supabase client holds a navigator.lock
+    // while notifying listeners, but PostgREST calls within the listener need that same lock.
     supabase.auth.getUser().then(({ data: { user } }) => {
-      console.log('--- Auth: Initial getUser:', user?.id || 'none')
       setUser(user)
       if (user) {
-        fetchProfile(user.id)
-        startSession(user.id)
+        setTimeout(() => {
+          fetchProfile(user.id)
+          startSession(user.id)
+        }, 0)
       }
       setLoading(false)
     })
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, sess) => {
-      console.log('--- Auth: State change event:', event)
-      console.log('--- Auth: Session user id:', sess?.user?.id || 'none')
-      
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, sess) => {
       const u = sess?.user ?? null
       setUser(u)
       
       if (u) {
-        console.log('--- Auth: User detected, calling fetchProfile...')
-        try {
+        setTimeout(async () => {
           await fetchProfile(u.id)
-          console.log('--- Auth: fetchProfile back in onAuthStateChange')
-          
           if (event === 'SIGNED_IN' || event === 'INITIAL_SESSION') {
-            console.log('--- Auth: Triggering startSession for event:', event)
             await startSession(u.id)
           }
-        } catch (e) {
-          console.error('--- Auth: Error in onAuthStateChange handler:', e)
-        }
+        }, 0)
       } else {
-        console.log('--- Auth: No user, resetting profile state')
         setProfile(null)
       }
       setLoading(false)
