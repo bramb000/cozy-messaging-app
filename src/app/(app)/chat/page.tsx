@@ -14,14 +14,24 @@ export default function ChatPage() {
   const editorRef = useRef<HTMLDivElement>(null)
 
   async function fetchMessages() {
-    const { data } = await supabase
-      .from('messages')
-      .select('*, profile:profiles(*)')
-      .order('created_at', { ascending: true })
-      .limit(100)
-    setMessages((data as MessageWithProfile[]) ?? [])
-    setLoading(false)
-    scrollToBottom()
+    try {
+      const { data, error } = await supabase
+        .from('messages')
+        .select('*, profile:profiles(*)')
+        .order('created_at', { ascending: true })
+        .limit(100)
+      
+      if (error) {
+        console.error('Error fetching messages:', error)
+      } else {
+        setMessages((data as MessageWithProfile[]) ?? [])
+      }
+    } catch (err) {
+      console.error('Unexpected error fetching messages:', err)
+    } finally {
+      setLoading(false)
+      scrollToBottom()
+    }
   }
 
   async function sendMessage() {

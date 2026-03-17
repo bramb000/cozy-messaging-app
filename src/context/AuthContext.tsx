@@ -30,13 +30,26 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const heartbeatRef = useRef<ReturnType<typeof setInterval> | null>(null)
 
   async function fetchProfile(userId: string) {
-    const { data } = await supabase
-      .from('profiles')
-      .select('*')
-      .eq('id', userId)
-      .single()
-    setProfile(data ?? null)
-    return data
+    try {
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', userId)
+        .single()
+      
+      if (error) {
+        console.error('Error fetching profile:', error)
+        setProfile(null)
+        return null
+      }
+      
+      setProfile(data as Profile)
+      return data
+    } catch (err) {
+      console.error('Unexpected error in fetchProfile:', err)
+      setProfile(null)
+      return null
+    }
   }
 
   async function startSession(userId: string) {
@@ -50,9 +63,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       // (checked at login rather than here to avoid self-blocking on refresh)
     }
 
-    const { data: session } = await supabase
+    const { data: session, error: sessionError } = await supabase
+      .from('sessions')
       // @ts-expect-error Supabase types misaligned
       .insert({ user_id: userId, active: true, last_seen: new Date().toISOString() })
+      .select()
+      .single()
+
+    if (sessionError) {
+      console.error('Error starting session:', sessionError)
+    }
 
     if (session) {
       sessionIdRef.current = session.id
