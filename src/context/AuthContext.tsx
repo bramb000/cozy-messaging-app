@@ -74,6 +74,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       console.error('Error starting session:', sessionError)
     }
 
+
+
     if (session) {
       sessionIdRef.current = (session as any).id
 
