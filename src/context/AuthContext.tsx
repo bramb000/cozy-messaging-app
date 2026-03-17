@@ -30,6 +30,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const heartbeatRef = useRef<ReturnType<typeof setInterval> | null>(null)
 
   async function fetchProfile(userId: string) {
+    console.log('--- Auth: fetchProfile starting for', userId)
+    const start = Date.now()
     try {
       const { data, error } = await supabase
         .from('profiles')
@@ -37,16 +39,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         .eq('id', userId)
         .single()
       
+      console.log(`--- Auth: fetchProfile finished in ${Date.now() - start}ms`)
+      
       if (error) {
-        console.error('Error fetching profile:', error)
+        console.error('--- Auth: fetchProfile error:', error.message, error.details)
         setProfile(null)
         return null
       }
       
+      console.log('--- Auth: fetchProfile success:', (data as any)?.username)
       setProfile(data as Profile)
       return data
     } catch (err) {
-      console.error('Unexpected error in fetchProfile:', err)
+      console.error('--- Auth: fetchProfile exception:', err)
       setProfile(null)
       return null
     }
@@ -133,16 +138,27 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     })
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, sess) => {
-      console.log('--- Auth: State change event:', event, sess?.user?.id || 'no user')
+      console.log('--- Auth: State change event:', event)
+      console.log('--- Auth: Session user id:', sess?.user?.id || 'none')
+      
       const u = sess?.user ?? null
       setUser(u)
+      
       if (u) {
-        await fetchProfile(u.id)
-        if (event === 'SIGNED_IN') {
-          console.log('--- Auth: Triggering startSession from SIGNED_IN event')
-          await startSession(u.id)
+        console.log('--- Auth: User detected, calling fetchProfile...')
+        try {
+          await fetchProfile(u.id)
+          console.log('--- Auth: fetchProfile back in onAuthStateChange')
+          
+          if (event === 'SIGNED_IN' || event === 'INITIAL_SESSION') {
+            console.log('--- Auth: Triggering startSession for event:', event)
+            await startSession(u.id)
+          }
+        } catch (e) {
+          console.error('--- Auth: Error in onAuthStateChange handler:', e)
         }
       } else {
+        console.log('--- Auth: No user, resetting profile state')
         setProfile(null)
       }
       setLoading(false)

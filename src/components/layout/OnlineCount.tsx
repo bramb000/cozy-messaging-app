@@ -15,12 +15,21 @@ export default function OnlineCount() {
 
   useEffect(() => {
     fetchCount()
+    console.log('--- OnlineCount: Subscribing to sessions changes...')
     const channel = supabase
       .channel('sessions-changes')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'sessions' }, fetchCount)
-      .subscribe()
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'sessions' }, (payload) => {
+        console.log('--- OnlineCount: Realtime update received:', payload)
+        fetchCount()
+      })
+      .subscribe((status) => {
+        console.log('--- OnlineCount: Subscription status:', status)
+      })
 
-    return () => { supabase.removeChannel(channel) }
+    return () => { 
+      console.log('--- OnlineCount: Unsubscribing...')
+      supabase.removeChannel(channel) 
+    }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 

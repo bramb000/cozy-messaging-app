@@ -35,12 +35,28 @@ export default function ChatPage() {
   }
 
   async function sendMessage() {
-    if (!editorRef.current || !user) return
+    if (!editorRef.current || !user) {
+      console.warn('--- Chat: sendMessage blocked (no editor or user)', !!editorRef.current, !!user)
+      return
+    }
     const content = editorRef.current.innerHTML.trim()
     if (!content || content === '<br>') return
+    
+    console.log('--- Chat: Sending message...')
     editorRef.current.innerHTML = ''
-    // @ts-expect-error Supabase types misaligned
-    await supabase.from('messages').insert({ user_id: user.id, content })
+    
+    try {
+      // @ts-expect-error Supabase types misaligned
+      const { data, error } = await supabase.from('messages').insert({ user_id: user.id, content }).select().single()
+      
+      if (error) {
+        console.error('--- Chat: Send error:', error.message, error.details)
+      } else {
+        console.log('--- Chat: Message sent successfully')
+      }
+    } catch (e) {
+      console.error('--- Chat: sendMessage exception:', e)
+    }
   }
 
   function scrollToBottom() {
