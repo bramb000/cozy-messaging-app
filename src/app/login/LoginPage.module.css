@@ -4,10 +4,8 @@
   align-items: center;
   justify-content: center;
   padding: var(--space-4);
-  background:
-    radial-gradient(circle at 30% 40%, rgba(90,122,58,0.12) 0%, transparent 60%),
-    radial-gradient(circle at 70% 70%, rgba(139,94,60,0.08) 0%, transparent 60%),
-    var(--night);
+  padding-bottom: 112px; /* clear the 96px grass strip */
+  /* Background now comes from .sky-scene in globals.css */
 }
 
 .card {
@@ -17,6 +15,8 @@
   display: flex;
   flex-direction: column;
   gap: var(--space-4);
+  position: relative;
+  z-index: 5; /* above clouds */
 }
 
 .header {

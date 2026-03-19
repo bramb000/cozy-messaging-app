@@ -311,7 +311,7 @@ a:hover { color: var(--gold-light); }
     display: none;
   }
   .main-content {
-    padding-bottom: 80px; /* Space for InventoryNavBar */
+    padding-bottom: 96px; /* Space for InventoryNavBar (88px) + breathing room */
   }
 }
 
@@ -423,6 +423,166 @@ a:hover { color: var(--gold-light); }
   background-image:
     radial-gradient(circle at 20% 20%, rgba(90,122,58,0.08) 0%, transparent 50%),
     radial-gradient(circle at 80% 80%, rgba(139,94,60,0.06) 0%, transparent 50%);
+}
+
+/* ============================================================
+   SKY SCENE — Stardew Valley-style animated sky
+   Apply .sky-scene to a full-screen container.
+   Add .cloud, .cloud-b, .cloud-c divs inside for clouds.
+   ============================================================ */
+.sky-scene {
+  position: relative;
+  overflow: hidden;
+  /* Sky gradient: deep cornflower blue → warm horizon glow */
+  background:
+    linear-gradient(
+      180deg,
+      #3A8FCC 0%,
+      #5BA8DC 12%,
+      #7EC8E3 30%,
+      #A8DFF0 55%,
+      #C8EDF5 70%,
+      #DAEFC4 85%,
+      #B8D98A 100%
+    );
+}
+
+/* Pixel scanline overlay — gives that slight CRT / retro pixel feel */
+.sky-scene::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent 0px,
+    transparent 3px,
+    rgba(0,0,0,0.018) 3px,
+    rgba(0,0,0,0.018) 4px
+  );
+  pointer-events: none;
+  z-index: 10;
+}
+
+/* Grass strip at bottom of sky */
+.sky-grass {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 96px;
+  z-index: 2;
+  pointer-events: none;
+  /* Layered grass: light top edge → mid → dark roots */
+  background:
+    linear-gradient(
+      180deg,
+      #8FBF56 0%,
+      #7FA854 18%,
+      #5A7A3A 50%,
+      #3D5427 80%,
+      #2A3D1A 100%
+    );
+  /* Subtle horizontal stripe texture */
+  image-rendering: pixelated;
+  box-shadow: 0 -4px 0 0 #A8CF6A, 0 -8px 0 0 rgba(168,207,106,0.4);
+}
+
+/* ---- CLOUD BASE ----
+   Chunky, blocky Stardew-style white cloud.
+   Three pseudo sub-blocks form a flat bottom + bumpy top silhouette.
+   Each layer (.cloud, .cloud-b, .cloud-c) drifts at a different speed. */
+.cloud, .cloud-b, .cloud-c {
+  position: absolute;
+  background: #FFFFFF;
+  pointer-events: none;
+  z-index: 3;
+  /* Slight pixel-art shading on bottom edge */
+  box-shadow: 0 6px 0 0 #D8EEF4, 0 12px 0 0 #C0DDE8;
+}
+
+/* Left bump */
+.cloud::before,
+.cloud-b::before,
+.cloud-c::before {
+  content: '';
+  position: absolute;
+  background: #FFFFFF;
+  box-shadow: inherit;
+}
+
+/* Right bump */
+.cloud::after,
+.cloud-b::after,
+.cloud-c::after {
+  content: '';
+  position: absolute;
+  background: #FFFFFF;
+}
+
+/* ---- CLOUD LAYER A — slow, large, foreground ---- */
+.cloud {
+  width: 200px;
+  height: 36px;
+  top: 12%;
+  animation: skyCloud 60s linear infinite;
+}
+.cloud::before {
+  /* Left dome */
+  width: 80px; height: 52px;
+  top: -48px; left: 20px; /* Overlap by 4px */
+  box-shadow: 0 6px 0 0 #D8EEF4;
+}
+.cloud::after {
+  /* Right dome */
+  width: 110px; height: 64px;
+  top: -60px; left: 70px; /* Overlap by 4px */
+  background: #FFFFFF;
+  box-shadow: 0 6px 0 0 #D8EEF4;
+}
+
+/* ---- CLOUD LAYER B — medium speed, mid-size ---- */
+.cloud-b {
+  width: 160px;
+  height: 28px;
+  top: 28%;
+  animation: skyCloud 90s linear infinite -35s;
+  opacity: 0.88;
+}
+.cloud-b::before {
+  width: 60px; height: 44px;
+  top: -40px; left: 16px; /* Overlap by 4px */
+  box-shadow: 0 4px 0 0 #D8EEF4;
+}
+.cloud-b::after {
+  width: 80px; height: 52px;
+  top: -48px; left: 60px; /* Overlap by 4px */
+  background: #FFFFFF;
+  box-shadow: 0 4px 0 0 #D8EEF4;
+}
+
+/* ---- CLOUD LAYER C — fast, small, background ---- */
+.cloud-c {
+  width: 120px;
+  height: 20px;
+  top: 18%;
+  animation: skyCloud 45s linear infinite -18s;
+  opacity: 0.75;
+}
+.cloud-c::before {
+  width: 44px; height: 32px;
+  top: -28px; left: 12px; /* Overlap by 4px */
+  box-shadow: 0 4px 0 0 #D8EEF4;
+}
+.cloud-c::after {
+  width: 60px; height: 40px;
+  top: -36px; left: 44px; /* Overlap by 4px */
+  background: #FFFFFF;
+  box-shadow: 0 4px 0 0 #D8EEF4;
+}
+
+@keyframes skyCloud {
+  0%   { transform: translateX(110vw); }
+  100% { transform: translateX(-120%); }
 }
 
 /* ============================================================

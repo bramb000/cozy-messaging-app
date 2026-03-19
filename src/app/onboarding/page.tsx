@@ -9,7 +9,15 @@ export default function OnboardingPage() {
   const { profile } = useAuth()
 
   return (
-    <div className={styles.container}>
+    <div className={`${styles.container} sky-scene`}>
+      {/* Sky clouds */}
+      <div className="cloud"  style={{ animationDelay: '-8s' }} />
+      <div className="cloud"  style={{ animationDelay: '-38s', top: '6%' }} />
+      <div className="cloud-b" style={{ animationDelay: '-22s' }} />
+      <div className="cloud-b" style={{ animationDelay: '-50s', top: '30%' }} />
+      <div className="cloud-c" style={{ animationDelay: '-3s' }} />
+      <div className="cloud-c" style={{ animationDelay: '-33s', top: '20%' }} />
+      <div className="sky-grass" />
       <div className={`pixel-panel ${styles.card}`}>
         <div className={styles.header}>
           <span className={styles.icon}>🌱</span>

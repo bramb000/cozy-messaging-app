@@ -3,14 +3,16 @@
   bottom: 0;
   left: 0;
   right: 0;
-  height: 80px;
+  height: 88px; /* +8px to give activeBorder room above slots */
   background-color: #1A1A2E;
   border-top: 4px solid #3D5427;
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 1000;
+  padding-top: 8px; /* room for gold activeBorder overflow */
   padding-bottom: env(safe-area-inset-bottom);
+  overflow: visible;
 }
 
 .container {

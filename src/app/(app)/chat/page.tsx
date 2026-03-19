@@ -14,6 +14,7 @@ export default function ChatPage() {
   const [loading, setLoading] = useState(true)
   const [showEmojiPicker, setShowEmojiPicker] = useState(false)
   const [lastReadTs, setLastReadTs] = useState<Date | null>(null)
+  const [mounted, setMounted] = useState(false)
   const bottomRef = useRef<HTMLDivElement>(null)
   const editorRef = useRef<HTMLDivElement>(null)
 
@@ -90,6 +91,7 @@ export default function ChatPage() {
   }
 
   useEffect(() => {
+    setMounted(true)
     fetchMessages()
     const channel = supabase
       .channel('chat-room')
@@ -114,7 +116,7 @@ export default function ChatPage() {
   }, [])
 
   function formatTime(ts: string | null) {
-    if (!ts) return ''
+    if (!ts || !mounted) return ''
     return new Date(ts).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
   }
 

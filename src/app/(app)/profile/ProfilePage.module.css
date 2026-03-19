@@ -107,3 +107,24 @@
   padding: 2px 4px;
   border: 1px solid var(--moss-dark);
 }
+
+/* ============================================================
+   MOBILE
+   ============================================================ */
+@media (max-width: 767px) {
+  .body {
+    padding: var(--space-3);
+  }
+
+  /* Stack avatar above the edit form instead of side-by-side */
+  .myCard {
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-4);
+    padding: var(--space-4);
+  }
+
+  .editActions {
+    flex-wrap: wrap;
+  }
+}

@@ -42,7 +42,11 @@ export default function LoginPage() {
 
   if (magicSent) {
     return (
-      <div className={styles.container}>
+      <div className={`${styles.container} sky-scene`}>
+        <div className="cloud"  style={{ animationDelay: '0s' }} />
+        <div className="cloud-b" style={{ animationDelay: '-10s' }} />
+        <div className="cloud-c" style={{ animationDelay: '-5s' }} />
+        <div className="sky-grass" />
         <div className={`pixel-panel ${styles.card}`}>
           <div className={styles.icon}>📬</div>
           <h1 className={styles.title}>Check your email!</h1>
@@ -53,7 +57,17 @@ export default function LoginPage() {
   }
 
   return (
-    <div className={styles.container}>
+    <div className={`${styles.container} sky-scene`}>
+      {/* Sky clouds — three layers at different speeds */}
+      <div className="cloud"  style={{ animationDelay: '0s' }} />
+      <div className="cloud"  style={{ animationDelay: '-30s', top: '8%' }} />
+      <div className="cloud-b" style={{ animationDelay: '-10s' }} />
+      <div className="cloud-b" style={{ animationDelay: '-55s', top: '32%' }} />
+      <div className="cloud-c" style={{ animationDelay: '-5s' }} />
+      <div className="cloud-c" style={{ animationDelay: '-28s', top: '22%' }} />
+      {/* Grass ground strip */}
+      <div className="sky-grass" />
+
       <div className={`pixel-panel ${styles.card}`}>
         <div className={styles.header}>
           <div className={styles.icon}>🌾</div>

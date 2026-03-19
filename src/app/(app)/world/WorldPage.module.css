@@ -69,3 +69,21 @@
   font-size: 0.9rem;
   color: var(--cream);
 }
+
+/* ============================================================
+   MOBILE
+   ============================================================ */
+@media (max-width: 767px) {
+  /* Keyboard shortcuts are desktop-only */
+  .controls {
+    display: none;
+  }
+
+  .header {
+    padding: var(--space-3) var(--space-3);
+  }
+
+  .canvasWrap {
+    padding: var(--space-2);
+  }
+}

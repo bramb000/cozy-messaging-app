@@ -114,3 +114,24 @@
   display: flex;
   gap: var(--space-4);
 }
+
+/* ============================================================
+   MOBILE
+   ============================================================ */
+@media (max-width: 767px) {
+  .body {
+    padding: var(--space-3);
+    align-items: flex-start;
+    padding-top: var(--space-6);
+  }
+
+  .joinCard {
+    padding: var(--space-5);
+    max-width: 100%;
+  }
+
+  .participantCard {
+    width: 100px;
+    padding: var(--space-3);
+  }
+}
