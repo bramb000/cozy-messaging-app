@@ -16,22 +16,22 @@ export function getPixelatedEmoji(unicode: string): string {
 
   const canvas = document.createElement('canvas');
   
-  // Render at 32x32 so that scaling it to 64x64 creates blocky 2x2 "heavy" pixels
-  canvas.width = 32;
-  canvas.height = 32;
+  // Render at 64x64 for a cleaner, higher-fidelity '64-bit' retro look
+  canvas.width = 64;
+  canvas.height = 64;
   
   const ctx = canvas.getContext('2d');
   if (!ctx) return '';
   
-  ctx.clearRect(0, 0, 32, 32);
+  ctx.clearRect(0, 0, 64, 64);
   
   // Use optimal native emoji fonts depending on the OS
-  ctx.font = '28px "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif';
+  ctx.font = '54px "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif';
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
   
-  // Draw emoji in the center. A slight 2px vertical offset usually aligns emojis better cross-platform.
-  ctx.fillText(unicode, 16, 18);
+  // Draw emoji in the center. A slight vertical offset usually aligns emojis better cross-platform.
+  ctx.fillText(unicode, 32, 36);
 
   // Generate a PNG data URL
   const dataUrl = canvas.toDataURL('image/png');
