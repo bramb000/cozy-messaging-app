@@ -4,8 +4,8 @@ import { createClient } from '@/lib/supabase/client'
 import { useAuth } from '@/context/AuthContext'
 import type { MessageWithProfile } from '@/types/database'
 import styles from './ChatPage.module.css'
-import data from '@emoji-mart/data'
-import Picker from '@emoji-mart/react'
+import PixelEmojiPicker from '@/components/ui/PixelEmojiPicker'
+import { parseEmojisToHtml } from '@/utils/emojiParser'
 
 export default function ChatPage() {
   const { user } = useAuth()
@@ -81,9 +81,9 @@ export default function ChatPage() {
     document.execCommand(cmd, false)
   }
 
-  function addEmoji(emoji: any) {
+  function addEmoji(unicode: string) {
     if (editorRef.current) {
-      editorRef.current.innerHTML += emoji.native
+      editorRef.current.innerHTML += unicode
       // Need to move cursor to the end, but appending raw is okay for simple editor
       editorRef.current.focus()
     }
@@ -168,7 +168,7 @@ export default function ChatPage() {
                   )}
                   <div
                     className={`${styles.msgContent} pixel-border-light`}
-                    dangerouslySetInnerHTML={{ __html: msg.content }}
+                    dangerouslySetInnerHTML={{ __html: parseEmojisToHtml(msg.content) }}
                   />
                 </div>
               </div>
@@ -195,7 +195,7 @@ export default function ChatPage() {
             </button>
             {showEmojiPicker && (
               <div className={styles.emojiPickerMenu}>
-                <Picker data={data} onEmojiSelect={addEmoji} theme="dark" />
+                <PixelEmojiPicker onEmojiSelect={addEmoji} />
               </div>
             )}
           </div>

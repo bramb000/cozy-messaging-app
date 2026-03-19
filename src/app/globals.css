@@ -704,3 +704,22 @@ a:hover { color: var(--gold-light); }
 .p-3 { padding: var(--space-3); }
 .p-4 { padding: var(--space-4); }
 .p-6 { padding: var(--space-6); }
+
+/* ============================================================
+   PIXEL EMOJIS
+   ============================================================ */
+.pixel-emoji-wrapper {
+  display: inline-block;
+  vertical-align: middle;
+  line-height: 1;
+  margin: 0 0.1em;
+}
+
+.pixel-emoji {
+  width: 1.5em;
+  height: 1.5em;
+  image-rendering: pixelated; /* Ensures SVGs with tiny rects stay crisp */
+  vertical-align: middle;
+  transform: translateY(-0.1em); /* visually align with text baseline */
+  filter: drop-shadow(1px 1px 0 var(--night-dark)) drop-shadow(-1px -1px 0 var(--night-dark));
+}

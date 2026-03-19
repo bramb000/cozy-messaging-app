@@ -2,6 +2,7 @@
 import { useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import styles from './LoginPage.module.css'
+import PixelEmojiPicker from '@/components/ui/PixelEmojiPicker'
 
 export default function LoginPage() {
   const supabase = createClient()
