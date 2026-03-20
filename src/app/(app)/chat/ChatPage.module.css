@@ -32,6 +32,12 @@
   padding: var(--space-4) var(--space-6);
   display: flex;
   flex-direction: column;
+  background-color: #1a3c26;
+  background-image: 
+    radial-gradient(#2a4d36 15%, transparent 16%),
+    radial-gradient(#2a4d36 15%, transparent 16%);
+  background-size: 30px 30px;
+  background-position: 0 0, 15px 15px;
 }
 
 /* Discord-Style Grouping */
@@ -73,24 +79,28 @@
 .msgUsername {
   font-family: 'Press Start 2P', monospace;
   font-size: 0.45rem;
-  color: var(--moss-light);
+  color: #f4d799;
+  text-shadow: 1px 1px 0 rgba(0,0,0,0.8);
 }
 
 .time {
   font-family: 'VT323', monospace;
   font-size: 0.8rem;
-  color: var(--text-muted);
+  color: #a3c2a4;
 }
 
 .msgContent {
   padding: var(--space-2) var(--space-3);
-  background: rgba(26,26,46,0.6);
+  background: #f4d799;
+  border: 4px solid #c89f53;
+  border-radius: 4px;
   font-family: 'VT323', monospace;
   font-size: 1.1rem;
   line-height: 1.4;
-  color: var(--cream);
+  color: #3e2723;
   word-break: break-word;
   max-width: fit-content;
+  box-shadow: 2px 2px 0px rgba(0,0,0,0.3);
 }
 
 .msgContent p { margin: 0; }
@@ -121,9 +131,9 @@
 }
 
 .inputArea {
-  border-top: 3px solid var(--moss-dark);
+  border-top: 4px solid #8b5e34;
   padding: var(--space-3) var(--space-4);
-  background: var(--night-mid);
+  background: #a67c52;
   flex-shrink: 0;
 }
 
@@ -136,7 +146,9 @@
 .toolBtn {
   font-size: 0.9rem !important;
   padding: 2px 8px !important;
-  border: 2px solid var(--border-dark) !important;
+  border: 2px solid #8b5e34 !important;
+  background: #d1a36a !important;
+  color: #3e2723 !important;
 }
 
 .editorRow {
@@ -150,19 +162,20 @@
   min-height: 40px;
   max-height: 120px;
   overflow-y: auto;
-  background: rgba(0,0,0,0.4);
-  border: 2px solid var(--border-dark);
+  background: #6d5b4b;
+  border: 4px solid #3c2a1e;
+  border-radius: 4px;
   padding: var(--space-2) var(--space-3);
   font-family: 'VT323', monospace;
   font-size: 1.1rem;
-  color: var(--cream);
+  color: #f4d799;
   outline: none;
   cursor: text;
 }
 
 .editorWrap:focus {
-  border-color: var(--moss);
-  box-shadow: 0 0 0 1px var(--moss);
+  border-color: #f1c27d;
+  box-shadow: 0 0 0 1px #f1c27d;
 }
 
 .editorWrap:empty::before {

@@ -35,8 +35,8 @@ export default function VoicePage() {
   return (
     <div className={styles.page}>
       <header className={styles.header}>
-        <h2 className={styles.title}>🎙️ Voice Room</h2>
-        <span className={styles.subtitle}>Drop in · Drop out · No video</span>
+        <h2 className={styles.title}>🌼 Cozy Corner Voice Meadow</h2>
+        <span className={styles.subtitle}>Gather around the campfire, everyone!</span>
       </header>
 
       <div className={styles.body}>
@@ -91,16 +91,19 @@ function VoiceRoomUI({ onLeave }: { onLeave: () => void }) {
         ))}
       </div>
 
-      <div className={styles.controls}>
+      <div className={styles.controlsBar}>
         <button
           id="toggle-mute-btn"
-          className={`btn ${muted ? 'btn-danger' : 'btn-secondary'}`}
+          className={styles.controlBtn}
           onClick={toggleMute}
         >
-          {muted ? '🔇 Unmute' : '🎙️ Mute'}
+          {muted ? '🔇 Muted' : '🎙️ Mute'}
         </button>
-        <button id="leave-voice-btn" className="btn btn-danger" onClick={onLeave}>
-          📵 Leave Room
+        <button className={styles.controlBtn}>
+          🎧 Deafen
+        </button>
+        <button id="leave-voice-btn" className={styles.controlBtn} onClick={onLeave}>
+          🏕️ Leave Meadow
         </button>
       </div>
     </div>
@@ -110,12 +113,17 @@ function VoiceRoomUI({ onLeave }: { onLeave: () => void }) {
 function ParticipantCard({ participant }: { participant: RemoteParticipant | LocalParticipant }) {
   const isSpeaking = participant.isSpeaking
   return (
-    <div className={`${styles.participantCard} pixel-panel ${isSpeaking ? styles.speaking : ''}`}>
-      <div className={`avatar avatar-lg ${styles.participantAvatar}`}>
-        <span>🎙️</span>
+    <div className={`${styles.participantCard} ${isSpeaking ? styles.speaking : ''}`}>
+      {isSpeaking && <div className={styles.waveformLeft}>ılı</div>}
+      
+      <div className={styles.avatarCircle}>
+        <span className={styles.avatarEmoji}>🧑‍🌾</span>
       </div>
+      
+      {isSpeaking && <div className={styles.waveformRight}>ılı</div>}
+      
       <span className={styles.participantName}>{participant.name ?? participant.identity}</span>
-      {isSpeaking && <span className={styles.speakingIndicator}>◉</span>}
+      <span className={styles.campfireIcon}>🔥</span>
     </div>
   )
 }

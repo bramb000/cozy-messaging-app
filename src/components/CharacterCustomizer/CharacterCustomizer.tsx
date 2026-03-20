@@ -34,7 +34,10 @@ export default function CharacterCustomizer({ initialData, onComplete, buttonTex
   const [avatarPreview, setAvatarPreview] = useState<string | null>(initialData?.avatar_url || null)
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
+  const [activeTab, setActiveTab] = useState('Hair')
   const fileRef = useRef<HTMLInputElement>(null)
+
+  const TABS = ['Hair', 'Hat', 'Shirt', 'Pants', 'Skin']
 
   function handleAvatarChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0]
@@ -98,111 +101,130 @@ export default function CharacterCustomizer({ initialData, onComplete, buttonTex
   }
 
   return (
-    <PhysicalCard variant="parchment" animateEntrance={true}>
-      <form onSubmit={handleSubmit} className={styles.form}>
-        <div style={{ textAlign: 'center', marginBottom: '1rem' }}>
-          <RevealText text="Character Profile" className="input-label" speed={0.05} />
+    <div className={styles.container}>
+      <div className={styles.leftPane}>
+        <div style={{ textAlign: 'center' }}>
+          <RevealText text="Avatar Customization" className="input-label" speed={0.05} />
         </div>
-
-        {/* Username */}
-      <div className="form-group">
-        <label className="input-label" htmlFor="username">Choose a Username</label>
-        <input
-          id="username"
-          className="input"
-          value={username}
-          onChange={e => setUsername(e.target.value)}
-          placeholder="YourName"
-          maxLength={20}
-          required
-        />
-      </div>
-
-      {/* Avatar upload */}
-      <div className={styles.section}>
-        <label className="input-label">Profile Picture (optional)</label>
-        <div className={styles.avatarRow}>
-          <div className={`avatar avatar-lg ${styles.avatarPreview}`}>
-            {avatarPreview
-              ? <img src={avatarPreview} alt="preview" />
-              : <span>🌱</span>}
-          </div>
-          <TactileButton type="button" variant="secondary" onClick={() => fileRef.current?.click()}>
-            Upload Image
-          </TactileButton>
-          <input ref={fileRef} type="file" accept="image/*" className="sr-only" onChange={handleAvatarChange} />
-        </div>
-      </div>
-
-      {/* Character customisation */}
-      <div className={styles.section}>
-        <label className="input-label">Character</label>
+        
         <div className={styles.charPreview}>
           <CharacterPreview skinTone={skinTone} hairColor={hairColor} hairStyle={hairStyle} outfitColor={outfitColor} pantsColor={pantsColor} hatIndex={hatIndex} />
         </div>
 
-        <div className={styles.swatchRow}>
-          <span className={styles.swatchLabel}>Skin</span>
-          {SKIN_TONES.map(c => (
-            <button key={c} type="button" title={c}
-              className={`${styles.swatch} ${skinTone === c ? styles.swatchActive : ''}`}
-              style={{ background: c }} onClick={() => setSkinTone(c)} />
-          ))}
-        </div>
-
-        <div className={styles.swatchRow}>
-          <span className={styles.swatchLabel}>Hair</span>
-          {HAIR_COLORS.map(c => (
-            <button key={c} type="button" title={c}
-              className={`${styles.swatch} ${hairColor === c ? styles.swatchActive : ''}`}
-              style={{ background: c }} onClick={() => setHairColor(c)} />
-          ))}
-        </div>
-
-        <div className={styles.swatchRow}>
-          <span className={styles.swatchLabel}>Style</span>
-          {HAIR_STYLES.map((s, i) => (
-            <TactileButton key={s} type="button" variant="ghost"
-              className={`${styles.tagBtn} ${hairStyle === i ? styles.tagActive : ''}`}
-              onClick={() => setHairStyle(i)}>{s}</TactileButton>
-          ))}
-        </div>
-
-        <div className={styles.swatchRow}>
-          <span className={styles.swatchLabel}>Shirt</span>
-          {OUTFIT_COLORS.map(c => (
-            <button key={c} type="button" title={c}
-              className={`${styles.swatch} ${outfitColor === c ? styles.swatchActive : ''}`}
-              style={{ background: c }} onClick={() => setOutfitColor(c)} />
-          ))}
-        </div>
-
-        <div className={styles.swatchRow}>
-          <span className={styles.swatchLabel}>Pants</span>
-          {OUTFIT_COLORS.map(c => (
-            <button key={c} type="button" title={c}
-              className={`${styles.swatch} ${pantsColor === c ? styles.swatchActive : ''}`}
-              style={{ background: c }} onClick={() => setPantsColor(c)} />
-          ))}
-        </div>
-
-        <div className={styles.swatchRow}>
-          <span className={styles.swatchLabel}>Hat</span>
-          {HATS.map((h, i) => (
-            <TactileButton key={i} type="button" variant="ghost"
-              className={`${styles.tagBtn} ${hatIndex === i ? styles.tagActive : ''}`}
-              onClick={() => setHatIndex(i)}>{h}</TactileButton>
-          ))}
-        </div>
+        <TactileButton type="button" variant="primary" onClick={handleSubmit} disabled={loading} id="save-character-btn">
+          {loading ? 'Saving...' : buttonText}
+        </TactileButton>
+        {error && <p className={styles.error}>⚠ {error}</p>}
       </div>
 
-      {error && <p className={styles.error}>⚠ {error}</p>}
+      <div className={styles.rightPane}>
+        <div className={styles.tabs}>
+          {TABS.map(tab => (
+            <button
+              key={tab}
+              type="button"
+              className={`${styles.tabBtn} ${activeTab === tab ? styles.tabActive : ''}`}
+              onClick={() => setActiveTab(tab)}
+            >
+              {tab}
+            </button>
+          ))}
+        </div>
 
-      <TactileButton type="submit" variant="primary" fullWidth disabled={loading} id="save-character-btn">
-        {loading ? 'Saving...' : buttonText}
-      </TactileButton>
-    </form>
-  </PhysicalCard>
+        <div className={styles.tabContent}>
+          {activeTab === 'Skin' && (
+            <div className={styles.swatchRow}>
+              <span className={styles.swatchLabel}>Color</span>
+              {SKIN_TONES.map(c => (
+                <button key={c} type="button" title={c}
+                  className={`${styles.swatch} ${skinTone === c ? styles.swatchActive : ''}`}
+                  style={{ background: c }} onClick={() => setSkinTone(c)} />
+              ))}
+            </div>
+          )}
+
+          {activeTab === 'Hair' && (
+            <>
+              <div className={styles.swatchRow}>
+                <span className={styles.swatchLabel}>Color</span>
+                {HAIR_COLORS.map(c => (
+                  <button key={c} type="button" title={c}
+                    className={`${styles.swatch} ${hairColor === c ? styles.swatchActive : ''}`}
+                    style={{ background: c }} onClick={() => setHairColor(c)} />
+                ))}
+              </div>
+              <div className={styles.swatchRow}>
+                <span className={styles.swatchLabel}>Style</span>
+                {HAIR_STYLES.map((s, i) => (
+                  <button key={s} type="button"
+                    className={`${styles.tagBtn} ${hairStyle === i ? styles.tagActive : ''}`}
+                    onClick={() => setHairStyle(i)}>{s}</button>
+                ))}
+              </div>
+            </>
+          )}
+
+          {activeTab === 'Shirt' && (
+            <div className={styles.swatchRow}>
+              <span className={styles.swatchLabel}>Color</span>
+              {OUTFIT_COLORS.map(c => (
+                <button key={c} type="button" title={c}
+                  className={`${styles.swatch} ${outfitColor === c ? styles.swatchActive : ''}`}
+                  style={{ background: c }} onClick={() => setOutfitColor(c)} />
+              ))}
+            </div>
+          )}
+
+          {activeTab === 'Pants' && (
+            <div className={styles.swatchRow}>
+              <span className={styles.swatchLabel}>Color</span>
+              {OUTFIT_COLORS.map(c => (
+                <button key={c} type="button" title={c}
+                  className={`${styles.swatch} ${pantsColor === c ? styles.swatchActive : ''}`}
+                  style={{ background: c }} onClick={() => setPantsColor(c)} />
+              ))}
+            </div>
+          )}
+
+          {activeTab === 'Hat' && (
+            <div className={styles.swatchRow}>
+              <span className={styles.swatchLabel}>Style</span>
+              {HATS.map((h, i) => (
+                <button key={i} type="button"
+                  className={`${styles.tagBtn} ${hatIndex === i ? styles.tagActive : ''}`}
+                  onClick={() => setHatIndex(i)}>{h || 'None'}</button>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Profile Details grouped at bottom of right pane */}
+        <div style={{ marginTop: 'auto', borderTop: '2px solid #8b5e34', paddingTop: '1rem' }} className={styles.section}>
+          <div className="form-group">
+            <label className="input-label" htmlFor="username" style={{ color: '#5c3a21' }}>Username</label>
+            <input
+              id="username"
+              className="input"
+              value={username}
+              onChange={e => setUsername(e.target.value)}
+              placeholder="YourName"
+              maxLength={20}
+              required
+              style={{ backgroundColor: '#e2be93', border: '2px solid #8b5e34', color: '#3e2723' }}
+            />
+          </div>
+          <div className={styles.avatarRow}>
+            <div className={`avatar img-responsive ${styles.avatarPreview}`} style={{ width: 40, height: 40 }}>
+              {avatarPreview ? <img src={avatarPreview} alt="preview" /> : <span>🌱</span>}
+            </div>
+            <button type="button" className={styles.tagBtn} onClick={() => fileRef.current?.click()} style={{ background: '#a67c52', color: '#fff' }}>
+              Upload Image
+            </button>
+            <input ref={fileRef} type="file" accept="image/*" className="sr-only" onChange={handleAvatarChange} />
+          </div>
+        </div>
+      </div>
+    </div>
   )
 }
 
