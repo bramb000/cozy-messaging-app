@@ -107,8 +107,9 @@ html, body {
   image-rendering: pixelated;
   border-style: solid;
   border-width: 16px;
+  border-color: transparent;
   background-clip: padding-box;
-  border-image: url('/ui/frame-brown.png') 16 fill repeat;
+  border-image: url('/ui/frame-brown.png') 16 fill stretch;
   box-shadow: 4px 4px 0 0 rgba(0,0,0,0.5);
 }
 
@@ -116,8 +117,9 @@ html, body {
   image-rendering: pixelated;
   border-style: solid;
   border-width: 16px;
+  border-color: transparent;
   background-clip: padding-box;
-  border-image: url('/ui/frame-yellow.png') 16 fill repeat;
+  border-image: url('/ui/frame-yellow.png') 16 fill stretch;
   box-shadow: 4px 4px 0 0 rgba(0,0,0,0.5);
 }
 
@@ -157,6 +159,7 @@ a:hover { color: var(--gold-light); }
   font-size: 0.6rem;
   cursor: pointer;
   border-style: solid;
+  border-color: transparent;
   border-width: 4px 16px;
   transition: transform 0.08s, box-shadow 0.08s;
   image-rendering: pixelated;

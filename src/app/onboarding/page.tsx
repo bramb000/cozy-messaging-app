@@ -3,6 +3,7 @@ import { useRouter } from 'next/navigation'
 import { useAuth } from '@/context/AuthContext'
 import CharacterCustomizer from '@/components/CharacterCustomizer/CharacterCustomizer'
 import styles from './OnboardingPage.module.css'
+import PixelPanel from '@/components/ui/PixelPanel'
 
 export default function OnboardingPage() {
   const router = useRouter()
@@ -18,7 +19,7 @@ export default function OnboardingPage() {
       <div className="cloud-c" style={{ animationDelay: '-3s' }} />
       <div className="cloud-c" style={{ animationDelay: '-33s', top: '20%' }} />
       <div className="sky-grass" />
-      <div className={`pixel-panel ${styles.card}`}>
+      <PixelPanel variant="standard" className={styles.card}>
         <div className={styles.header}>
           <span className={styles.icon}>🌱</span>
           <h1>Create Your Character</h1>
@@ -30,7 +31,7 @@ export default function OnboardingPage() {
           onComplete={() => router.push('/chat')} 
           buttonText="Enter the World →"
         />
-      </div>
+      </PixelPanel>
     </div>
   )
 }

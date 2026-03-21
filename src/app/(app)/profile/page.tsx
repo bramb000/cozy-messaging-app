@@ -4,6 +4,8 @@ import { createClient } from '@/lib/supabase/client'
 import { useAuth } from '@/context/AuthContext'
 import type { Profile } from '@/types/database'
 import styles from './ProfilePage.module.css'
+import PixelButton from '@/components/ui/PixelButton'
+import PixelPanel from '@/components/ui/PixelPanel'
 
 export default function ProfilePage() {
   const { user, profile: myProfile, refreshProfile } = useAuth()
@@ -74,7 +76,7 @@ export default function ProfilePage() {
 
       <div className={styles.body}>
         {/* My profile card */}
-        <div className={`pixel-panel ${styles.myCard}`}>
+        <PixelPanel variant="standard" className={styles.myCard}>
           <div className={styles.avatarWrap}>
             <div className="avatar avatar-xl">
               {(avatarPreview ?? myProfile.avatar_url)
@@ -83,9 +85,9 @@ export default function ProfilePage() {
             </div>
             {editing && (
               <>
-                <button type="button" className={`btn btn-secondary ${styles.uploadBtn}`} onClick={() => fileRef.current?.click()}>
+                <PixelButton type="button" variant="secondary" className={styles.uploadBtn} onClick={() => fileRef.current?.click()}>
                   Change Photo
-                </button>
+                </PixelButton>
                 <input ref={fileRef} type="file" accept="image/*" className="sr-only" onChange={handleAvatarChange} />
               </>
             )}
@@ -106,31 +108,31 @@ export default function ProfilePage() {
               </div>
               {error && <p className={styles.error}>⚠ {error}</p>}
               <div className={styles.editActions}>
-                <button type="submit" className="btn btn-primary" id="save-profile-btn" disabled={saving}>
+                <PixelButton type="submit" variant="primary" id="save-profile-btn" disabled={saving}>
                   {saving ? 'Saving...' : 'Save'}
-                </button>
-                <button type="button" className="btn btn-ghost" onClick={() => { setEditing(false); setUsername(myProfile.username); setAvatarFile(null); setAvatarPreview(null) }}>
+                </PixelButton>
+                <PixelButton type="button" variant="ghost" onClick={() => { setEditing(false); setUsername(myProfile.username); setAvatarFile(null); setAvatarPreview(null) }}>
                   Cancel
-                </button>
+                </PixelButton>
               </div>
             </form>
           ) : (
             <div className={styles.viewProfile}>
               <h3 className={styles.profileUsername}>{myProfile.username}</h3>
               <p className={styles.joined}>Member since {new Date(myProfile.created_at!).toLocaleDateString()}</p>
-              <button className="btn btn-secondary" id="edit-profile-btn" onClick={() => setEditing(true)}>
+              <PixelButton variant="secondary" id="edit-profile-btn" onClick={() => setEditing(true)}>
                 ✏️ Edit Profile
-              </button>
+              </PixelButton>
             </div>
           )}
-        </div>
+        </PixelPanel>
 
         {/* Community members */}
         <div className={styles.membersSection}>
           <h3 className={styles.sectionTitle}>Community Members</h3>
           <div className={styles.memberGrid}>
             {members.map(m => (
-              <div key={m.id} className={`pixel-panel-warm ${styles.memberCard}`}>
+              <PixelPanel key={m.id} variant="warm" className={styles.memberCard}>
                 <div className="avatar">
                   {m.avatar_url ? <img src={m.avatar_url} alt={m.username} /> : <span>🌱</span>}
                 </div>
@@ -138,7 +140,7 @@ export default function ProfilePage() {
                   <span className={styles.memberName}>{m.username}</span>
                   {m.id === user?.id && <span className={styles.youBadge}>You</span>}
                 </div>
-              </div>
+              </PixelPanel>
             ))}
           </div>
         </div>

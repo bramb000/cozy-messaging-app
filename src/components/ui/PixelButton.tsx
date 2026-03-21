@@ -2,7 +2,9 @@ import React from 'react';
 import styles from './PixelButton.module.css';
 
 interface PixelButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'primary' | 'secondary' | 'danger' | 'ghost' | 'icon';
+  variant?: 'primary' | 'secondary' | 'danger' | 'ghost' | 'icon' |
+    'generic-blue' | 'generic-brown' | 'generic-green' | 'generic-orange' | 'generic-purple' | 'generic-red' | 'generic-silver' | 'generic-yellow' |
+    'color-blue' | 'color-brown' | 'color-green' | 'color-purple' | 'color-red' | 'color-silver' | 'color-yellow';
   size?: 'sm' | 'md' | 'lg';
   fullWidth?: boolean;
   iconLeft?: React.ReactNode;

@@ -3,6 +3,7 @@ import { useAuth } from '@/context/AuthContext'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import styles from './UserPanel.module.css'
+import PixelButton from '@/components/ui/PixelButton'
 
 export default function UserPanel() {
   const { profile, signOut } = useAuth()
@@ -25,9 +26,9 @@ export default function UserPanel() {
         </div>
         <span className={styles.username}>{profile.username}</span>
       </Link>
-      <button className="btn btn-ghost btn-icon" onClick={handleSignOut} title="Sign out" id="sign-out-btn">
+      <PixelButton variant="ghost" className="btn-icon" onClick={handleSignOut} title="Sign out" id="sign-out-btn">
         🚪
-      </button>
+      </PixelButton>
     </div>
   )
 }

@@ -19,6 +19,7 @@
   cursor: pointer;
   image-rendering: pixelated;
   border-style: solid;
+  border-color: transparent;
   border-width: 4px 10px;
   font-family: var(--font-press-start);
   color: #fff;
@@ -39,44 +40,68 @@
 }
 
 /* Variant handling */
-.variant-primary { border-image: url('/ui/generic-btn-green-normal.png?v=4') 4 10 fill stretch; }
-.variant-primary:hover:not(.disabled) { border-image: url('/ui/generic-btn-green-hover.png?v=4') 4 10 fill stretch; }
+.variant-generic-blue { border-image: url('/ui/generic-btn-blue-normal.png?v=4') 4 10 fill stretch; }
+.variant-generic-blue:hover:not(.disabled) { border-image: url('/ui/generic-btn-blue-hover.png?v=4') 4 10 fill stretch; }
+.variant-generic-blue:active:not(.disabled) { border-image: url('/ui/generic-btn-blue-flat.png?v=4') 4 10 fill stretch; }
 
-.variant-secondary { border-image: url('/ui/generic-btn-orange-normal.png?v=4') 4 10 fill stretch; }
-.variant-secondary:hover:not(.disabled) { border-image: url('/ui/generic-btn-orange-hover.png?v=4') 4 10 fill stretch; }
+.variant-generic-brown { border-image: url('/ui/generic-btn-brown-normal.png?v=4') 4 10 fill stretch; }
+.variant-generic-brown:hover:not(.disabled) { border-image: url('/ui/generic-btn-brown-hover.png?v=4') 4 10 fill stretch; }
+.variant-generic-brown:active:not(.disabled) { border-image: url('/ui/generic-btn-brown-flat.png?v=4') 4 10 fill stretch; }
 
-.variant-danger { border-image: url('/ui/generic-btn-red-normal.png?v=4') 4 10 fill stretch; }
-.variant-danger:hover:not(.disabled) { border-image: url('/ui/generic-btn-red-hover.png?v=4') 4 10 fill stretch; }
+.variant-generic-green { border-image: url('/ui/generic-btn-green-normal.png?v=4') 4 10 fill stretch; }
+.variant-generic-green:hover:not(.disabled) { border-image: url('/ui/generic-btn-green-hover.png?v=4') 4 10 fill stretch; }
+.variant-generic-green:active:not(.disabled) { border-image: url('/ui/generic-btn-green-flat.png?v=4') 4 10 fill stretch; }
 
-.variant-ghost {
-  border-image: none;
-  border-width: 0;
-  background: transparent;
-  color: #A8B8C8;
-  height: auto;
-}
-.variant-ghost:hover:not(.disabled) {
-  color: #F5E6C8;
-  text-decoration: underline;
-}
+.variant-generic-orange { border-image: url('/ui/generic-btn-orange-normal.png?v=4') 4 10 fill stretch; }
+.variant-generic-orange:hover:not(.disabled) { border-image: url('/ui/generic-btn-orange-hover.png?v=4') 4 10 fill stretch; }
+.variant-generic-orange:active:not(.disabled) { border-image: url('/ui/generic-btn-orange-flat.png?v=4') 4 10 fill stretch; }
 
-.variant-icon {
-  border-image: none;
-  border-width: 2px;
-  border-color: transparent;
-  background: transparent;
-  padding: 4px;
-  color: #A8B8C8;
-  height: 32px;
-  width: 32px;
-}
-.variant-icon:hover:not(.disabled) {
-  border-color: #8B5E3C;
-  color: #F5E6C8;
-  background: rgba(255,255,255,0.05);
-}
+.variant-generic-purple { border-image: url('/ui/generic-btn-purple-normal.png?v=4') 4 10 fill stretch; }
+.variant-generic-purple:hover:not(.disabled) { border-image: url('/ui/generic-btn-purple-hover.png?v=4') 4 10 fill stretch; }
+.variant-generic-purple:active:not(.disabled) { border-image: url('/ui/generic-btn-purple-flat.png?v=4') 4 10 fill stretch; }
+
+.variant-generic-red { border-image: url('/ui/generic-btn-red-normal.png?v=4') 4 10 fill stretch; }
+.variant-generic-red:hover:not(.disabled) { border-image: url('/ui/generic-btn-red-hover.png?v=4') 4 10 fill stretch; }
+.variant-generic-red:active:not(.disabled) { border-image: url('/ui/generic-btn-red-flat.png?v=4') 4 10 fill stretch; }
+
+.variant-generic-silver { border-image: url('/ui/generic-btn-silver-normal.png?v=4') 4 10 fill stretch; }
+.variant-generic-silver:hover:not(.disabled) { border-image: url('/ui/generic-btn-silver-hover.png?v=4') 4 10 fill stretch; }
+.variant-generic-silver:active:not(.disabled) { border-image: url('/ui/generic-btn-silver-flat.png?v=4') 4 10 fill stretch; }
+
+.variant-generic-yellow { border-image: url('/ui/generic-btn-yellow-normal.png?v=4') 4 10 fill stretch; }
+.variant-generic-yellow:hover:not(.disabled) { border-image: url('/ui/generic-btn-yellow-hover.png?v=4') 4 10 fill stretch; }
+.variant-generic-yellow:active:not(.disabled) { border-image: url('/ui/generic-btn-yellow-flat.png?v=4') 4 10 fill stretch; }
+
+.variant-color-blue { border-image: url('/ui/button-blue-normal.png?v=4') 6 14 fill stretch; }
+.variant-color-blue:hover:not(.disabled) { border-image: url('/ui/button-blue-hover.png?v=4') 6 14 fill stretch; }
+.variant-color-blue:active:not(.disabled) { border-image: url('/ui/button-blue-flat.png?v=4') 6 14 fill stretch; }
+
+.variant-color-brown { border-image: url('/ui/button-brown-normal.png?v=4') 6 14 fill stretch; }
+.variant-color-brown:hover:not(.disabled) { border-image: url('/ui/button-brown-hover.png?v=4') 6 14 fill stretch; }
+.variant-color-brown:active:not(.disabled) { border-image: url('/ui/button-brown-flat.png?v=4') 6 14 fill stretch; }
+
+.variant-color-green { border-image: url('/ui/button-green-normal.png?v=4') 6 14 fill stretch; }
+.variant-color-green:hover:not(.disabled) { border-image: url('/ui/button-green-hover.png?v=4') 6 14 fill stretch; }
+.variant-color-green:active:not(.disabled) { border-image: url('/ui/button-green-flat.png?v=4') 6 14 fill stretch; }
+
+.variant-color-purple { border-image: url('/ui/button-purple-normal.png?v=4') 6 14 fill stretch; }
+.variant-color-purple:hover:not(.disabled) { border-image: url('/ui/button-purple-hover.png?v=4') 6 14 fill stretch; }
+.variant-color-purple:active:not(.disabled) { border-image: url('/ui/button-purple-flat.png?v=4') 6 14 fill stretch; }
+
+.variant-color-red { border-image: url('/ui/button-red-normal.png?v=4') 6 14 fill stretch; }
+.variant-color-red:hover:not(.disabled) { border-image: url('/ui/button-red-hover.png?v=4') 6 14 fill stretch; }
+.variant-color-red:active:not(.disabled) { border-image: url('/ui/button-red-flat.png?v=4') 6 14 fill stretch; }
+
+.variant-color-silver { border-image: url('/ui/button-silver-normal.png?v=4') 6 14 fill stretch; }
+.variant-color-silver:hover:not(.disabled) { border-image: url('/ui/button-silver-hover.png?v=4') 6 14 fill stretch; }
+.variant-color-silver:active:not(.disabled) { border-image: url('/ui/button-silver-flat.png?v=4') 6 14 fill stretch; }
+
+.variant-color-yellow { border-image: url('/ui/button-yellow-normal.png?v=4') 6 14 fill stretch; }
+.variant-color-yellow:hover:not(.disabled) { border-image: url('/ui/button-yellow-hover.png?v=4') 6 14 fill stretch; }
+.variant-color-yellow:active:not(.disabled) { border-image: url('/ui/button-yellow-flat.png?v=4') 6 14 fill stretch; }
 
 /* Sizes */
+
 .size-sm.variant-primary, .size-sm.variant-secondary, .size-sm.variant-danger { font-size: 14px; height: 32px; padding: 0 4px; }
 .size-md.variant-primary, .size-md.variant-secondary, .size-md.variant-danger { font-size: 16px; height: 40px; padding: 0 8px; }
 .size-lg.variant-primary, .size-lg.variant-secondary, .size-lg.variant-danger { font-size: 20px; height: 48px; padding: 0 12px; }

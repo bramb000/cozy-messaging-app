@@ -5,6 +5,7 @@ import { useAuth } from '@/context/AuthContext'
 import type { MessageWithProfile } from '@/types/database'
 import styles from './ChatPage.module.css'
 import PixelEmojiPicker from '@/components/ui/PixelEmojiPicker'
+import PixelButton from '@/components/ui/PixelButton'
 import { parseEmojisToHtml } from '@/utils/emojiParser'
 
 export default function ChatPage() {
@@ -178,19 +179,19 @@ export default function ChatPage() {
 
       <div className={styles.inputArea}>
         <div className={styles.toolbar}>
-          <button type="button" className={`btn btn-icon ${styles.toolBtn}`} onClick={() => execFormat('bold')} title="Bold" id="format-bold-btn">
+          <PixelButton type="button" variant="icon" className={styles.toolBtn} onClick={() => execFormat('bold')} title="Bold" id="format-bold-btn">
             <strong>B</strong>
-          </button>
-          <button type="button" className={`btn btn-icon ${styles.toolBtn}`} onClick={() => execFormat('italic')} title="Italic" id="format-italic-btn">
+          </PixelButton>
+          <PixelButton type="button" variant="icon" className={styles.toolBtn} onClick={() => execFormat('italic')} title="Italic" id="format-italic-btn">
             <em>I</em>
-          </button>
-          <button type="button" className={`btn btn-icon ${styles.toolBtn}`} onClick={() => execFormat('underline')} title="Underline" id="format-underline-btn">
+          </PixelButton>
+          <PixelButton type="button" variant="icon" className={styles.toolBtn} onClick={() => execFormat('underline')} title="Underline" id="format-underline-btn">
             <u>U</u>
-          </button>
+          </PixelButton>
           <div className={styles.emojiWrapper}>
-            <button type="button" className={`btn btn-icon ${styles.toolBtn}`} onClick={() => setShowEmojiPicker(!showEmojiPicker)} title="Emoji">
+            <PixelButton type="button" variant="icon" className={styles.toolBtn} onClick={() => setShowEmojiPicker(!showEmojiPicker)} title="Emoji">
               😀
-            </button>
+            </PixelButton>
             {showEmojiPicker && (
               <div className={styles.emojiPickerMenu}>
                 <PixelEmojiPicker onEmojiSelect={addEmoji} />
@@ -211,7 +212,7 @@ export default function ChatPage() {
             aria-label="Message input"
             id="message-input"
           />
-          <button id="send-message-btn" className="btn btn-primary" onClick={sendMessage}>Send →</button>
+          <PixelButton id="send-message-btn" variant="primary" onClick={sendMessage}>Send →</PixelButton>
         </div>
         <p className={styles.hint}>Enter to send · Shift+Enter for new line · B / I / U for formatting</p>
       </div>

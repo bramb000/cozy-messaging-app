@@ -6,6 +6,7 @@ import {
 } from '@livekit/components-react'
 import '@livekit/components-styles'
 import styles from './VoicePage.module.css'
+import PixelButton from '@/components/ui/PixelButton'
 import type { RemoteParticipant, LocalParticipant } from 'livekit-client'
 
 export default function VoicePage() {
@@ -46,14 +47,14 @@ export default function VoicePage() {
             <p className={styles.roomName}>Cozy Corner Voice</p>
             <p className={styles.roomDesc}>Open to everyone. Just press join.</p>
             {error && <p className={styles.error}>⚠ {error}</p>}
-            <button
+            <PixelButton
               id="join-voice-btn"
-              className="btn btn-primary"
+              variant="primary"
               onClick={joinRoom}
               disabled={loading}
             >
               {loading ? 'Connecting...' : '→ Join Voice Room'}
-            </button>
+            </PixelButton>
           </div>
         ) : (
           <LiveKitRoom
