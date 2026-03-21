@@ -6,6 +6,7 @@ import type { MessageWithProfile } from '@/types/database'
 import styles from './ChatPage.module.css'
 import PixelEmojiPicker from '@/components/ui/PixelEmojiPicker'
 import PixelButton from '@/components/ui/PixelButton'
+import PixelPanel from '@/components/ui/PixelPanel'
 import { parseEmojisToHtml } from '@/utils/emojiParser'
 
 export default function ChatPage() {
@@ -165,10 +166,12 @@ export default function ChatPage() {
                       <span className={styles.time}>{formatTime(msg.created_at)}</span>
                     </div>
                   )}
-                  <div
-                    className={`${styles.msgContent} pixel-border-light`}
-                    dangerouslySetInnerHTML={{ __html: parseEmojisToHtml(msg.content) }}
-                  />
+                  <PixelPanel
+                    variant="solid-secondary"
+                    className={styles.msgContent}
+                  >
+                    <div dangerouslySetInnerHTML={{ __html: parseEmojisToHtml(msg.content) }} />
+                  </PixelPanel>
                 </div>
               </div>
             </React.Fragment>

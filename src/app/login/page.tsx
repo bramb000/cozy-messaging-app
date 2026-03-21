@@ -49,7 +49,7 @@ export default function LoginPage() {
         <div className="cloud"  style={{ animationDelay: '-25s', top: '15%' }} />
         <div className="cloud-c" style={{ animationDelay: '-40s', top: '8%' }} />
         <div className="sky-grass" />
-        <PixelPanel className={styles.card}>
+        <PixelPanel variant="wood-h" className={styles.card}>
           <div className={styles.header}>
             <div className={styles.icon}>✉️</div>
             <h1 className={styles.title}>Check Email</h1>
@@ -73,7 +73,7 @@ export default function LoginPage() {
       {/* Landscape layer */}
       <div className="sky-grass" />
 
-      <PixelPanel className={styles.card}>
+      <PixelPanel variant="wood-h" className={styles.card}>
         <div className={styles.header}>
           <div className={styles.icon}>🌾</div>
           <h1 className={styles.title}>Cozy Corner</h1>

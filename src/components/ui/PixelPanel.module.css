@@ -32,7 +32,7 @@
 }
 
 .content {
-  padding: 8px;
+  padding: var(--space-4);
 }
 
 /* Generated Frame Variants */
