@@ -8,26 +8,21 @@ export default function OnlineCount() {
 
   async function fetchCount() {
     const { data, error } = await supabase.rpc('active_session_count')
-    if (error) console.error('OnlineCount: fetch error', error)
-    else console.log('OnlineCount: current total', data)
-    setCount(data ?? 0)
+    if (!error) {
+      setCount(data ?? 0)
+    }
   }
 
   useEffect(() => {
     fetchCount()
-    console.log('--- OnlineCount: Subscribing to sessions changes...')
     const channel = supabase
       .channel('sessions-changes')
       .on('postgres_changes', { event: '*', schema: 'public', table: 'sessions' }, (payload) => {
-        console.log('--- OnlineCount: Realtime update received:', payload)
         fetchCount()
       })
-      .subscribe((status) => {
-        console.log('--- OnlineCount: Subscription status:', status)
-      })
+      .subscribe()
 
     return () => { 
-      console.log('--- OnlineCount: Unsubscribing...')
       supabase.removeChannel(channel) 
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps

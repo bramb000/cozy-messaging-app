@@ -40,7 +40,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         .single()
       
       if (error) {
-        console.error('Error fetching profile:', error.message)
         setProfile(null)
         return null
       }
@@ -48,7 +47,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setProfile(data as Profile)
       return data
     } catch (err) {
-      console.error('Unexpected error in fetchProfile:', err)
       setProfile(null)
       return null
     }
@@ -67,7 +65,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         .single()
 
       if (sessionError) {
-        console.error('Error starting session:', sessionError)
+        // Silently fail session start
       } else if (session) {
         sessionIdRef.current = (session as any).id
 
@@ -83,7 +81,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         }, 30_000)
       }
     } catch (err) {
-      console.error('Error in startSession:', err)
+      // Ignore
     }
   }
 

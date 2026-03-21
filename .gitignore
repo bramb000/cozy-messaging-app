@@ -39,3 +39,9 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# development assets & tools
+/assets/
+/.dev-tools/
+/public/debug_frames/
+/public/debug_row0/

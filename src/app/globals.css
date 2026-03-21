@@ -101,25 +101,24 @@ html, body {
 }
 
 /* ============================================================
-   PIXEL PANEL (semi-transparent parchment card)
+   PIXEL PANEL (tiled frame using assets)
    ============================================================ */
 .pixel-panel {
-  background: rgba(26, 26, 46, 0.92);
-  border: 3px solid var(--moss-dark);
-  box-shadow:
-    0 0 0 1px var(--moss),
-    inset 0 0 0 1px rgba(90,122,58,0.2),
-    4px 4px 0 0 rgba(0,0,0,0.5);
-  backdrop-filter: blur(4px);
+  image-rendering: pixelated;
+  border-style: solid;
+  border-width: 16px;
+  background-clip: padding-box;
+  border-image: url('/ui/frame-brown.png') 16 fill repeat;
+  box-shadow: 4px 4px 0 0 rgba(0,0,0,0.5);
 }
 
 .pixel-panel-warm {
-  background: rgba(139, 94, 60, 0.15);
-  border: 3px solid var(--brown);
-  box-shadow:
-    0 0 0 1px var(--brown-light),
-    inset 0 0 0 1px rgba(212,175,55,0.1),
-    4px 4px 0 0 rgba(0,0,0,0.5);
+  image-rendering: pixelated;
+  border-style: solid;
+  border-width: 16px;
+  background-clip: padding-box;
+  border-image: url('/ui/frame-yellow.png') 16 fill repeat;
+  box-shadow: 4px 4px 0 0 rgba(0,0,0,0.5);
 }
 
 /* ============================================================
@@ -127,6 +126,7 @@ html, body {
    ============================================================ */
 .font-pixel { font-family: 'Press Start 2P', monospace; }
 .font-mono  { font-family: 'VT323', monospace; }
+.font-fancy { font-family: 'Press Start 2P', monospace; }
 
 h1, h2, h3 {
   font-family: 'Press Start 2P', monospace;
@@ -156,7 +156,8 @@ a:hover { color: var(--gold-light); }
   font-family: 'Press Start 2P', monospace;
   font-size: 0.6rem;
   cursor: pointer;
-  border: none;
+  border-style: solid;
+  border-width: 4px 16px;
   transition: transform 0.08s, box-shadow 0.08s;
   image-rendering: pixelated;
   white-space: nowrap;
@@ -169,23 +170,20 @@ a:hover { color: var(--gold-light); }
 }
 
 .btn-primary {
-  background: var(--moss);
-  color: var(--cream);
-  border: 2px solid var(--moss-dark);
-  box-shadow: 3px 3px 0 0 var(--moss-dark);
+  border-image: url('/ui/button-green-normal.png') 6 14 fill stretch;
+  color: #fff;
 }
 .btn-primary:hover {
-  background: var(--moss-light);
-  color: var(--cream);
+  border-image: url('/ui/button-green-hover.png') 6 14 fill stretch;
 }
 
 .btn-secondary {
-  background: var(--brown);
-  color: var(--cream);
-  border: 2px solid var(--brown-dark);
-  box-shadow: 3px 3px 0 0 var(--brown-dark);
+  border-image: url('/ui/button-brown-normal.png') 6 14 fill stretch;
+  color: #fff;
 }
-.btn-secondary:hover { background: var(--brown-light); color: var(--cream); }
+.btn-secondary:hover { 
+  border-image: url('/ui/button-brown-hover.png') 6 14 fill stretch;
+}
 
 .btn-danger {
   background: var(--red);

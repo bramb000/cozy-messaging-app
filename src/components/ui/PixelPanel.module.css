@@ -1,0 +1,36 @@
+.panel {
+  image-rendering: pixelated;
+  border-style: solid;
+  border-width: 16px;
+  background-clip: padding-box;
+  display: flex;
+  flex-direction: column;
+}
+
+.variant-standard {
+  border-image: url('/ui/frame-solid-primary.png?v=3') 10 fill stretch;
+  box-shadow: 4px 4px 0 0 rgba(0,0,0,0.5);
+  color: #fff;
+}
+
+.variant-warm {
+  border-image: url('/ui/frame-solid-secondary.png?v=3') 10 fill stretch;
+  box-shadow: 4px 4px 0 0 rgba(0,0,0,0.5);
+  color: #2C1810;
+}
+
+.variant-wood-v {
+  border-image: url('/ui/frame-wood-v.png') 16 fill repeat;
+  box-shadow: 4px 4px 0 0 rgba(0,0,0,0.5);
+  color: #fff;
+}
+
+.variant-wood-h {
+  border-image: url('/ui/frame-wood-h.png') 16 fill repeat;
+  box-shadow: 4px 4px 0 0 rgba(0,0,0,0.5);
+  color: #fff;
+}
+
+.content {
+  padding: 8px;
+}

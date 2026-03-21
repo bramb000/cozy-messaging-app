@@ -3,6 +3,8 @@ import { useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import styles from './LoginPage.module.css'
 import PixelEmojiPicker from '@/components/ui/PixelEmojiPicker'
+import PixelPanel from '@/components/ui/PixelPanel'
+import PixelButton from '@/components/ui/PixelButton'
 
 export default function LoginPage() {
   const supabase = createClient()
@@ -47,13 +49,13 @@ export default function LoginPage() {
         <div className="cloud"  style={{ animationDelay: '-25s', top: '15%' }} />
         <div className="cloud-c" style={{ animationDelay: '-40s', top: '8%' }} />
         <div className="sky-grass" />
-        <div className={`pixel-panel ${styles.card}`}>
+        <PixelPanel className={styles.card}>
           <div className={styles.header}>
             <div className={styles.icon}>✉️</div>
             <h1 className={styles.title}>Check Email</h1>
           </div>
           <p className={styles.hint}>We sent a magic link to {email}. Check your inbox!</p>
-        </div>
+        </PixelPanel>
       </div>
     )
   }
@@ -71,7 +73,7 @@ export default function LoginPage() {
       {/* Landscape layer */}
       <div className="sky-grass" />
 
-      <div className={`pixel-panel ${styles.card}`}>
+      <PixelPanel className={styles.card}>
         <div className={styles.header}>
           <div className={styles.icon}>🌾</div>
           <h1 className={styles.title}>Cozy Corner</h1>
@@ -79,15 +81,17 @@ export default function LoginPage() {
         </div>
 
         {/* Google Sign In */}
-        <button
+        <PixelButton
           id="google-sign-in-btn"
-          className={`btn btn-secondary btn-full ${styles.oauthBtn}`}
+          variant="secondary"
+          fullWidth
+          className={styles.oauthBtn}
           onClick={handleGoogleLogin}
           disabled={loading}
+          iconLeft={<img src="https://www.google.com/favicon.ico" alt="" width={14} height={14} />}
         >
-          <img src="https://www.google.com/favicon.ico" alt="" width={14} height={14} />
           Sign in with Google
-        </button>
+        </PixelButton>
 
         <div className={styles.divider}>
           <span>or</span>
@@ -122,23 +126,26 @@ export default function LoginPage() {
 
           {errorMsg && <p className={styles.error}>⚠ {errorMsg}</p>}
 
-          <button
+          <PixelButton
             id="email-submit-btn"
             type="submit"
-            className="btn btn-primary btn-full"
+            variant="primary"
+            fullWidth
             disabled={loading}
           >
             {loading ? '...' : isSignUp ? 'Create Account' : 'Sign In'}
-          </button>
+          </PixelButton>
         </form>
 
-        <button
-          className={`btn btn-ghost btn-full ${styles.toggleBtn}`}
+        <PixelButton
+          variant="ghost"
+          fullWidth
+          className={styles.toggleBtn}
           onClick={() => { setIsSignUp(!isSignUp); setErrorMsg('') }}
         >
           {isSignUp ? 'Already have an account? Sign in' : 'New here? Create account'}
-        </button>
-      </div>
+        </PixelButton>
+      </PixelPanel>
     </div>
   )
 }

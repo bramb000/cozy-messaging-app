@@ -27,13 +27,13 @@ export default function ChatPage() {
         .limit(100)
       
       if (error) {
-        console.error('Error fetching messages:', error)
+        // Silently handle or use a proper logger in prod
       } else {
         setMessages((data as MessageWithProfile[]) ?? [])
         setLastReadTs(new Date()) // Mark current time as read boundary
       }
     } catch (err) {
-      console.error('Unexpected error fetching messages:', err)
+      // Unexpected error
     } finally {
       setLoading(false)
       scrollToBottom()
@@ -42,13 +42,11 @@ export default function ChatPage() {
 
   async function sendMessage() {
     if (!editorRef.current || !user) {
-      console.warn('--- Chat: sendMessage blocked (no editor or user)', !!editorRef.current, !!user)
       return
     }
     const content = editorRef.current.innerHTML.trim()
     if (!content || content === '<br>') return
     
-    console.log('--- Chat: Sending message...')
     editorRef.current.innerHTML = ''
     
     try {
@@ -56,12 +54,12 @@ export default function ChatPage() {
       const { data, error } = await supabase.from('messages').insert({ user_id: user.id, content }).select().single()
       
       if (error) {
-        console.error('--- Chat: Send error:', error.message, error.details)
+        // Error inserting
       } else {
-        console.log('--- Chat: Message sent successfully')
+        // Success
       }
     } catch (e) {
-      console.error('--- Chat: sendMessage exception:', e)
+      // Exception
     }
   }
 

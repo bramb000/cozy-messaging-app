@@ -1,0 +1,101 @@
+.wrapper {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.fullWidth {
+  width: 100%;
+}
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  image-rendering: pixelated;
+  border-style: solid;
+  border-width: 4px 10px;
+  font-family: var(--font-press-start);
+  color: #fff;
+  transition: transform 0.05s, filter 0.1s;
+  outline: none;
+  text-decoration: none;
+}
+
+.button:active:not(.disabled) {
+  transform: translateY(2px);
+  filter: brightness(0.9);
+}
+
+.button.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  filter: grayscale(1);
+}
+
+/* Variant handling */
+.variant-primary { border-image: url('/ui/generic-btn-green-normal.png?v=4') 4 10 fill stretch; }
+.variant-primary:hover:not(.disabled) { border-image: url('/ui/generic-btn-green-hover.png?v=4') 4 10 fill stretch; }
+
+.variant-secondary { border-image: url('/ui/generic-btn-orange-normal.png?v=4') 4 10 fill stretch; }
+.variant-secondary:hover:not(.disabled) { border-image: url('/ui/generic-btn-orange-hover.png?v=4') 4 10 fill stretch; }
+
+.variant-danger { border-image: url('/ui/generic-btn-red-normal.png?v=4') 4 10 fill stretch; }
+.variant-danger:hover:not(.disabled) { border-image: url('/ui/generic-btn-red-hover.png?v=4') 4 10 fill stretch; }
+
+.variant-ghost {
+  border-image: none;
+  border-width: 0;
+  background: transparent;
+  color: #A8B8C8;
+  height: auto;
+}
+.variant-ghost:hover:not(.disabled) {
+  color: #F5E6C8;
+  text-decoration: underline;
+}
+
+.variant-icon {
+  border-image: none;
+  border-width: 2px;
+  border-color: transparent;
+  background: transparent;
+  padding: 4px;
+  color: #A8B8C8;
+  height: 32px;
+  width: 32px;
+}
+.variant-icon:hover:not(.disabled) {
+  border-color: #8B5E3C;
+  color: #F5E6C8;
+  background: rgba(255,255,255,0.05);
+}
+
+/* Sizes */
+.size-sm.variant-primary, .size-sm.variant-secondary, .size-sm.variant-danger { font-size: 14px; height: 32px; padding: 0 4px; }
+.size-md.variant-primary, .size-md.variant-secondary, .size-md.variant-danger { font-size: 16px; height: 40px; padding: 0 8px; }
+.size-lg.variant-primary, .size-lg.variant-secondary, .size-lg.variant-danger { font-size: 20px; height: 48px; padding: 0 12px; }
+
+.label {
+    text-shadow: 1px 1px 0 rgba(0,0,0,0.5);
+    line-height: 1;
+    margin-top: 2px; /* Font baseline adjustment */
+}
+
+.icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.infoBelow {
+  font-family: var(--font-press-start);
+  font-size: 10px;
+  color: #DFC98A;
+  text-shadow: 1px 1px 0 rgba(0,0,0,0.5);
+}
