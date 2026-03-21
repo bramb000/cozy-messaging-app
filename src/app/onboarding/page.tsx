@@ -4,6 +4,8 @@ import { useAuth } from '@/context/AuthContext'
 import CharacterCustomizer from '@/components/CharacterCustomizer/CharacterCustomizer'
 import styles from './OnboardingPage.module.css'
 import PixelPanel from '@/components/ui/PixelPanel'
+import { Stack } from '@/components/ui/Layout/Stack'
+import { Text } from '@/components/ui/Typography/Text'
 
 export default function OnboardingPage() {
   const router = useRouter()
@@ -20,11 +22,11 @@ export default function OnboardingPage() {
       <div className="cloud-c" style={{ animationDelay: '-33s', top: '20%' }} />
       <div className="sky-grass" />
       <PixelPanel variant="standard" className={styles.card}>
-        <div className={styles.header}>
+        <Stack align="center" gap="space-3" mb="space-4">
           <span className={styles.icon}>🌱</span>
-          <h1>Create Your Character</h1>
-          <p className={styles.sub}>Set up your profile before entering the world</p>
-        </div>
+          <Text variant="h1">Create Your Character</Text>
+          <Text variant="subtitle" align="center" color="on-dark-muted">Set up your profile before entering the world</Text>
+        </Stack>
 
         <CharacterCustomizer 
           initialData={profile} 

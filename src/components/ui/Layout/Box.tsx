@@ -24,6 +24,7 @@ export interface BoxProps extends React.HTMLAttributes<HTMLDivElement> {
   bg?: string
   color?: string
   position?: CSSProperties['position']
+  as?: React.ElementType
 }
 
 export function Box({
@@ -31,6 +32,7 @@ export function Box({
   p, px, py, pt, pb, pl, pr,
   m, mx, my, mt, mb, ml, mr,
   w, h, bg, color, position,
+  as: Component = 'div',
   style,
   className,
   ...rest
@@ -60,8 +62,8 @@ export function Box({
   }
 
   return (
-    <div style={mergedStyle} className={className} {...rest}>
+    <Component style={mergedStyle} className={className} {...rest}>
       {children}
-    </div>
+    </Component>
   )
 }

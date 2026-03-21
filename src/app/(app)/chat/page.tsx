@@ -7,6 +7,9 @@ import styles from './ChatPage.module.css'
 import PixelEmojiPicker from '@/components/ui/PixelEmojiPicker'
 import PixelButton from '@/components/ui/PixelButton'
 import PixelPanel from '@/components/ui/PixelPanel'
+import { Stack } from '@/components/ui/Layout/Stack'
+import { Box } from '@/components/ui/Layout/Box'
+import { Text } from '@/components/ui/Typography/Text'
 import { parseEmojisToHtml } from '@/utils/emojiParser'
 
 export default function ChatPage() {
@@ -121,11 +124,11 @@ export default function ChatPage() {
   }
 
   return (
-    <div className={styles.page}>
-      <header className={styles.header}>
-        <h2 className={styles.title}>💬 Chat Room</h2>
-        <span className={styles.subtitle}>Global · All messages are public</span>
-      </header>
+    <Stack direction="column" className={styles.page} h="100%">
+      <Stack as="header" direction="column" gap="space-1" p="space-4" className={styles.header}>
+        <Text variant="h2">💬 Chat Room</Text>
+        <Text variant="caption" color="on-dark-muted">Global · All messages are public</Text>
+      </Stack>
 
       <div className={styles.messages}>
         {loading && (
@@ -145,11 +148,11 @@ export default function ChatPage() {
           return (
             <React.Fragment key={msg.id}>
               {isUnreadBoundary && (
-                <div className={styles.unreadDivider}>
-                  <span>New Messages</span>
-                </div>
+                <Box p="space-2" className={styles.unreadDivider}>
+                  <Text variant="caption" color="red">New Messages</Text>
+                </Box>
               )}
-              <div className={`${styles.messageRow} ${isGroupStart ? styles.groupStart : styles.groupFollowup}`}>
+              <Stack direction="row" gap="space-3" className={`${styles.messageRow} ${isGroupStart ? styles.groupStart : styles.groupFollowup}`}>
                 <div className={styles.avatarCol}>
                   {isGroupStart && (
                     <div className="avatar avatar-sm">
@@ -161,10 +164,10 @@ export default function ChatPage() {
                 </div>
                 <div className={styles.messageBody}>
                   {isGroupStart && (
-                    <div className={styles.messageHeader}>
-                      <span className={styles.msgUsername}>{msg.profile?.username}</span>
-                      <span className={styles.time}>{formatTime(msg.created_at)}</span>
-                    </div>
+                    <Stack direction="row" align="center" gap="space-2" mb="space-1" className={styles.messageHeader}>
+                      <Text variant="caption" color="gold">{msg.profile?.username}</Text>
+                      <Text variant="caption" color="muted">{formatTime(msg.created_at)}</Text>
+                    </Stack>
                   )}
                   <PixelPanel
                     variant="solid-secondary"
@@ -173,7 +176,7 @@ export default function ChatPage() {
                     <div dangerouslySetInnerHTML={{ __html: parseEmojisToHtml(msg.content) }} />
                   </PixelPanel>
                 </div>
-              </div>
+              </Stack>
             </React.Fragment>
           )
         })}
@@ -213,12 +216,13 @@ export default function ChatPage() {
             role="textbox"
             aria-multiline="true"
             aria-label="Message input"
-            id="message-input"
-          />
-          <PixelButton id="send-message-btn" variant="primary" onClick={sendMessage}>Send →</PixelButton>
-        </div>
-        <p className={styles.hint}>Enter to send · Shift+Enter for new line · B / I / U for formatting</p>
-      </div>
-    </div>
+            <PixelButton id="send-message-btn" variant="primary" onClick={sendMessage}>Send →</PixelButton>
+          </Stack>
+          <Box pt="space-3">
+            <Text variant="caption" color="muted">Enter to send · Shift+Enter for new line · B / I / U for formatting</Text>
+          </Box>
+        </Box>
+      </Stack>
+    </Stack>
   )
 }
