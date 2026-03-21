@@ -1,7 +1,7 @@
 .panel {
   image-rendering: pixelated;
   border-style: solid;
-  border-width: 16px;
+  border-width: 10px; /* Maps cleanly to 32x32 10-slices */
   background-clip: padding-box;
   display: flex;
   flex-direction: column;
@@ -19,14 +19,16 @@
   color: #2C1810;
 }
 
-.variant-wood-v {
-  border-image: url('/ui/frame-wood-v.png') 16 fill repeat;
+.variant-wood-h {
+  border-width: 16px;
+  border-image: url('/ui/frame-wood-h.png') 16 fill repeat;
   box-shadow: 4px 4px 0 0 rgba(0,0,0,0.5);
   color: #fff;
 }
 
-.variant-wood-h {
-  border-image: url('/ui/frame-wood-h.png') 16 fill repeat;
+.variant-wood-v {
+  border-width: 16px;
+  border-image: url('/ui/frame-wood-v.png') 16 fill repeat;
   box-shadow: 4px 4px 0 0 rgba(0,0,0,0.5);
   color: #fff;
 }
@@ -35,103 +37,109 @@
   padding: var(--space-4);
 }
 
-/* Generated Frame Variants */
+/* Generated Frame Variants (all 32x32 textures use slice 10 instead of 16) */
 .variant-blue {
-  border-image: url('/ui/frame-blue.png?v=3') 16 fill stretch;
+  border-image: url('/ui/frame-blue.png?v=3') 10 fill stretch;
   box-shadow: 4px 4px 0 0 rgba(0,0,0,0.5);
 }
 
 .variant-brown {
-  border-image: url('/ui/frame-brown.png?v=3') 16 fill stretch;
+  border-image: url('/ui/frame-brown.png?v=3') 10 fill stretch;
   box-shadow: 4px 4px 0 0 rgba(0,0,0,0.5);
 }
 
 .variant-green {
-  border-image: url('/ui/frame-green.png?v=3') 16 fill stretch;
+  border-image: url('/ui/frame-green.png?v=3') 10 fill stretch;
   box-shadow: 4px 4px 0 0 rgba(0,0,0,0.5);
 }
 
 .variant-purple {
-  border-image: url('/ui/frame-purple.png?v=3') 16 fill stretch;
+  border-image: url('/ui/frame-purple.png?v=3') 10 fill stretch;
   box-shadow: 4px 4px 0 0 rgba(0,0,0,0.5);
 }
 
 .variant-red {
-  border-image: url('/ui/frame-red.png?v=3') 16 fill stretch;
+  border-image: url('/ui/frame-red.png?v=3') 10 fill stretch;
   box-shadow: 4px 4px 0 0 rgba(0,0,0,0.5);
 }
 
 .variant-silver {
-  border-image: url('/ui/frame-silver.png?v=3') 16 fill stretch;
+  border-image: url('/ui/frame-silver.png?v=3') 10 fill stretch;
   box-shadow: 4px 4px 0 0 rgba(0,0,0,0.5);
 }
 
 .variant-yellow {
-  border-image: url('/ui/frame-yellow.png?v=3') 16 fill stretch;
+  border-image: url('/ui/frame-yellow.png?v=3') 10 fill stretch;
   box-shadow: 4px 4px 0 0 rgba(0,0,0,0.5);
+  color: #2C1810;
 }
 
 .variant-dotted-primary {
-  border-image: url('/ui/frame-dotted-primary.png?v=3') 16 fill stretch;
+  border-image: url('/ui/frame-dotted-primary.png?v=3') 10 fill stretch;
   box-shadow: 4px 4px 0 0 rgba(0,0,0,0.5);
 }
 
 .variant-dotted-secondary {
-  border-image: url('/ui/frame-dotted-secondary.png?v=3') 16 fill stretch;
+  border-image: url('/ui/frame-dotted-secondary.png?v=3') 10 fill stretch;
   box-shadow: 4px 4px 0 0 rgba(0,0,0,0.5);
+  color: #2C1810;
 }
 
 .variant-dotted-tertiary {
-  border-image: url('/ui/frame-dotted-tertiary.png?v=3') 16 fill stretch;
+  border-image: url('/ui/frame-dotted-tertiary.png?v=3') 10 fill stretch;
   box-shadow: 4px 4px 0 0 rgba(0,0,0,0.5);
 }
 
 .variant-fancy-primary {
-  border-image: url('/ui/frame-fancy-primary.png?v=3') 16 fill stretch;
+  border-image: url('/ui/frame-fancy-primary.png?v=3') 10 fill stretch;
   box-shadow: 4px 4px 0 0 rgba(0,0,0,0.5);
 }
 
 .variant-fancy-secondary {
-  border-image: url('/ui/frame-fancy-secondary.png?v=3') 16 fill stretch;
+  border-image: url('/ui/frame-fancy-secondary.png?v=3') 10 fill stretch;
   box-shadow: 4px 4px 0 0 rgba(0,0,0,0.5);
+  color: #2C1810;
 }
 
 .variant-fancy-tertiary {
-  border-image: url('/ui/frame-fancy-tertiary.png?v=3') 16 fill stretch;
+  border-image: url('/ui/frame-fancy-tertiary.png?v=3') 10 fill stretch;
   box-shadow: 4px 4px 0 0 rgba(0,0,0,0.5);
 }
 
 .variant-solid-primary {
-  border-image: url('/ui/frame-solid-primary.png?v=3') 16 fill stretch;
+  border-image: url('/ui/frame-solid-primary.png?v=3') 10 fill stretch;
   box-shadow: 4px 4px 0 0 rgba(0,0,0,0.5);
 }
 
 .variant-solid-secondary {
-  border-image: url('/ui/frame-solid-secondary.png?v=3') 16 fill stretch;
+  border-image: url('/ui/frame-solid-secondary.png?v=3') 10 fill stretch;
   box-shadow: 4px 4px 0 0 rgba(0,0,0,0.5);
+  color: #2C1810;
 }
 
 .variant-solid-silver-0 {
-  border-image: url('/ui/frame-solid-silver-0.png?v=3') 16 fill stretch;
+  border-image: url('/ui/frame-solid-silver-0.png?v=3') 10 fill stretch;
   box-shadow: 4px 4px 0 0 rgba(0,0,0,0.5);
 }
 
 .variant-solid-silver-1 {
-  border-image: url('/ui/frame-solid-silver-1.png?v=3') 16 fill stretch;
+  border-image: url('/ui/frame-solid-silver-1.png?v=3') 10 fill stretch;
   box-shadow: 4px 4px 0 0 rgba(0,0,0,0.5);
 }
 
 .variant-solid-tertiary {
-  border-image: url('/ui/frame-solid-tertiary.png?v=3') 16 fill stretch;
+  border-image: url('/ui/frame-solid-tertiary.png?v=3') 10 fill stretch;
   box-shadow: 4px 4px 0 0 rgba(0,0,0,0.5);
 }
 
 .variant-wood-h {
+  border-width: 16px;
   border-image: url('/ui/frame-wood-h.png?v=3') 16 fill stretch;
   box-shadow: 4px 4px 0 0 rgba(0,0,0,0.5);
 }
 
 .variant-wood-v {
+  border-width: 16px;
   border-image: url('/ui/frame-wood-v.png?v=3') 16 fill stretch;
   box-shadow: 4px 4px 0 0 rgba(0,0,0,0.5);
 }

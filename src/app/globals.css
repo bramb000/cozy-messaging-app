@@ -61,6 +61,8 @@
 
 html, body {
   height: 100%;
+  margin: 0;
+  overflow: hidden;
   font-family: 'VT323', monospace;
   font-size: 18px;
   line-height: 1.5;
@@ -268,9 +270,10 @@ a:hover { color: var(--gold-light); }
    ============================================================ */
 .app-shell {
   display: flex;
-  height: 100vh;
+  flex: 1;
+  height: 100%;
   overflow: hidden;
-  background: var(--night);
+  background: transparent;
 }
 
 .sidebar {
@@ -427,7 +430,9 @@ a:hover { color: var(--gold-light); }
   border-color: transparent;
   background-clip: padding-box;
   border-image: url('/ui/frame-wood-h.png?v=3') 16 fill stretch;
-  min-height: 100vh;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
 /* ============================================================
