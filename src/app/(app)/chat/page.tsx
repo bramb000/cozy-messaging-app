@@ -183,8 +183,8 @@ export default function ChatPage() {
         <div ref={bottomRef} />
       </div>
 
-      <div className={styles.inputArea}>
-        <div className={styles.toolbar}>
+      <Box p="space-4" style={{ background: 'var(--night-mid)', borderTop: '3px solid var(--moss-dark)' }}>
+        <Stack direction="row" gap="space-2" mb="space-2" className={styles.toolbar}>
           <PixelButton type="button" variant="icon" className={styles.toolBtn} onClick={() => execFormat('bold')} title="Bold" id="format-bold-btn">
             <strong>B</strong>
           </PixelButton>
@@ -204,8 +204,8 @@ export default function ChatPage() {
               </div>
             )}
           </div>
-        </div>
-        <div className={styles.editorRow}>
+        </Stack>
+        <Stack direction="row" gap="space-2" className={styles.editorRow}>
           <div
             ref={editorRef}
             contentEditable
@@ -216,13 +216,14 @@ export default function ChatPage() {
             role="textbox"
             aria-multiline="true"
             aria-label="Message input"
-            <PixelButton id="send-message-btn" variant="primary" onClick={sendMessage}>Send →</PixelButton>
-          </Stack>
-          <Box pt="space-3">
-            <Text variant="caption" color="muted">Enter to send · Shift+Enter for new line · B / I / U for formatting</Text>
-          </Box>
+            id="message-input"
+          />
+          <PixelButton id="send-message-btn" variant="primary" onClick={sendMessage}>Send →</PixelButton>
+        </Stack>
+        <Box pt="space-3">
+          <Text variant="caption" color="muted">Enter to send · Shift+Enter for new line · B / I / U for formatting</Text>
         </Box>
-      </Stack>
+      </Box>
     </Stack>
   )
 }

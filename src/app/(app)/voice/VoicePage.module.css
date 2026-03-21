@@ -1,7 +1,4 @@
 .page {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
   background-color: #d1a36a; /* Light wood color */
   background-image: repeating-linear-gradient(
     0deg,
@@ -13,14 +10,8 @@
 }
 
 .header {
-  padding: var(--space-4) var(--space-6);
   border-bottom: 4px solid #8b5e34;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
   background: #a67c52;
-  text-align: center;
 }
 
 .title { 
@@ -35,71 +26,16 @@
   font-size: 1.2rem;
   color: #3e2723;
 }
-
-.body {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: var(--space-6);
-}
-
 .joinCard {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: var(--space-4);
-  padding: var(--space-10);
   border: 4px solid #8b5e34;
   background: #a67c52;
   border-radius: 8px;
   box-shadow: 4px 4px 0 #5c3a21;
   max-width: 360px;
-  text-align: center;
 }
 
 .roomIcon { font-size: 3rem; animation: pulse 2s infinite; }
 @keyframes pulse { 0%,100% { opacity:1 } 50% { opacity:0.6 } }
-
-.roomName {
-  font-family: 'Press Start 2P', monospace;
-  font-size: 0.8rem;
-  color: #fff;
-  text-shadow: 1px 1px 0 #000;
-}
-
-.roomDesc {
-  font-family: 'VT323', monospace;
-  font-size: 1.2rem;
-  color: #3e2723;
-}
-
-.error {
-  font-family: 'VT323', monospace;
-  color: #721c24;
-  background: #f8d7da;
-  padding: 0.5rem;
-  border: 2px solid #f5c6cb;
-  border-radius: 4px;
-  font-size: 1rem;
-}
-
-.liveRoom {
-  width: 100%;
-  max-width: 800px;
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-6);
-  align-items: center;
-}
-
-.participantGrid {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 2rem;
-  justify-content: center;
-  width: 100%;
-}
 
 .participantCard {
   position: relative;
@@ -135,14 +71,6 @@
   border-color: #f1c27d;
 }
 
-.participantName {
-  font-family: 'Press Start 2P', monospace;
-  font-size: 0.5rem;
-  color: #5c3a21;
-  text-shadow: 1px 1px 0px rgba(255,255,255,0.5);
-  margin-top: 0.5rem;
-}
-
 .campfireIcon {
   position: absolute;
   bottom: 10px;
@@ -162,10 +90,7 @@
 }
 .waveformLeft { left: -10px; }
 .waveformRight { right: -10px; }
-
 .controlsBar {
-  display: flex;
-  gap: 1rem;
   background: #a67c52;
   border: 4px solid #5c3a21;
   border-radius: 8px;
@@ -190,17 +115,10 @@
 .controlBtn:hover {
   color: #f1c27d;
 }
-
 /* ============================================================
    MOBILE
    ============================================================ */
 @media (max-width: 767px) {
-  .body {
-    padding: var(--space-3);
-    align-items: flex-start;
-    padding-top: var(--space-6);
-  }
-
   .joinCard {
     padding: var(--space-5);
     max-width: 100%;

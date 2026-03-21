@@ -6,6 +6,9 @@ import type { Profile } from '@/types/database'
 import styles from './ProfilePage.module.css'
 import PixelButton from '@/components/ui/PixelButton'
 import PixelPanel from '@/components/ui/PixelPanel'
+import { Stack } from '@/components/ui/Layout/Stack'
+import { Box } from '@/components/ui/Layout/Box'
+import { Text } from '@/components/ui/Typography/Text'
 
 export default function ProfilePage() {
   const { user, profile: myProfile, refreshProfile } = useAuth()
@@ -69,12 +72,12 @@ export default function ProfilePage() {
   if (!myProfile) return <div className="loading-screen"><div className="pixel-spinner" /></div>
 
   return (
-    <div className={styles.page}>
-      <header className={styles.header}>
-        <h2 className={styles.title}>🪴 Profile</h2>
-      </header>
+    <Stack direction="column" className={styles.page} h="100%">
+      <Stack as="header" p="space-4" className={styles.header} style={{ borderBottom: '2px solid var(--moss-dark)', background: 'rgba(0,0,0,0.2)' }}>
+        <Text variant="h2">🪴 Profile</Text>
+      </Stack>
 
-      <div className={styles.body}>
+      <Stack direction="column" align="center" gap="space-6" p="space-6" className={styles.body} flex={1} style={{ overflowY: 'auto' }}>
         {/* My profile card */}
         <PixelPanel variant="standard" className={styles.myCard}>
           <div className={styles.avatarWrap}>
@@ -133,18 +136,20 @@ export default function ProfilePage() {
           <div className={styles.memberGrid}>
             {members.map(m => (
               <PixelPanel key={m.id} variant="warm" className={styles.memberCard}>
-                <div className="avatar">
-                  {m.avatar_url ? <img src={m.avatar_url} alt={m.username} /> : <span>🌱</span>}
-                </div>
-                <div className={styles.memberInfo}>
-                  <span className={styles.memberName}>{m.username}</span>
-                  {m.id === user?.id && <span className={styles.youBadge}>You</span>}
-                </div>
+                <Stack direction="row" align="center" gap="space-3">
+                  <div className="avatar">
+                    {m.avatar_url ? <img src={m.avatar_url} alt={m.username} /> : <span>🌱</span>}
+                  </div>
+                  <Stack direction="column" gap="space-1" className={styles.memberInfo}>
+                    <Text variant="body" color="primary">{m.username}</Text>
+                    {m.id === user?.id && <span className={styles.youBadge}>You</span>}
+                  </Stack>
+                </Stack>
               </PixelPanel>
             ))}
           </div>
         </div>
-      </div>
-    </div>
+      </Stack>
+    </Stack>
   )
 }
