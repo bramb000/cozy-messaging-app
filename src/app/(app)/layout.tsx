@@ -2,18 +2,20 @@ import { AuthProvider } from '@/context/AuthContext'
 import Sidebar from '@/components/layout/Sidebar'
 import UserRosterSidebar from '@/components/layout/UserRosterSidebar'
 import { InventoryNavBar } from '@/components/ui/InventoryNavBar'
+import { Stack } from '@/components/ui/Layout/Stack'
+import { Box } from '@/components/ui/Layout/Box'
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   return (
     <AuthProvider>
-      <div className="app-shell">
+      <Stack direction="row" h="100vh" style={{ overflow: 'hidden', background: '#112615' }}>
         <Sidebar />
-        <main className="main-content">
+        <Box as="main" style={{ flex: 1, overflowY: 'hidden', display: 'flex', flexDirection: 'column' }}>
           {children}
-        </main>
+        </Box>
         <UserRosterSidebar />
-        <InventoryNavBar />
-      </div>
+      </Stack>
+      <InventoryNavBar />
     </AuthProvider>
   )
 }

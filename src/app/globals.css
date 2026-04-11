@@ -273,16 +273,15 @@ a:hover { color: var(--gold-light); }
   flex: 1;
   height: 100%;
   overflow: hidden;
-  background: transparent;
+  background: #112615; /* Dark forest green fallback */
 }
 
 .sidebar {
-  width: var(--sidebar-width);
-  height: 100vh;
+  width: 240px;
   display: flex;
   flex-direction: column;
-  background: var(--night-mid);
-  border-right: 3px solid var(--moss-dark);
+  background: var(--brown-dark);
+  border-right: 4px solid #5c3a21;
   flex-shrink: 0;
 }
 
@@ -423,13 +422,7 @@ a:hover { color: var(--gold-light); }
    PIXEL ART TILING BACKGROUND
    ============================================================ */
 .pixel-bg {
-  background-color: transparent;
-  image-rendering: pixelated;
-  border-style: solid;
-  border-width: 16px;
-  border-color: transparent;
-  background-clip: padding-box;
-  border-image: url('/ui/frame-wood-h.png?v=3') 16 fill stretch;
+  background-color: var(--brown-dark); /* Solid wood back, no clipping border */
   height: 100vh;
   display: flex;
   flex-direction: column;

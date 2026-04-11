@@ -9,6 +9,9 @@ import PixelPanel from '@/components/ui/PixelPanel'
 import { Stack } from '@/components/ui/Layout/Stack'
 import { Box } from '@/components/ui/Layout/Box'
 import { Text } from '@/components/ui/Typography/Text'
+import { PageContainer } from '@/components/ui/Layout/PageContainer'
+import { PageHeader } from '@/components/ui/Layout/PageHeader'
+import { PageContent } from '@/components/ui/Layout/PageContent'
 
 export default function ProfilePage() {
   const { user, profile: myProfile, refreshProfile } = useAuth()
@@ -72,16 +75,14 @@ export default function ProfilePage() {
   if (!myProfile) return <div className="loading-screen"><div className="pixel-spinner" /></div>
 
   return (
-    <Stack direction="column" className={styles.page} h="100%">
-      <Stack as="header" p="space-4" className={styles.header} style={{ borderBottom: '2px solid var(--moss-dark)', background: 'rgba(0,0,0,0.2)' }}>
-        <Text variant="h2">🪴 Profile</Text>
-      </Stack>
+    <PageContainer>
+      <PageHeader title="🪴 Profile" />
 
-      <Stack direction="column" align="center" gap="space-6" p="space-6" className={styles.body} flex={1} style={{ overflowY: 'auto' }}>
+      <PageContent centered className={styles.body}>
         {/* My profile card */}
-        <PixelPanel variant="standard" className={styles.myCard}>
+        <PixelPanel variant="standard" className={styles.myCard} style={{ maxWidth: '400px', width: '100%', padding: 'var(--space-6)' }}>
           <div className={styles.avatarWrap}>
-            <div className="avatar avatar-xl">
+            <div className="avatar avatar-md" style={{ margin: '0 auto' }}>
               {(avatarPreview ?? myProfile.avatar_url)
                 ? <img src={avatarPreview ?? myProfile.avatar_url!} alt={myProfile.username} />
                 : <span>🌱</span>}
@@ -149,7 +150,7 @@ export default function ProfilePage() {
             ))}
           </div>
         </div>
-      </Stack>
-    </Stack>
+      </PageContent>
+    </PageContainer>
   )
 }

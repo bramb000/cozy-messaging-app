@@ -7,6 +7,9 @@ import {
 import '@livekit/components-styles'
 import styles from './VoicePage.module.css'
 import PixelButton from '@/components/ui/PixelButton'
+import { PageContainer } from '@/components/ui/Layout/PageContainer'
+import { PageHeader } from '@/components/ui/Layout/PageHeader'
+import { PageContent } from '@/components/ui/Layout/PageContent'
 import { Stack } from '@/components/ui/Layout/Stack'
 import { Box } from '@/components/ui/Layout/Box'
 import { Text } from '@/components/ui/Typography/Text'
@@ -37,13 +40,10 @@ export default function VoicePage() {
   }
 
   return (
-    <Stack direction="column" h="100%" className={styles.page}>
-      <Stack as="header" direction="column" align="center" justify="center" p="space-4" className={styles.header}>
-        <Text variant="h2" align="center" style={{ textShadow: '2px 2px 0px rgba(0,0,0,0.5)', color: '#fff' }}>🌼 Cozy Corner Voice Meadow</Text>
-        <Text variant="subtitle" align="center" style={{ color: '#3e2723' }}>Gather around the campfire, everyone!</Text>
-      </Stack>
+    <PageContainer>
+      <PageHeader title="🌼 Cozy Corner Voice Meadow" subtitle="Gather around the campfire, everyone!" />
 
-      <Stack flex={1} align="center" justify="center" p="space-6" className={styles.body}>
+      <PageContent centered className={styles.body}>
         {!connected ? (
           <Stack direction="column" align="center" gap="space-4" p="space-10" className={styles.joinCard}>
             <div className={styles.roomIcon}>🔊</div>
@@ -72,8 +72,8 @@ export default function VoicePage() {
             <VoiceRoomUI onLeave={leaveRoom} />
           </LiveKitRoom>
         )}
-      </Stack>
-    </Stack>
+      </PageContent>
+    </PageContainer>
   )
 }
 

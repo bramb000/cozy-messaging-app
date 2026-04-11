@@ -10,6 +10,9 @@ import PixelPanel from '@/components/ui/PixelPanel'
 import { Stack } from '@/components/ui/Layout/Stack'
 import { Box } from '@/components/ui/Layout/Box'
 import { Text } from '@/components/ui/Typography/Text'
+import { PageContainer } from '@/components/ui/Layout/PageContainer'
+import { PageHeader } from '@/components/ui/Layout/PageHeader'
+import { PageContent } from '@/components/ui/Layout/PageContent'
 import { parseEmojisToHtml } from '@/utils/emojiParser'
 
 export default function ChatPage() {
@@ -124,13 +127,10 @@ export default function ChatPage() {
   }
 
   return (
-    <Stack direction="column" className={styles.page} h="100%">
-      <Stack as="header" direction="column" gap="space-1" p="space-4" className={styles.header}>
-        <Text variant="h2">💬 Chat Room</Text>
-        <Text variant="caption" color="on-dark-muted">Global · All messages are public</Text>
-      </Stack>
+    <PageContainer>
+      <PageHeader title="💬 Chat Room" subtitle="Global · All messages are public" />
 
-      <div className={styles.messages}>
+      <PageContent className={styles.messages}>
         {loading && (
           <div className="loading-screen">
             <div className="pixel-spinner" />
@@ -165,13 +165,13 @@ export default function ChatPage() {
                 <div className={styles.messageBody}>
                   {isGroupStart && (
                     <Stack direction="row" align="center" gap="space-2" mb="space-1" className={styles.messageHeader}>
-                      <Text variant="caption" color="gold">{msg.profile?.username}</Text>
-                      <Text variant="caption" color="muted">{formatTime(msg.created_at)}</Text>
+                      <Text variant="caption" color="gold" style={{ fontSize: '0.6rem' }}>{msg.profile?.username}</Text>
+                      <Text variant="caption" color="muted" style={{ fontSize: '0.55rem' }}>{formatTime(msg.created_at)}</Text>
                     </Stack>
                   )}
                   <PixelPanel
-                    variant="solid-secondary"
-                    className={styles.msgContent}
+                    variant="solid-tertiary"
+                    style={{ padding: 'var(--space-2) var(--space-3)', maxWidth: '500px', fontSize: '0.9rem', lineHeight: '1.2' }}
                   >
                     <div dangerouslySetInnerHTML={{ __html: parseEmojisToHtml(msg.content) }} />
                   </PixelPanel>
@@ -181,21 +181,21 @@ export default function ChatPage() {
           )
         })}
         <div ref={bottomRef} />
-      </div>
+      </PageContent>
 
-      <Box p="space-4" style={{ background: 'var(--night-mid)', borderTop: '3px solid var(--moss-dark)' }}>
-        <Stack direction="row" gap="space-2" mb="space-2" className={styles.toolbar}>
-          <PixelButton type="button" variant="icon" className={styles.toolBtn} onClick={() => execFormat('bold')} title="Bold" id="format-bold-btn">
+      <Box p="space-4" style={{ background: '#a67c52', borderTop: '4px solid #5c3a21', zIndex: 10, flexShrink: 0 }}>
+        <Stack direction="row" gap="space-2" mb="space-2" className={styles.toolbar} style={{ paddingLeft: '2px' }}>
+          <PixelButton type="button" variant="generic-brown" className={styles.toolBtn} onClick={() => execFormat('bold')} title="Bold" id="format-bold-btn" style={{ minWidth: 28, padding: 4 }}>
             <strong>B</strong>
           </PixelButton>
-          <PixelButton type="button" variant="icon" className={styles.toolBtn} onClick={() => execFormat('italic')} title="Italic" id="format-italic-btn">
+          <PixelButton type="button" variant="generic-brown" className={styles.toolBtn} onClick={() => execFormat('italic')} title="Italic" id="format-italic-btn" style={{ minWidth: 28, padding: 4 }}>
             <em>I</em>
           </PixelButton>
-          <PixelButton type="button" variant="icon" className={styles.toolBtn} onClick={() => execFormat('underline')} title="Underline" id="format-underline-btn">
+          <PixelButton type="button" variant="generic-brown" className={styles.toolBtn} onClick={() => execFormat('underline')} title="Underline" id="format-underline-btn" style={{ minWidth: 28, padding: 4 }}>
             <u>U</u>
           </PixelButton>
           <div className={styles.emojiWrapper}>
-            <PixelButton type="button" variant="icon" className={styles.toolBtn} onClick={() => setShowEmojiPicker(!showEmojiPicker)} title="Emoji">
+            <PixelButton type="button" variant="generic-brown" className={styles.toolBtn} onClick={() => setShowEmojiPicker(!showEmojiPicker)} title="Emoji" style={{ minWidth: 28, padding: 4 }}>
               😀
             </PixelButton>
             {showEmojiPicker && (
@@ -224,6 +224,6 @@ export default function ChatPage() {
           <Text variant="caption" color="muted">Enter to send · Shift+Enter for new line · B / I / U for formatting</Text>
         </Box>
       </Box>
-    </Stack>
+    </PageContainer>
   )
 }
