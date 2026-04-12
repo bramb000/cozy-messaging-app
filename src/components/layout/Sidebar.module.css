@@ -27,10 +27,10 @@
   display: flex;
   align-items: flex-start;
   justify-content: center;
-  /* The sprite itself is 48×64. Centering a 48px wide sprite in a 40px wide 
-     container hides 4px of empty space on each side, perfectly framing the head. */
-  width: 40px;
-  height: 40px;
+  /* The native width of the 'sm' sprite is 48px. By using exactly 48px width,
+     we ensure the character is never cut off. */
+  width: 48px;
+  height: 48px;
   overflow: hidden;
   border: 2px solid var(--moss);
   background: var(--bg-input);
