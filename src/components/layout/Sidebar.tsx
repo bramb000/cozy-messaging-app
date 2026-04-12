@@ -4,7 +4,7 @@ import { usePathname } from 'next/navigation'
 import { useAuth } from '@/context/AuthContext'
 import { useRouter } from 'next/navigation'
 import OnlineCount from './OnlineCount'
-import { CharacterSprite } from '@/components/character/CharacterSprite'
+import { CharacterAvatar } from '@/components/character/CharacterAvatar'
 import styles from './Sidebar.module.css'
 
 const NAV_ITEMS = [
@@ -53,10 +53,9 @@ export default function Sidebar() {
           <div className={styles.userPanel}>
             {/* Character sprite preview */}
             <Link href="/profile" className={styles.userAvatar} title="Your Profile">
-              <CharacterSprite
+              <CharacterAvatar
                 config={(profile as any).character_config ?? {}}
-                size="sm"
-                animated={false}
+                variant="panel"
               />
             </Link>
 

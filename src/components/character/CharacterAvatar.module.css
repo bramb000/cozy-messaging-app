@@ -1,0 +1,52 @@
+/* CharacterAvatar — shared avatar viewport component */
+
+/* Base: clips the sprite to just the visible viewport area */
+.avatar {
+  position: relative;
+  flex-shrink: 0;
+  overflow: hidden;
+  /* Align sprite to top so the head is always visible */
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+/* The spriteViewport centres the sprite horizontally within the clip area */
+.spriteViewport {
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  /* The CharacterSprite is 48px wide. When viewW < 48, this centres the
+     character so both sides are equally cropped — keeping the head centred. */
+}
+
+/* Variant: roster — compact, just head+shoulders */
+.roster {
+  /* no extra styles — size is driven by the viewW/viewH style prop */
+}
+
+/* Variant: chat — natural sprite size, no visual decoration */
+.chat {
+  /* no extra styles */
+}
+
+/* Variant: panel — sidebar user panel, no border box */
+.panel {
+  /* no extra styles */
+}
+
+/* Online/offline dot indicator */
+.dot {
+  position: absolute;
+  bottom: 4px;
+  right: 2px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  border: 2px solid var(--bg-panel);
+  pointer-events: none;
+}
+
+.dotOnline  { background: var(--moss-light); }
+.dotOffline { background: var(--text-muted); }

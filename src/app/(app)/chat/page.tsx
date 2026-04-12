@@ -6,7 +6,7 @@ import type { MessageWithProfile } from '@/types/database'
 import styles from './ChatPage.module.css'
 import PixelEmojiPicker from '@/components/ui/PixelEmojiPicker'
 import PixelButton from '@/components/ui/PixelButton'
-import { CharacterSprite } from '@/components/character/CharacterSprite'
+import { CharacterAvatar } from '@/components/character/CharacterAvatar'
 import { parseEmojisToHtml } from '@/utils/emojiParser'
 
 export default function ChatPage() {
@@ -119,13 +119,10 @@ export default function ChatPage() {
                 {/* Avatar (visible on group start) */}
                 <div className={styles.avatarSlot}>
                   {isGroupStart && (
-                    <div className={styles.avatarWrap}>
-                      <CharacterSprite
-                        config={(msg.profile as any)?.character_config ?? {}}
-                        size="sm"
-                        animated={false}
-                      />
-                    </div>
+                    <CharacterAvatar
+                      config={(msg.profile as any)?.character_config ?? {}}
+                      variant="chat"
+                    />
                   )}
                 </div>
 

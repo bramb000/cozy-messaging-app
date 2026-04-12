@@ -25,16 +25,8 @@
 .userAvatar {
   flex-shrink: 0;
   display: flex;
-  align-items: flex-start;
-  justify-content: center;
-  /* The native width of the 'sm' sprite is 48px. By using exactly 48px width,
-     we ensure the character is never cut off. */
-  width: 48px;
-  height: 48px;
-  overflow: hidden;
-  border: 2px solid var(--moss);
-  background: var(--bg-input);
-  border-radius: 4px;
+  align-items: flex-end;
+  text-decoration: none;
 }
 
 .userInfo {

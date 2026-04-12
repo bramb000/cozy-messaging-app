@@ -44,26 +44,7 @@
 .online { opacity: 1; }
 .offline { opacity: 0.45; }
 
-.spriteWrap {
-  position: relative;
-  flex-shrink: 0;
-  /* Show just the upper body / head region of the 48×64 sprite */
-  width: 32px;
-  height: 40px;
-  overflow: hidden;
-}
 
-.dot {
-  position: absolute;
-  bottom: 2px;
-  right: 2px;
-  width: 8px;
-  height: 8px;
-  border: 2px solid var(--bg-panel);
-}
-
-.dotOnline  { background: var(--moss-light); }
-.dotOffline { background: var(--text-muted); }
 
 .username {
   font-family: 'VT323', monospace;

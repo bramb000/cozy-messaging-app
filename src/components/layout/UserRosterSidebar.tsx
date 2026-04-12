@@ -1,7 +1,7 @@
 'use client'
 import { useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
-import { CharacterSprite } from '@/components/character/CharacterSprite'
+import { CharacterAvatar } from '@/components/character/CharacterAvatar'
 import styles from './UserRosterSidebar.module.css'
 
 interface RosterUser {
@@ -79,14 +79,12 @@ export default function UserRosterSidebar() {
 function UserRow({ user, online }: { user: RosterUser; online: boolean }) {
   return (
     <div className={`${styles.row} ${online ? styles.online : styles.offline}`}>
-      <div className={styles.spriteWrap}>
-        <CharacterSprite
-          config={user.character_config ?? {}}
-          size="sm"
-          animated={false}
-        />
-        <span className={`${styles.dot} ${online ? styles.dotOnline : styles.dotOffline}`} />
-      </div>
+      <CharacterAvatar
+        config={user.character_config ?? {}}
+        variant="roster"
+        showDot
+        dotOnline={online}
+      />
       <span className={styles.username}>{user.username}</span>
     </div>
   )
