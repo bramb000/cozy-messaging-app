@@ -18,6 +18,19 @@ const MAX_AGE_MS     = 100 * 60 * 1000 // 100 minutes
 
 const SpriteUrlContext = createContext<UrlMap>({})
 
+/**
+ * Fire-and-forget: create a hidden Image for every URL so the browser fetches
+ * them all in parallel via HTTP/2 and stores them in its memory cache.
+ * CSS background-image is lazy — it only fetches on first render.
+ * Preloading means every customiser option change is a cache hit (instant).
+ */
+function preloadAll(map: UrlMap) {
+  Object.values(map).forEach(url => {
+    const img = new Image()
+    img.src = url
+  })
+}
+
 export function SpriteUrlProvider({ children }: { children: ReactNode }) {
   const [urlMap, setUrlMap] = useState<UrlMap>({})
 
@@ -27,28 +40,31 @@ export function SpriteUrlProvider({ children }: { children: ReactNode }) {
       const cached   = sessionStorage.getItem(SESSION_KEY)
       const cachedAt = sessionStorage.getItem(SESSION_TS_KEY)
       if (cached && cachedAt && Date.now() - parseInt(cachedAt) < MAX_AGE_MS) {
-        setUrlMap(JSON.parse(cached))
+        const map = JSON.parse(cached) as UrlMap
+        setUrlMap(map)
+        preloadAll(map) // warm browser cache even on the cache-hit path
         return
       }
     } catch {
-      // sessionStorage unavailable (private browsing etc.) — continue to fetch
+      // sessionStorage unavailable — fall through to fetch
     }
 
-    // Fetch from server (one call, ~130 signed URLs returned as JSON)
+    // Fetch from server: one call returns ~130 signed CDN URLs as JSON
     fetch('/api/sprite-urls')
       .then(r => {
-        if (!r.ok) throw new Error(`sprite-urls failed: ${r.status}`)
+        if (!r.ok) throw new Error(`sprite-urls: ${r.status}`)
         return r.json() as Promise<UrlMap>
       })
       .then(map => {
         setUrlMap(map)
+        preloadAll(map) // immediately start downloading all sprites in background
         try {
           sessionStorage.setItem(SESSION_KEY, JSON.stringify(map))
           sessionStorage.setItem(SESSION_TS_KEY, Date.now().toString())
         } catch { /* ignore */ }
       })
       .catch(() => {
-        // Silently fall back — CharacterSprite will use /api/sprites proxy URLs
+        // Context stays empty — CharacterSprite falls back to proxy URLs silently
       })
   }, [])
 
