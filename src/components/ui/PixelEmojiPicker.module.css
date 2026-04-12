@@ -1,15 +1,18 @@
 .picker {
-  background: var(--night-mid);
-  border: 4px solid var(--border-dark);
-  border-top-color: var(--border-light);
-  border-left-color: var(--border-light);
-  padding: var(--space-3);
+  background: var(--bg-panel);
+  border: var(--border-thick);
+  padding: var(--space-2);
   display: flex;
   flex-direction: column;
-  gap: var(--space-3);
-  width: 280px;
+  gap: var(--space-2);
+  width: 320px;
   max-width: 100%;
   box-shadow: 4px 4px 0 0 rgba(0, 0, 0, 0.4);
+  /* Ensure it's positioned correctly over the input */
+  position: absolute;
+  bottom: calc(100% + var(--space-2));
+  right: 0;
+  z-index: 100;
 }
 
 .header {
@@ -44,8 +47,8 @@
 }
 
 .emojiBtn {
-  background: transparent;
-  border: 2px solid transparent;
+  background: var(--bg-input);
+  border: 2px solid var(--border-color);
   padding: 4px;
   cursor: pointer;
   display: flex;
@@ -55,13 +58,13 @@
 }
 
 .emojiBtn:hover, .emojiBtn:focus {
-  background: rgba(255, 255, 255, 0.1);
-  border-color: var(--cream);
+  background: var(--moss-dark);
+  border-color: var(--gold);
   outline: none;
 }
 
 .emojiImg {
-  width: 20px;
-  height: 20px;
+  width: 28px;
+  height: 28px;
   image-rendering: pixelated;
 }
