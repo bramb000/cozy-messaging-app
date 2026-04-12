@@ -77,7 +77,7 @@ export default function ProfilePage() {
       {/* ── Left: Character Preview ──────────────────── */}
       <div className={styles.previewPanel}>
         <div className={styles.spriteStage}>
-          <CharacterSprite config={config} size="lg" animated />
+          <CharacterSprite config={config} size="lg" animated={false} />
         </div>
         <div className={styles.previewName}>{username || myProfile.username}</div>
       </div>
