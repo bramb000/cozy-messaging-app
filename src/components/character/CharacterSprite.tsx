@@ -13,19 +13,26 @@ import {
 
 export type SpriteSize = 'sm' | 'md' | 'lg'
 
-// Display pixel sizes per size variant
-const SIZE_MAP: Record<SpriteSize, { w: number; h: number }> = {
-  sm: { w: 48,  h: 64  },
-  md: { w: 96,  h: 128 },
-  lg: { w: 144, h: 192 },
+// Display pixel sizes — each is an exact integer multiple of the native 48×64 frame
+const SIZE_MAP: Record<SpriteSize, { w: number; h: number; scale: number }> = {
+  sm: { w: 48,  h: 64,  scale: 1 },
+  md: { w: 96,  h: 128, scale: 2 },
+  lg: { w: 144, h: 192, scale: 3 },
+}
+
+// Map size → per-size animation CSS class (avoids CSS custom props in keyframes)
+const ANIMATED_CLASS: Record<SpriteSize, string> = {
+  sm: styles.animatedSm,
+  md: styles.animatedMd,
+  lg: styles.animatedLg,
 }
 
 interface CharacterSpriteProps {
   config?: Partial<CharacterConfig>
   size?: SpriteSize
-  /** If true, plays the idle animation. If false, renders a single still frame. */
+  /** If true, plays the walk cycle animation. Static single frame if false. */
   animated?: boolean
-  /** Which animation row to play when animated=true */
+  /** Which row of the sheet to play (only used when animated=true) */
   animation?: keyof typeof ANIMATION_ROWS
   className?: string
 }
@@ -42,16 +49,13 @@ export function CharacterSprite({
     return resolveCharacterLayers(mergedConfig)
   }, [config])
 
-  const { w, h } = SIZE_MAP[size]
+  const { w, h, scale } = SIZE_MAP[size]
 
-  // Scale factor: native sprite is SPRITE_FRAME_W × SPRITE_FRAME_H
-  const scaleX = w / SPRITE_FRAME_W
-  const scaleY = h / SPRITE_FRAME_H
+  // Full sprite sheet scaled width (all 12 frames side by side)
+  const sheetW = SPRITE_FRAME_W * SPRITE_COLS * scale   // e.g. sm: 576px
 
-  // For animated layers the sheet is scrolled horizontally across the row
-  const sheetW = SPRITE_FRAME_W * SPRITE_COLS * scaleX
-  const frameW = SPRITE_FRAME_W * scaleX
-  const animRowY = (ANIMATION_ROWS[animation] ?? 0) * SPRITE_FRAME_H * scaleY
+  // Y offset to select the correct animation row from the sheet
+  const rowY = (ANIMATION_ROWS[animation] ?? 0) * SPRITE_FRAME_H * scale
 
   return (
     <div
@@ -62,17 +66,14 @@ export function CharacterSprite({
       {layers.map((src, i) => (
         <div
           key={`${src}-${i}`}
-          className={`${styles.layer} ${animated ? styles.animated : ''}`}
+          className={`${styles.layer} ${animated ? ANIMATED_CLASS[size] : ''}`}
           style={{
             backgroundImage: `url(${src})`,
+            // Scale the sheet so one row = container height
             backgroundSize: `${sheetW}px auto`,
-            backgroundPositionY: `-${animRowY}px`,
-            // Animated: let CSS animation scroll X. Static: frame 0
-            backgroundPositionX: animated ? undefined : '0px',
-            // Animation inline vars for CSS
-            ['--frame-w' as string]: `${frameW}px`,
-            ['--total-w' as string]: `${sheetW}px`,
-            ['--cols' as string]: SPRITE_COLS,
+            // Select animation row (Y) and first frame (X) for static
+            backgroundPositionY: `-${rowY}px`,
+            backgroundPositionX: '0px',
           }}
         />
       ))}
