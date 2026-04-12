@@ -8,7 +8,6 @@ import '@livekit/components-styles'
 import styles from './VoicePage.module.css'
 import PixelButton from '@/components/ui/PixelButton'
 import { PageContainer } from '@/components/ui/Layout/PageContainer'
-import { PageHeader } from '@/components/ui/Layout/PageHeader'
 import { PageContent } from '@/components/ui/Layout/PageContent'
 import { Stack } from '@/components/ui/Layout/Stack'
 import { Box } from '@/components/ui/Layout/Box'
@@ -65,8 +64,6 @@ export default function VoicePage() {
 
   return (
     <PageContainer>
-      <PageHeader title="🔥 Town Bonfire" subtitle="Gather around the fire, everyone!" />
-
       <PageContent centered className={styles.body}>
         {!connected ? (
           <Stack direction="column" align="center" gap="space-4" p="space-10" className={styles.joinCard}>

@@ -11,7 +11,6 @@ import { Stack } from '@/components/ui/Layout/Stack'
 import { Box } from '@/components/ui/Layout/Box'
 import { Text } from '@/components/ui/Typography/Text'
 import { PageContainer } from '@/components/ui/Layout/PageContainer'
-import { PageHeader } from '@/components/ui/Layout/PageHeader'
 import { PageContent } from '@/components/ui/Layout/PageContent'
 import { parseEmojisToHtml } from '@/utils/emojiParser'
 
@@ -172,8 +171,6 @@ export default function ChatPage() {
 
   return (
     <PageContainer>
-      <PageHeader title="💬 Chat Room" subtitle="Global · All messages are public" />
-
       <PageContent className={styles.messages}>
         {loading && (
           <div className="loading-screen">
@@ -276,12 +273,6 @@ export default function ChatPage() {
             </PixelButton>
           </div>
         </div>
-        
-        <Box px="space-1">
-          <Text variant="caption" color="muted" style={{ fontSize: '0.5rem' }}>
-            Markdown (**bold**) supported · Ctrl+B for Bold · Enter to send
-          </Text>
-        </Box>
       </Box>
     </PageContainer>
   )

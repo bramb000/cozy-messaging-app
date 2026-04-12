@@ -10,7 +10,6 @@ import { Stack } from '@/components/ui/Layout/Stack'
 import { Box } from '@/components/ui/Layout/Box'
 import { Text } from '@/components/ui/Typography/Text'
 import { PageContainer } from '@/components/ui/Layout/PageContainer'
-import { PageHeader } from '@/components/ui/Layout/PageHeader'
 import { PageContent } from '@/components/ui/Layout/PageContent'
 
 export default function ProfilePage() {
@@ -76,8 +75,6 @@ export default function ProfilePage() {
 
   return (
     <PageContainer>
-      <PageHeader title="🪴 Profile" />
-
       <PageContent centered className={styles.body}>
         {/* My profile card */}
         <PixelPanel variant="standard" className={styles.myCard} style={{ maxWidth: '400px', width: '100%', padding: 'var(--space-6)' }}>
