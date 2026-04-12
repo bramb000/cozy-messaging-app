@@ -3,6 +3,7 @@
   image-rendering: pixelated;
   flex-shrink: 0;
   overflow: hidden;
+  margin-inline: auto; /* Force horizontal centering as a block */
 }
 
 .layer {

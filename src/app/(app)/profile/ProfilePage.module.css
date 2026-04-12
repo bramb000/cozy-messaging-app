@@ -22,15 +22,16 @@
     linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
   background-size: 32px 32px;
   background-color: var(--bg-panel);
+  text-align: center;
 }
 
 .spriteStage {
-  /* The sprite itself is 144×192px (lg). Give it room to breathe. */
-  width: 144px;
-  height: 192px;
+  /* The sprite itself is 144×192px (lg). */
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 100%;
+  min-height: 200px;
   /* Faint glow under the character */
   filter: drop-shadow(0 8px 12px rgba(255, 140, 0, 0.15));
 }
