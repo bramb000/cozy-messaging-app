@@ -213,12 +213,9 @@ export default function ChatPage() {
                       <Text variant="caption" color="muted" style={{ fontSize: '0.55rem' }}>{formatTime(msg.created_at)}</Text>
                     </Stack>
                   )}
-                  <PixelPanel
-                    variant="solid-tertiary"
-                    style={{ padding: 'var(--space-2) var(--space-3)', maxWidth: '500px', fontSize: '0.9rem', lineHeight: '1.2' }}
-                  >
+                  <div className={styles.msgContent}>
                     <div dangerouslySetInnerHTML={{ __html: parseEmojisToHtml(msg.content) }} />
-                  </PixelPanel>
+                  </div>
                 </div>
               </Stack>
             </React.Fragment>
