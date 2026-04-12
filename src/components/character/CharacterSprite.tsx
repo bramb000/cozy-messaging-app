@@ -10,6 +10,7 @@ import {
   DEFAULT_CHARACTER_CONFIG,
   type CharacterConfig,
 } from '@/lib/sprites'
+import { useSpriteUrlMap } from '@/context/SpriteUrlContext'
 
 export type SpriteSize = 'sm' | 'md' | 'lg'
 
@@ -20,7 +21,7 @@ const SIZE_MAP: Record<SpriteSize, { w: number; h: number; scale: number }> = {
   lg: { w: 144, h: 192, scale: 3 },
 }
 
-// Map size → per-size animation CSS class (avoids CSS custom props in keyframes)
+// Per-size animation CSS classes (avoids CSS custom props inside steps())
 const ANIMATED_CLASS: Record<SpriteSize, string> = {
   sm: styles.animatedSm,
   md: styles.animatedMd,
@@ -32,7 +33,7 @@ interface CharacterSpriteProps {
   size?: SpriteSize
   /** If true, plays the walk cycle animation. Static single frame if false. */
   animated?: boolean
-  /** Which row of the sheet to play (only used when animated=true) */
+  /** Which animation row of the sheet to play (only when animated=true) */
   animation?: keyof typeof ANIMATION_ROWS
   className?: string
 }
@@ -44,18 +45,18 @@ export function CharacterSprite({
   animation = 'idle_down',
   className = '',
 }: CharacterSpriteProps) {
+  // CDN URL map — populated once by SpriteUrlContext on app mount.
+  // Falls back to the /api/sprites proxy silently if context isn't ready yet.
+  const urlMap = useSpriteUrlMap()
+
   const layers = useMemo(() => {
     const mergedConfig: CharacterConfig = { ...DEFAULT_CHARACTER_CONFIG, ...config }
     return resolveCharacterLayers(mergedConfig)
   }, [config])
 
   const { w, h, scale } = SIZE_MAP[size]
-
-  // Full sprite sheet scaled width (all 12 frames side by side)
-  const sheetW = SPRITE_FRAME_W * SPRITE_COLS * scale   // e.g. sm: 576px
-
-  // Y offset to select the correct animation row from the sheet
-  const rowY = (ANIMATION_ROWS[animation] ?? 0) * SPRITE_FRAME_H * scale
+  const sheetW = SPRITE_FRAME_W * SPRITE_COLS * scale                    // full sheet width at scale
+  const rowY   = (ANIMATION_ROWS[animation] ?? 0) * SPRITE_FRAME_H * scale // y-offset for animation row
 
   return (
     <div
@@ -63,20 +64,22 @@ export function CharacterSprite({
       style={{ width: w, height: h }}
       aria-hidden="true"
     >
-      {layers.map((src, i) => (
-        <div
-          key={`${src}-${i}`}
-          className={`${styles.layer} ${animated ? ANIMATED_CLASS[size] : ''}`}
-          style={{
-            backgroundImage: `url(${src})`,
-            // Scale the sheet so one row = container height
-            backgroundSize: `${sheetW}px auto`,
-            // Select animation row (Y) and first frame (X) for static
-            backgroundPositionY: `-${rowY}px`,
-            backgroundPositionX: '0px',
-          }}
-        />
-      ))}
+      {layers.map((proxyUrl, i) => {
+        // Prefer the signed CDN URL; fall back to the server proxy route
+        const src = urlMap[proxyUrl] ?? proxyUrl
+        return (
+          <div
+            key={`${proxyUrl}-${i}`}
+            className={`${styles.layer} ${animated ? ANIMATED_CLASS[size] : ''}`}
+            style={{
+              backgroundImage: `url(${src})`,
+              backgroundSize: `${sheetW}px auto`,
+              backgroundPositionY: `-${rowY}px`,
+              backgroundPositionX: '0px',
+            }}
+          />
+        )
+      })}
     </div>
   )
 }

@@ -189,3 +189,62 @@ export function resolveCharacterLayers(config: CharacterConfig): string[] {
 
   return layers
 }
+
+// ─── FULL SPRITE INVENTORY ───────────────────────────────────────────────────
+/**
+ * Returns every possible proxy URL (/api/sprites/...) the customizer could request.
+ * Used to batch-generate Supabase signed URLs so the browser never hits the proxy
+ * for a cache miss during customisation.
+ */
+export function getAllSpritePaths(): string[] {
+  const urls: string[] = []
+
+  // Base body
+  urls.push(PLAYER_BASE)
+
+  // Hands
+  urls.push(`${BASE}/Player/Hands/Hands_1_Bare.png`)
+
+  // Hair
+  for (const { id } of HAIR_STYLES) {
+    for (const color of HAIR_COLORS) {
+      urls.push(`${BASE}/Player/Head/${id}/${id}_${color}.png`)
+    }
+  }
+
+  // Tops
+  for (const style of TOP_STYLES) {
+    for (const color of style.colors) {
+      urls.push(`${BASE}/Player/Chest/${style.id}/${style.filePrefix}_${color}.png`)
+    }
+  }
+
+  // Bottoms
+  for (const style of BOTTOM_STYLES) {
+    for (const color of style.colors) {
+      urls.push(`${BASE}/Player/Legs/${style.id}/${style.filePrefix}_${color}.png`)
+    }
+  }
+
+  // Shoes
+  for (const color of SHOE_COLORS) {
+    urls.push(`${BASE}/Player/Feet/Shoes_1_${color}.png`)
+  }
+
+  // Hats
+  for (const hat of HAT_STYLES) {
+    if (hat.src) urls.push(hat.src)
+  }
+
+  // Helmets
+  for (const helmet of HELMET_STYLES) {
+    if (helmet.id) {
+      for (const color of helmet.colors) {
+        urls.push(`${BASE}/Player/Head/${helmet.id}/${helmet.id}_${color}.png`)
+      }
+    }
+  }
+
+  return urls
+}
+
