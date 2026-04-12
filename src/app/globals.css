@@ -4,38 +4,35 @@
    DESIGN TOKENS
    ============================================================ */
 :root {
-  /* Colour palette — warm Stardew Valley tones */
-  --cream: #F5E6C8;
-  --cream-dark: #E8D5A3;
-  --parchment: #DFC98A;
-  --moss: #5A7A3A;
-  --moss-dark: #3D5427;
-  --moss-light: #7FA854;
-  --brown: #8B5E3C;
-  --brown-dark: #6B4423;
-  --brown-light: #B07D52;
-  --sky: #87CEEB;
-  --sky-dark: #5BA3C9;
-  --night: #1A1A2E;
-  --night-mid: #16213E;
-  --night-panel: #0F3460;
-  --gold: #D4AF37;
-  --gold-light: #F0CB5A;
-  --red: #C0392B;
-  --text-primary: #2C1810;
-  --text-secondary: #6B4423;
-  --text-muted: #B08D6A; /* brightened for contrast */
-  --text-on-dark: #F5E6C8;
-  --text-on-dark-muted: #A8B8C8;
-
-  /* Pixel border colours */
-  --border-light: #E8D5A3;
-  --border-mid: #C4A97A;
-  --border-dark: #8B5E3C;
+  /* Colour palette — Dark Forest & Earthy */
+  --forest-deep: #0a140c;
+  --forest-dark: #112615;
+  --forest-mid: #1b3d21;
+  --moss-dark: #3d5427;
+  --moss: #5a7a3a;
+  --moss-light: #7fa854;
+  --brown-deep: #2c1a10;
+  --brown-dark: #4a2e19;
+  --brown-mid: #6b4423;
+  --brown-light: #8b5e3c;
+  --cream: #f5e6c8;
+  --cream-dim: #d9c5a0;
+  --gold: #d4af37;
+  --red-earth: #8b2e2e;
+  
+  /* Semantic tokens */
+  --bg-main: var(--forest-deep);
+  --bg-panel: var(--forest-dark);
+  --bg-sidebar: var(--brown-deep);
+  --text-primary: var(--cream);
+  --text-secondary: var(--cream-dim);
+  --text-muted: #7a8a7a;
+  --accent: var(--moss);
+  --border-color: var(--brown-dark);
 
   /* Spacing (Strict 8px Grid) */
-  --space-1: 4px;   /* Half-step for micro adjustments */
-  --space-2: 8px;   /* Base grid unit */
+  --space-1: 4px;   /* Half-step */
+  --space-2: 8px;   /* Base unit */
   --space-3: 16px;
   --space-4: 24px;
   --space-5: 32px;
@@ -45,9 +42,9 @@
   --space-12: 80px;
 
   /* Layout */
-  --sidebar-width: 256px; /* 32 * 8 */
-  --chat-max-width: 800px;
-  --nav-height: 60px;
+  --nav-sidebar-width: 240px;
+  --roster-sidebar-width: 240px;
+  --header-height: 64px;
 }
 
 /* ============================================================
@@ -64,12 +61,21 @@ html, body {
   margin: 0;
   overflow: hidden;
   font-family: 'VT323', monospace;
-  font-size: 18px;
-  line-height: 1.5;
-  background-color: var(--night);
-  color: var(--text-on-dark);
+  font-size: 20px;
+  line-height: 1.4;
+  background-color: var(--bg-main);
+  color: var(--text-primary);
   image-rendering: pixelated;
   -webkit-font-smoothing: none;
+}
+
+/* Redoing pixelated grid for the center panels */
+.grid-paper {
+  background-color: var(--bg-main);
+  background-image: 
+    linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+  background-size: 32px 32px; /* 4 * 8pt grid */
 }
 
 /* Scrollbar styling */
@@ -277,22 +283,24 @@ a:hover { color: var(--gold-light); }
 }
 
 .sidebar {
-  width: 240px;
+  width: var(--nav-sidebar-width);
   display: flex;
   flex-direction: column;
-  background: var(--brown-dark);
-  border-right: 4px solid #5c3a21;
+  background-color: var(--bg-sidebar);
+  border-right: 4px solid var(--border-color);
   flex-shrink: 0;
+  z-index: 20;
 }
 
 .roster-sidebar {
-  width: var(--sidebar-width);
-  height: 100vh;
+  width: var(--roster-sidebar-width);
+  height: 100%;
   display: flex;
   flex-direction: column;
-  background: var(--night-mid);
-  border-left: 3px solid var(--moss-dark);
+  background-color: var(--bg-panel);
+  border-left: 4px solid var(--border-color);
   flex-shrink: 0;
+  z-index: 20;
 }
 
 .main-content {
@@ -322,11 +330,12 @@ a:hover { color: var(--gold-light); }
    NAVIGATION
    ============================================================ */
 .nav-logo {
-  padding: var(--space-4) var(--space-4) var(--space-3);
-  border-bottom: 2px solid var(--moss-dark);
+  padding: var(--space-4) var(--space-4);
+  border-bottom: 3px solid var(--border-color);
   display: flex;
   align-items: center;
   gap: var(--space-3);
+  background: var(--brown-dark);
 }
 
 .nav-logo-icon {
@@ -335,10 +344,11 @@ a:hover { color: var(--gold-light); }
 
 .nav-logo-text {
   font-family: 'Press Start 2P', monospace;
-  font-size: 0.55rem;
-  color: var(--gold-light);
-  text-shadow: 1px 1px 0 var(--brown-dark);
+  font-size: 0.6rem;
+  color: var(--gold);
+  text-shadow: 2px 2px 0 var(--brown-deep);
   line-height: 1.8;
+  text-transform: uppercase;
 }
 
 .nav-items {
@@ -355,38 +365,38 @@ a:hover { color: var(--gold-light); }
   align-items: center;
   gap: var(--space-3);
   padding: var(--space-3) var(--space-3);
-  font-family: 'Press Start 2P', monospace;
-  font-size: 0.5rem;
-  color: var(--text-on-dark-muted);
-  border: 2px solid transparent;
+  font-family: 'VT323', monospace;
+  font-size: 1.2rem;
+  color: var(--text-secondary);
+  border: 4px solid transparent;
   cursor: pointer;
   text-decoration: none;
   transition: all 0.1s;
-  line-height: 1.6;
+  line-height: 1;
 }
 
 .nav-item:hover {
-  color: var(--cream);
-  background: rgba(90, 122, 58, 0.15);
-  border-color: var(--moss-dark);
+  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.05);
 }
 
 .nav-item.active {
-  color: var(--gold-light);
-  background: rgba(90, 122, 58, 0.25);
+  color: var(--gold);
+  background: var(--moss-dark);
   border-color: var(--moss);
-  box-shadow: 2px 2px 0 0 var(--moss-dark);
+  box-shadow: 4px 4px 0 0 var(--forest-deep);
 }
 
 .nav-item-icon { font-size: 1.2rem; flex-shrink: 0; }
 
 .nav-section-label {
   font-family: 'Press Start 2P', monospace;
-  font-size: 0.4rem;
-  color: var(--text-muted);
+  font-size: 0.5rem;
+  color: var(--moss-light);
   padding: var(--space-4) var(--space-3) var(--space-1);
   text-transform: uppercase;
   letter-spacing: 0.05em;
+  opacity: 0.8;
 }
 
 .nav-footer {

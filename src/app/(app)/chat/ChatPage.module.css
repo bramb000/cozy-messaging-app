@@ -32,12 +32,7 @@
   padding: var(--space-4) var(--space-6);
   display: flex;
   flex-direction: column;
-  background-color: #1a3c26;
-  background-image: 
-    radial-gradient(#2a4d36 15%, transparent 16%),
-    radial-gradient(#2a4d36 15%, transparent 16%);
-  background-size: 30px 30px;
-  background-position: 0 0, 15px 15px;
+  background: transparent; /* Show layout grid-paper through */
 }
 
 /* Discord-Style Grouping */
@@ -91,16 +86,15 @@
 
 .msgContent {
   padding: var(--space-2) var(--space-3);
-  background: #f4d799;
-  border: 4px solid #c89f53;
-  border-radius: 4px;
+  background: var(--bg-panel);
+  border: 3px solid var(--border-color);
   font-family: 'VT323', monospace;
   font-size: 1.1rem;
   line-height: 1.4;
-  color: #3e2723;
+  color: var(--text-primary);
   word-break: break-word;
   max-width: fit-content;
-  box-shadow: 2px 2px 0px rgba(0,0,0,0.3);
+  box-shadow: 4px 4px 0px rgba(0,0,0,0.5);
 }
 
 .msgContent p { margin: 0; }
@@ -131,46 +125,62 @@
 }
 
 .inputArea {
-  border-top: 4px solid #8b5e34;
-  padding: var(--space-3) var(--space-4);
-  background: #a67c52;
+  border-top: 4px solid var(--border-color);
+  padding: var(--space-4);
+  background: var(--bg-sidebar);
   flex-shrink: 0;
-}
-
-.toolbar {
   display: flex;
-  gap: var(--space-1);
-  margin-bottom: var(--space-2);
+  flex-direction: column;
+  gap: var(--space-2);
 }
 
-.toolBtn {
-  font-size: 0.9rem !important;
-  padding: 2px 8px !important;
-  border: 2px solid #8b5e34 !important;
-  background: #d1a36a !important;
-  color: #3e2723 !important;
-}
-
-.editorRow {
+.inputContainer {
   display: flex;
-  gap: var(--space-3);
-  align-items: flex-end;
+  align-items: center;
+  gap: var(--space-2);
+  background: var(--bg-main);
+  border: 4px solid var(--border-color);
+  padding: var(--space-2);
+  min-height: 48px;
+  position: relative;
 }
 
 .editorWrap {
   flex: 1;
-  min-height: 40px;
-  max-height: 120px;
+  min-height: 32px;
+  max-height: 160px;
   overflow-y: auto;
-  background: #6d5b4b;
-  border: 4px solid #3c2a1e;
-  border-radius: 4px;
-  padding: var(--space-2) var(--space-3);
+  background: transparent;
+  border: none;
+  padding: 0 var(--space-2);
   font-family: 'VT323', monospace;
-  font-size: 1.1rem;
-  color: #f4d799;
+  font-size: 1.2rem;
+  color: var(--text-primary);
   outline: none;
   cursor: text;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: 0 var(--space-1);
+}
+
+.toolBtn {
+  font-size: 0.8rem !important;
+  padding: var(--space-1) !important;
+  border: 2px solid transparent !important;
+  background: transparent !important;
+  color: var(--text-secondary) !important;
+  min-width: 32px;
+  transition: all 0.1s;
+}
+
+.toolBtn:hover {
+  color: var(--gold) !important;
+  background: rgba(255, 255, 255, 0.05) !important;
+  border-color: var(--border-color) !important;
 }
 
 .editorWrap:focus {
@@ -210,8 +220,8 @@
 .emojiPickerMenu {
   position: absolute;
   bottom: 100%;
-  left: 0;
-  margin-bottom: var(--space-2);
+  right: 0;
+  margin-bottom: var(--space-4);
   z-index: 50;
   box-shadow: 4px 4px 0 0 rgba(0,0,0,0.5);
 }

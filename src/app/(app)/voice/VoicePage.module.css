@@ -1,12 +1,7 @@
 .page {
-  background-color: #d1a36a; /* Light wood color */
-  background-image: repeating-linear-gradient(
-    0deg,
-    transparent,
-    transparent 40px,
-    rgba(139, 94, 52, 0.1) 40px,
-    rgba(139, 94, 52, 0.1) 80px
-  );
+  background: transparent;
+  width: 100%;
+  height: 100%;
 }
 
 .header {
@@ -37,29 +32,69 @@
 .roomIcon { font-size: 3rem; animation: pulse 2s infinite; }
 @keyframes pulse { 0%,100% { opacity:1 } 50% { opacity:0.6 } }
 
-.participantCard {
+.bonfireContainer {
   position: relative;
+  width: 100%;
+  max-width: 600px;
+  aspect-ratio: 1 / 1;
+  margin: 0 auto;
+  border-radius: 50%;
+  /* Optional: visual subtle circle marking the seats */
+  /* border: 2px dashed rgba(255, 255, 255, 0.05); */
+}
+
+.centerFire {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 5rem;
+  z-index: 10;
+  text-shadow: 0 0 40px rgba(255, 100, 0, 0.8);
+  animation: flicker 1.5s infinite alternate;
+}
+
+@keyframes flicker {
+  0% { opacity: 0.9; transform: translate(-50%, -50%) scale(0.95); }
+  100% { opacity: 1; transform: translate(-50%, -50%) scale(1.05); }
+}
+
+.participantCard {
+  position: absolute;
+  top: 50%;
+  left: 50%;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 0.5rem;
-  width: 160px;
+  width: 80px;
+  /* Smooth transition if they jump seats, though they shouldn't with IDs */
+  transition: all 0.5s ease-in-out;
+  transform-origin: center center;
 }
 
 .avatarCircle {
-  width: 100px;
-  height: 100px;
+  width: 64px;
+  height: 64px;
   border-radius: 50%;
-  border: 6px solid #5c3a21;
-  background: #8b5e34;
+  border: 4px solid var(--border-color);
+  background: var(--bg-sidebar);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 3rem;
+  font-size: 2rem;
   box-shadow: inset 0 0 10px rgba(0,0,0,0.5), 0 4px 6px rgba(0,0,0,0.3);
   position: relative;
   z-index: 2;
   transition: all 0.2s ease;
+  overflow: hidden;
+}
+
+.avatarImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  image-rendering: pixelated; /* for pixel art */
 }
 
 .avatarEmoji {
@@ -68,35 +103,33 @@
 
 .speaking .avatarCircle {
   box-shadow: 0 0 20px 10px rgba(255, 200, 100, 0.6), inset 0 0 10px rgba(0,0,0,0.5);
-  border-color: #f1c27d;
+    border-color: var(--gold);
 }
 
 .campfireIcon {
-  position: absolute;
-  bottom: 10px;
-  right: 15px;
-  font-size: 1.5rem;
-  z-index: 3;
+  display: none; /* Removed from individual cards, now centralized */
 }
 
 .waveformLeft, .waveformRight {
   position: absolute;
-  top: 35px;
-  color: #f1c27d;
+  top: 20px;
+  color: var(--gold);
   font-weight: bold;
-  font-size: 1.2rem;
-  letter-spacing: 2px;
+  font-size: 1rem;
+  letter-spacing: 1px;
   animation: pulse 0.8s infinite;
 }
 .waveformLeft { left: -10px; }
 .waveformRight { right: -10px; }
 .controlsBar {
-  background: #a67c52;
-  border: 4px solid #5c3a21;
+  background: var(--bg-sidebar);
+  border: 4px solid var(--border-color);
   border-radius: 8px;
   padding: 0.5rem 1rem;
   box-shadow: 0 4px 6px rgba(0,0,0,0.3);
   margin-top: 2rem;
+  position: relative;
+  z-index: 20;
 }
 
 .controlBtn {
@@ -104,7 +137,7 @@
   border: none;
   font-family: 'Press Start 2P', monospace;
   font-size: 0.6rem;
-  color: #fff;
+  color: var(--text-primary);
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -113,7 +146,7 @@
   text-shadow: 1px 1px 0px rgba(0,0,0,0.8);
 }
 .controlBtn:hover {
-  color: #f1c27d;
+  color: var(--gold);
 }
 /* ============================================================
    MOBILE

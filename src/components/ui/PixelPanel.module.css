@@ -10,13 +10,13 @@
 .variant-standard {
   border-image: url('/ui/frame-solid-primary.png?v=3') 10 fill stretch;
   box-shadow: 4px 4px 0 0 rgba(0,0,0,0.5);
-  color: #fff;
+  color: var(--text-primary);
 }
 
 .variant-warm {
   border-image: url('/ui/frame-solid-secondary.png?v=3') 10 fill stretch;
   box-shadow: 4px 4px 0 0 rgba(0,0,0,0.5);
-  color: #2C1810;
+  color: var(--text-primary);
 }
 
 .variant-wood-h {
@@ -71,7 +71,7 @@
 .variant-yellow {
   border-image: url('/ui/frame-yellow.png?v=3') 10 fill stretch;
   box-shadow: 4px 4px 0 0 rgba(0,0,0,0.5);
-  color: #2C1810;
+  color: var(--text-primary);
 }
 
 .variant-dotted-primary {
@@ -114,7 +114,7 @@
 .variant-solid-secondary {
   border-image: url('/ui/frame-solid-secondary.png?v=3') 10 fill stretch;
   box-shadow: 4px 4px 0 0 rgba(0,0,0,0.5);
-  color: #2C1810;
+  color: var(--text-primary);
 }
 
 .variant-solid-silver-0 {

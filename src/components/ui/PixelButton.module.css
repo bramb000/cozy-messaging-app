@@ -2,7 +2,7 @@
   display: inline-flex;
   flex-direction: column;
   align-items: center;
-  gap: 4px;
+  gap: var(--space-1);
 }
 
 .fullWidth {
@@ -21,8 +21,8 @@
   border-style: solid;
   border-color: transparent;
   border-width: 4px 10px;
-  font-family: var(--font-press-start);
-  color: #fff;
+  font-family: 'Press Start 2P', monospace;
+  color: var(--text-primary);
   transition: transform 0.05s, filter 0.1s;
   outline: none;
   text-decoration: none;
@@ -102,9 +102,9 @@
 
 /* Sizes */
 
-.size-sm.variant-primary, .size-sm.variant-secondary, .size-sm.variant-danger { font-size: 14px; height: 32px; padding: 0 4px; }
-.size-md.variant-primary, .size-md.variant-secondary, .size-md.variant-danger { font-size: 16px; height: 40px; padding: 0 8px; }
-.size-lg.variant-primary, .size-lg.variant-secondary, .size-lg.variant-danger { font-size: 20px; height: 48px; padding: 0 12px; }
+.size-sm.variant-primary, .size-sm.variant-secondary, .size-sm.variant-danger { font-size: 12px; height: 32px; padding: 0 var(--space-1); }
+.size-md.variant-primary, .size-md.variant-secondary, .size-md.variant-danger { font-size: 14px; height: 40px; padding: 0 var(--space-2); }
+.size-lg.variant-primary, .size-lg.variant-secondary, .size-lg.variant-danger { font-size: 16px; height: 48px; padding: 0 var(--space-3); }
 
 .label {
     text-shadow: 1px 1px 0 rgba(0,0,0,0.5);
@@ -119,8 +119,8 @@
 }
 
 .infoBelow {
-  font-family: var(--font-press-start);
-  font-size: 10px;
-  color: #DFC98A;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 8px;
+  color: var(--cream-dim);
   text-shadow: 1px 1px 0 rgba(0,0,0,0.5);
 }

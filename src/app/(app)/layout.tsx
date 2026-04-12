@@ -8,13 +8,13 @@ import { Box } from '@/components/ui/Layout/Box'
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   return (
     <AuthProvider>
-      <Stack direction="row" h="100vh" style={{ overflow: 'hidden', background: '#112615' }}>
-        <Sidebar />
-        <Box as="main" style={{ flex: 1, overflowY: 'hidden', display: 'flex', flexDirection: 'column' }}>
+      <div className="flex h-full w-full overflow-hidden">
+        <Sidebar aria-label="Main Navigation" />
+        <main className="flex-1 overflow-hidden flex flex-col grid-paper">
           {children}
-        </Box>
-        <UserRosterSidebar />
-      </Stack>
+        </main>
+        <UserRosterSidebar aria-label="Member List" />
+      </div>
       <InventoryNavBar />
     </AuthProvider>
   )

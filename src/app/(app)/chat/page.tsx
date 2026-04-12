@@ -80,6 +80,50 @@ export default function ChatPage() {
       e.preventDefault()
       sendMessage()
     }
+
+    // Keyboard Shortcuts
+    if (e.ctrlKey || e.metaKey) {
+      switch (e.key.toLowerCase()) {
+        case 'b':
+          e.preventDefault()
+          execFormat('bold')
+          break
+        case 'i':
+          e.preventDefault()
+          execFormat('italic')
+          break
+        case 'u':
+          e.preventDefault()
+          execFormat('underline')
+          break
+      }
+    }
+  }
+
+  function handleInput(e: React.FormEvent<HTMLDivElement>) {
+    const target = e.currentTarget
+    
+    // Basic Markdown Detection (Simple regex on the fly)
+    // We only check for the patterns when a space or special char is typed potentially, 
+    // but here we can just check if the last sequence matches.
+    // For simplicity in a contentEditable, we can use a more robust logic if needed,
+    // but let's try a simple one first.
+    const content = target.innerHTML
+    
+    // Bold: **text** -> <strong>text</strong>
+    if (content.match(/\*\*(.*?)\*\*/)) {
+      target.innerHTML = content.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+      // Move cursor to end? In a simple contentEditable this might jump.
+      // Better way: document.execCommand if we can find the specific range.
+    }
+    
+    // Italic: *text* -> <em>text</em>
+    if (content.match(/\*(.*?)\*/)) {
+      // Avoid matching **
+      if (!content.match(/\*\*(.*?)\*\*/)) {
+         target.innerHTML = content.replace(/\*(.*?)\*/g, '<em>$1</em>')
+      }
+    }
   }
 
   function execFormat(cmd: string) {
@@ -183,29 +227,8 @@ export default function ChatPage() {
         <div ref={bottomRef} />
       </PageContent>
 
-      <Box p="space-4" style={{ background: '#a67c52', borderTop: '4px solid #5c3a21', zIndex: 10, flexShrink: 0 }}>
-        <Stack direction="row" gap="space-2" mb="space-2" className={styles.toolbar} style={{ paddingLeft: '2px' }}>
-          <PixelButton type="button" variant="generic-brown" className={styles.toolBtn} onClick={() => execFormat('bold')} title="Bold" id="format-bold-btn" style={{ minWidth: 28, padding: 4 }}>
-            <strong>B</strong>
-          </PixelButton>
-          <PixelButton type="button" variant="generic-brown" className={styles.toolBtn} onClick={() => execFormat('italic')} title="Italic" id="format-italic-btn" style={{ minWidth: 28, padding: 4 }}>
-            <em>I</em>
-          </PixelButton>
-          <PixelButton type="button" variant="generic-brown" className={styles.toolBtn} onClick={() => execFormat('underline')} title="Underline" id="format-underline-btn" style={{ minWidth: 28, padding: 4 }}>
-            <u>U</u>
-          </PixelButton>
-          <div className={styles.emojiWrapper}>
-            <PixelButton type="button" variant="generic-brown" className={styles.toolBtn} onClick={() => setShowEmojiPicker(!showEmojiPicker)} title="Emoji" style={{ minWidth: 28, padding: 4 }}>
-              😀
-            </PixelButton>
-            {showEmojiPicker && (
-              <div className={styles.emojiPickerMenu}>
-                <PixelEmojiPicker onEmojiSelect={addEmoji} />
-              </div>
-            )}
-          </div>
-        </Stack>
-        <Stack direction="row" gap="space-2" className={styles.editorRow}>
+      <Box className={styles.inputArea}>
+        <div className={styles.inputContainer}>
           <div
             ref={editorRef}
             contentEditable
@@ -213,15 +236,54 @@ export default function ChatPage() {
             className={styles.editorWrap}
             data-placeholder="Say something cozy..."
             onKeyDown={handleKeyDown}
+            onInput={handleInput}
             role="textbox"
             aria-multiline="true"
             aria-label="Message input"
             id="message-input"
           />
-          <PixelButton id="send-message-btn" variant="primary" onClick={sendMessage}>Send →</PixelButton>
-        </Stack>
-        <Box pt="space-3">
-          <Text variant="caption" color="muted">Enter to send · Shift+Enter for new line · B / I / U for formatting</Text>
+          
+          <div className={styles.actions}>
+            <div className={styles.emojiWrapper}>
+              <PixelButton 
+                type="button" 
+                variant="ghost" 
+                className={styles.toolBtn} 
+                onClick={() => setShowEmojiPicker(!showEmojiPicker)} 
+                title="Emoji"
+              >
+                😀
+              </PixelButton>
+              {showEmojiPicker && (
+                <div className={styles.emojiPickerMenu}>
+                  <PixelEmojiPicker onEmojiSelect={addEmoji} />
+                </div>
+              )}
+            </div>
+            
+            <PixelButton type="button" variant="ghost" className={styles.toolBtn} onClick={() => execFormat('bold')} title="Bold">
+              <strong>B</strong>
+            </PixelButton>
+            <PixelButton type="button" variant="ghost" className={styles.toolBtn} onClick={() => execFormat('italic')} title="Italic">
+              <em>I</em>
+            </PixelButton>
+            
+            <PixelButton 
+              id="send-message-btn" 
+              variant="primary" 
+              size="sm"
+              onClick={sendMessage}
+              style={{ padding: '0 var(--space-2)', marginLeft: 'var(--space-1)' }}
+            >
+              Send →
+            </PixelButton>
+          </div>
+        </div>
+        
+        <Box px="space-1">
+          <Text variant="caption" color="muted" style={{ fontSize: '0.5rem' }}>
+            Markdown (**bold**) supported · Ctrl+B for Bold · Enter to send
+          </Text>
         </Box>
       </Box>
     </PageContainer>
