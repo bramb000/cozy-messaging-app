@@ -13,9 +13,10 @@
   /* Default: show first frame, no animation */
 }
 
-/* Animated idle: step through all columns in the row */
+/* Animated idle: step through all 12 columns in the row.
+   NOTE: steps() does not support CSS custom properties — hardcode the count. */
 .layer.animated {
-  animation: sprite-walk calc(var(--cols) * 0.1s) steps(var(--cols)) infinite;
+  animation: sprite-walk 1.2s steps(12) infinite;
 }
 
 @keyframes sprite-walk {
