@@ -6,68 +6,41 @@ import type { MessageWithProfile } from '@/types/database'
 import styles from './ChatPage.module.css'
 import PixelEmojiPicker from '@/components/ui/PixelEmojiPicker'
 import PixelButton from '@/components/ui/PixelButton'
-import PixelPanel from '@/components/ui/PixelPanel'
-import { Stack } from '@/components/ui/Layout/Stack'
-import { Box } from '@/components/ui/Layout/Box'
-import { Text } from '@/components/ui/Typography/Text'
-import { PageContainer } from '@/components/ui/Layout/PageContainer'
-import { PageContent } from '@/components/ui/Layout/PageContent'
+import { CharacterSprite } from '@/components/character/CharacterSprite'
 import { parseEmojisToHtml } from '@/utils/emojiParser'
 
 export default function ChatPage() {
   const { user } = useAuth()
   const supabase = createClient()
   const [messages, setMessages] = useState<MessageWithProfile[]>([])
-  const [loading, setLoading] = useState(true)
-  const [showEmojiPicker, setShowEmojiPicker] = useState(false)
+  const [loading, setLoading]   = useState(true)
+  const [showEmoji, setShowEmoji] = useState(false)
   const [lastReadTs, setLastReadTs] = useState<Date | null>(null)
-  const [mounted, setMounted] = useState(false)
+  const [mounted, setMounted]   = useState(false)
   const bottomRef = useRef<HTMLDivElement>(null)
   const editorRef = useRef<HTMLDivElement>(null)
 
   async function fetchMessages() {
-    try {
-      const { data, error } = await supabase
-        .from('messages')
-        .select('*, profile:profiles(*)')
-        .order('created_at', { ascending: true })
-        .limit(100)
-      
-      if (error) {
-        // Silently handle or use a proper logger in prod
-      } else {
-        setMessages((data as MessageWithProfile[]) ?? [])
-        setLastReadTs(new Date()) // Mark current time as read boundary
-      }
-    } catch (err) {
-      // Unexpected error
-    } finally {
-      setLoading(false)
-      scrollToBottom()
+    const { data, error } = await supabase
+      .from('messages')
+      .select('*, profile:profiles(*)')
+      .order('created_at', { ascending: true })
+      .limit(100)
+    if (!error) {
+      setMessages((data as MessageWithProfile[]) ?? [])
+      setLastReadTs(new Date())
     }
+    setLoading(false)
+    scrollToBottom()
   }
 
   async function sendMessage() {
-    if (!editorRef.current || !user) {
-      return
-    }
+    if (!editorRef.current || !user) return
     const content = editorRef.current.innerHTML.trim()
     if (!content || content === '<br>') return
-    
     editorRef.current.innerHTML = ''
-    
-    try {
-      // @ts-expect-error Supabase types misaligned
-      const { data, error } = await supabase.from('messages').insert({ user_id: user.id, content }).select().single()
-      
-      if (error) {
-        // Error inserting
-      } else {
-        // Success
-      }
-    } catch (e) {
-      // Exception
-    }
+    // @ts-expect-error Supabase types misaligned
+    await supabase.from('messages').insert({ user_id: user.id, content })
   }
 
   function scrollToBottom() {
@@ -75,90 +48,39 @@ export default function ChatPage() {
   }
 
   function handleKeyDown(e: React.KeyboardEvent) {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault()
-      sendMessage()
-    }
-
-    // Keyboard Shortcuts
+    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); return }
     if (e.ctrlKey || e.metaKey) {
-      switch (e.key.toLowerCase()) {
-        case 'b':
-          e.preventDefault()
-          execFormat('bold')
-          break
-        case 'i':
-          e.preventDefault()
-          execFormat('italic')
-          break
-        case 'u':
-          e.preventDefault()
-          execFormat('underline')
-          break
-      }
+      const key = e.key.toLowerCase()
+      if (key === 'b') { e.preventDefault(); document.execCommand('bold', false) }
+      if (key === 'i') { e.preventDefault(); document.execCommand('italic', false) }
+      if (key === 'u') { e.preventDefault(); document.execCommand('underline', false) }
     }
   }
 
   function handleInput(e: React.FormEvent<HTMLDivElement>) {
-    const target = e.currentTarget
-    
-    // Basic Markdown Detection (Simple regex on the fly)
-    // We only check for the patterns when a space or special char is typed potentially, 
-    // but here we can just check if the last sequence matches.
-    // For simplicity in a contentEditable, we can use a more robust logic if needed,
-    // but let's try a simple one first.
-    const content = target.innerHTML
-    
-    // Bold: **text** -> <strong>text</strong>
-    if (content.match(/\*\*(.*?)\*\*/)) {
-      target.innerHTML = content.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-      // Move cursor to end? In a simple contentEditable this might jump.
-      // Better way: document.execCommand if we can find the specific range.
-    }
-    
-    // Italic: *text* -> <em>text</em>
-    if (content.match(/\*(.*?)\*/)) {
-      // Avoid matching **
-      if (!content.match(/\*\*(.*?)\*\*/)) {
-         target.innerHTML = content.replace(/\*(.*?)\*/g, '<em>$1</em>')
-      }
-    }
-  }
-
-  function execFormat(cmd: string) {
-    editorRef.current?.focus()
-    document.execCommand(cmd, false)
+    const el = e.currentTarget
+    let html = el.innerHTML
+    html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+    html = html.replace(/(?<!\*)\*(?!\*)(.+?)(?<!\*)\*(?!\*)/g, '<em>$1</em>')
+    if (html !== el.innerHTML) el.innerHTML = html
   }
 
   function addEmoji(unicode: string) {
     if (editorRef.current) {
       editorRef.current.innerHTML += unicode
-      // Need to move cursor to the end, but appending raw is okay for simple editor
       editorRef.current.focus()
     }
-    setShowEmojiPicker(false)
+    setShowEmoji(false)
   }
 
   useEffect(() => {
     setMounted(true)
     fetchMessages()
-    const channel = supabase
-      .channel('chat-room')
-      .on(
-        'postgres_changes',
-        { event: 'INSERT', schema: 'public', table: 'messages' },
-        async (payload) => {
-          const { data } = await supabase
-            .from('messages')
-            .select('*, profile:profiles(*)')
-            .eq('id', payload.new.id)
-            .single()
-          if (data) {
-            setMessages(prev => [...prev, data as MessageWithProfile])
-            scrollToBottom()
-          }
-        }
-      )
+    const channel = supabase.channel('chat-room')
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages' }, async (payload) => {
+        const { data } = await supabase.from('messages').select('*, profile:profiles(*)').eq('id', payload.new.id).single()
+        if (data) { setMessages(prev => [...prev, data as MessageWithProfile]); scrollToBottom() }
+      })
       .subscribe()
     return () => { supabase.removeChannel(channel) }
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -169,65 +91,73 @@ export default function ChatPage() {
     return new Date(ts).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
   }
 
-  return (
-    <PageContainer>
-      <PageContent className={styles.messages}>
-        {loading && (
-          <div className="loading-screen">
-            <div className="pixel-spinner" />
-          </div>
-        )}
-        {messages.map((msg, i) => {
-          const isSameUser = i > 0 && messages[i-1].user_id === msg.user_id
-          const timeDiff = i > 0 ? new Date(msg.created_at || 0).getTime() - new Date(messages[i-1].created_at || 0).getTime() : 0
-          const isGroupStart = i === 0 || !isSameUser || timeDiff > 60000 // 1 min
+  const isMe = (msg: MessageWithProfile) => msg.user_id === user?.id
 
+  return (
+    <div className={styles.page}>
+      {/* ── Message history ──────────────────────────────── */}
+      <div className={styles.messages}>
+        {loading && <div className="loading-screen"><div className="pixel-spinner" /></div>}
+
+        {messages.map((msg, i) => {
+          const me = isMe(msg)
+          const prevMsg = i > 0 ? messages[i - 1] : null
+          const isSameUser = prevMsg?.user_id === msg.user_id
+          const timeDiff = prevMsg
+            ? new Date(msg.created_at || 0).getTime() - new Date(prevMsg.created_at || 0).getTime()
+            : Infinity
+          const isGroupStart = !isSameUser || timeDiff > 60000
           const msgDate = new Date(msg.created_at || 0)
-          const prevDate = i > 0 ? new Date(messages[i-1].created_at || 0) : new Date(0)
-          const isUnreadBoundary = lastReadTs && msgDate > lastReadTs && prevDate <= lastReadTs
+          const prevDate = prevMsg ? new Date(prevMsg.created_at || 0) : new Date(0)
+          const isUnread = lastReadTs && msgDate > lastReadTs && prevDate <= lastReadTs
 
           return (
             <React.Fragment key={msg.id}>
-              {isUnreadBoundary && (
-                <Box p="space-2" className={styles.unreadDivider}>
-                  <Text variant="caption" color="red">New Messages</Text>
-                </Box>
-              )}
-              <Stack direction="row" gap="space-3" className={`${styles.messageRow} ${isGroupStart ? styles.groupStart : styles.groupFollowup}`}>
-                <div className={styles.avatarCol}>
+              {isUnread && <div className={styles.unreadDivider}>New Messages</div>}
+
+              <div className={`${styles.row} ${me ? styles.rowMe : styles.rowOther} ${isGroupStart ? styles.groupStart : styles.groupFollow}`}>
+                {/* Avatar (other users only, on group start) */}
+                {!me && (
+                  <div className={styles.avatarSlot}>
+                    {isGroupStart && (
+                      <div className={styles.avatarWrap}>
+                        <CharacterSprite
+                          config={(msg.profile as any)?.character_config ?? {}}
+                          size="sm"
+                          animated={false}
+                        />
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                <div className={styles.bubble}>
                   {isGroupStart && (
-                    <div className="avatar avatar-sm">
-                      {msg.profile?.avatar_url
-                        ? <img src={msg.profile.avatar_url} alt={msg.profile.username} />
-                        : <span>🌱</span>}
+                    <div className={styles.bubbleHeader}>
+                      <span className={styles.bubbleUser}>{me ? 'You' : msg.profile?.username}</span>
+                      <span className={styles.bubbleTime}>{formatTime(msg.created_at)}</span>
                     </div>
                   )}
+                  <div
+                    className={`${styles.bubbleContent} ${me ? styles.bubbleMe : styles.bubbleOther}`}
+                    dangerouslySetInnerHTML={{ __html: parseEmojisToHtml(msg.content) }}
+                  />
                 </div>
-                <div className={styles.messageBody}>
-                  {isGroupStart && (
-                    <Stack direction="row" align="center" gap="space-2" mb="space-1" className={styles.messageHeader}>
-                      <Text variant="caption" color="gold" style={{ fontSize: '0.6rem' }}>{msg.profile?.username}</Text>
-                      <Text variant="caption" color="muted" style={{ fontSize: '0.55rem' }}>{formatTime(msg.created_at)}</Text>
-                    </Stack>
-                  )}
-                  <div className={styles.msgContent}>
-                    <div dangerouslySetInnerHTML={{ __html: parseEmojisToHtml(msg.content) }} />
-                  </div>
-                </div>
-              </Stack>
+              </div>
             </React.Fragment>
           )
         })}
         <div ref={bottomRef} />
-      </PageContent>
+      </div>
 
-      <Box className={styles.inputArea}>
-        <div className={styles.inputContainer}>
+      {/* ── Input bar ────────────────────────────────────── */}
+      <div className={styles.inputBar}>
+        <div className={styles.inputInner}>
           <div
             ref={editorRef}
             contentEditable
             suppressContentEditableWarning
-            className={styles.editorWrap}
+            className={styles.editor}
             data-placeholder="Say something cozy..."
             onKeyDown={handleKeyDown}
             onInput={handleInput}
@@ -236,44 +166,35 @@ export default function ChatPage() {
             aria-label="Message input"
             id="message-input"
           />
-          
-          <div className={styles.actions}>
-            <div className={styles.emojiWrapper}>
-              <PixelButton 
-                type="button" 
-                variant="ghost" 
-                className={styles.toolBtn} 
-                onClick={() => setShowEmojiPicker(!showEmojiPicker)} 
-                title="Emoji"
-              >
-                😀
-              </PixelButton>
-              {showEmojiPicker && (
-                <div className={styles.emojiPickerMenu}>
+
+          <div className={styles.inputActions}>
+            <div className={styles.emojiWrap}>
+              <button className="btn-icon" type="button" onClick={() => setShowEmoji(!showEmoji)} title="Emoji">😀</button>
+              {showEmoji && (
+                <div className={styles.emojiMenu}>
                   <PixelEmojiPicker onEmojiSelect={addEmoji} />
                 </div>
               )}
             </div>
-            
-            <PixelButton type="button" variant="ghost" className={styles.toolBtn} onClick={() => execFormat('bold')} title="Bold">
+
+            <button className="btn-icon" type="button" onClick={() => document.execCommand('bold', false)} title="Bold (Ctrl+B)">
               <strong>B</strong>
-            </PixelButton>
-            <PixelButton type="button" variant="ghost" className={styles.toolBtn} onClick={() => execFormat('italic')} title="Italic">
+            </button>
+            <button className="btn-icon" type="button" onClick={() => document.execCommand('italic', false)} title="Italic (Ctrl+I)">
               <em>I</em>
-            </PixelButton>
-            
-            <PixelButton 
-              id="send-message-btn" 
-              variant="primary" 
-              size="sm"
+            </button>
+
+            <button
+              className="btn btn-primary"
+              type="button"
+              id="send-message-btn"
               onClick={sendMessage}
-              style={{ padding: '0 var(--space-2)', marginLeft: 'var(--space-1)' }}
             >
               Send →
-            </PixelButton>
+            </button>
           </div>
         </div>
-      </Box>
-    </PageContainer>
+      </div>
+    </div>
   )
 }

@@ -1,130 +1,201 @@
-.page { display: flex; flex-direction: column; height: 100%; }
-
-.header {
-  padding: var(--space-4) var(--space-6);
-  border-bottom: 2px solid var(--moss-dark);
-  background: rgba(0,0,0,0.2);
-}
-.title { font-size: 0.6rem !important; }
-
-.body {
-  flex: 1;
-  overflow-y: auto;
-  padding: var(--space-6);
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-6);
-  max-width: 700px;
-  width: 100%;
-  margin: 0 auto;
+/* Profile Page — 2-column rigid layout */
+.page {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  height: 100%;
+  overflow: hidden;
 }
 
-.myCard {
-  padding: var(--space-6);
-  display: flex;
-  gap: var(--space-6);
-  align-items: flex-start;
-}
-
-.avatarWrap {
+/* ── Left: Preview panel ───────────────────── */
+.previewPanel {
+  border-right: var(--border-thick);
+  background: var(--bg-panel);
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: var(--space-3);
-  flex-shrink: 0;
+  justify-content: center;
+  gap: var(--space-4);
+  padding: var(--space-6);
+  /* Grid paper bg */
+  background-image:
+    linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+  background-size: 32px 32px;
+  background-color: var(--bg-panel);
 }
-.uploadBtn { font-size: 0.45rem !important; }
 
-.viewProfile {
+.spriteStage {
+  /* The sprite itself is 144×192px (lg). Give it room to breathe. */
+  width: 144px;
+  height: 192px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* Faint glow under the character */
+  filter: drop-shadow(0 8px 12px rgba(255, 140, 0, 0.15));
+}
+
+.previewName {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 0.55rem;
+  color: var(--gold-light);
+  text-shadow: 2px 2px 0 var(--brown-dark);
+  text-align: center;
+  word-break: break-all;
+}
+
+/* ── Right: Customizer panel ──────────────── */
+.customizerPanel {
   display: flex;
   flex-direction: column;
-  gap: var(--space-3);
+  overflow-y: auto;
+  padding: var(--space-5) var(--space-5);
+  gap: var(--space-4);
 }
 
-.profileUsername {
-  font-size: 0.7rem !important;
-  color: var(--gold-light) !important;
+/* Username row */
+.usernameRow {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
 }
 
-.joined {
-  font-family: 'VT323', monospace;
-  font-size: 1rem;
-  color: var(--text-on-dark-muted);
+.usernameInputRow {
+  display: flex;
+  gap: var(--space-2);
+  align-items: stretch;
 }
 
-.editForm {
+.usernameInput {
   flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-3);
 }
 
-.editActions { display: flex; gap: var(--space-3); }
+.saveBtn {
+  flex-shrink: 0;
+  white-space: nowrap;
+}
 
 .error {
   font-family: 'VT323', monospace;
-  color: #e74c3c;
   font-size: 1rem;
+  color: var(--red-earth);
+  border: 2px solid var(--red-earth);
+  padding: var(--space-1) var(--space-2);
 }
 
-.membersSection { display: flex; flex-direction: column; gap: var(--space-3); }
-.sectionTitle { font-size: 0.55rem !important; }
-
-.memberGrid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-  gap: var(--space-3);
+/* Section heading */
+.sectionHeading {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 0.55rem;
+  color: var(--gold-light);
+  text-shadow: 1px 1px 0 var(--brown-dark);
+  padding-bottom: var(--space-2);
+  border-bottom: 2px solid var(--border-color);
+  text-transform: uppercase;
 }
 
-.memberCard {
+/* Tabs */
+.tabs {
   display: flex;
-  align-items: center;
-  gap: var(--space-3);
-  padding: var(--space-3);
+  gap: 0;
+  border: 3px solid var(--border-color);
+  overflow: hidden;
 }
 
-.memberInfo {
+.tab {
+  flex: 1;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 0.4rem;
+  color: var(--text-secondary);
+  background: var(--bg-panel);
+  border: none;
+  border-right: 2px solid var(--border-color);
+  padding: var(--space-2) var(--space-1);
+  cursor: pointer;
+  transition: background 0.1s, color 0.1s;
+  text-transform: uppercase;
+  line-height: 1.6;
+}
+.tab:last-child { border-right: none; }
+.tab:hover { background: var(--moss-dark); color: var(--cream); }
+.tabActive {
+  background: var(--moss-dark);
+  color: var(--gold-light);
+  border-bottom: 2px solid var(--gold);
+}
+
+/* Tab body */
+.tabBody {
   display: flex;
   flex-direction: column;
-  gap: 2px;
-  min-width: 0;
+  gap: var(--space-3);
 }
 
-.memberName {
-  font-family: 'VT323', monospace;
-  font-size: 1.1rem;
-  color: var(--cream);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.youBadge {
+.optionLabel {
   font-family: 'Press Start 2P', monospace;
-  font-size: 0.35rem;
+  font-size: 0.4rem;
   color: var(--moss-light);
-  background: rgba(90,122,58,0.2);
-  padding: 2px 4px;
-  border: 1px solid var(--moss-dark);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 
-/* ============================================================
-   MOBILE
-   ============================================================ */
-@media (max-width: 767px) {
-  .body {
-    padding: var(--space-3);
-  }
+/* Style option chips */
+.optionGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1);
+}
 
-  /* Stack avatar above the edit form instead of side-by-side */
-  .myCard {
-    flex-direction: column;
-    align-items: center;
-    gap: var(--space-4);
-    padding: var(--space-4);
-  }
+.optionChip {
+  font-family: 'VT323', monospace;
+  font-size: 1rem;
+  color: var(--text-secondary);
+  background: var(--bg-panel);
+  border: 3px solid var(--border-color);
+  padding: var(--space-1) var(--space-3);
+  cursor: pointer;
+  transition: all 0.1s;
+  line-height: 1.4;
+}
+.optionChip:hover {
+  background: var(--moss-dark);
+  border-color: var(--moss);
+  color: var(--cream);
+}
+.optionActive {
+  background: var(--moss-dark);
+  border-color: var(--gold);
+  color: var(--gold-light);
+}
 
-  .editActions {
-    flex-wrap: wrap;
-  }
+/* Color swatches */
+.colorRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.colorSwatch {
+  width: 28px;
+  height: 28px;
+  border: 3px solid var(--border-color);
+  cursor: pointer;
+  transition: transform 0.1s, border-color 0.1s;
+  flex-shrink: 0;
+}
+.colorSwatch:hover {
+  transform: scale(1.15);
+  border-color: var(--cream-dim);
+}
+.swatchActive {
+  border-color: var(--gold) !important;
+  box-shadow: 0 0 0 2px var(--gold-light);
+  transform: scale(1.1);
+}
+
+/* Save row */
+.saveRow {
+  margin-top: auto;
+  padding-top: var(--space-4);
+  border-top: 2px solid var(--border-color);
 }

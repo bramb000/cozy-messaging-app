@@ -1,97 +1,74 @@
-.sidebar {
-  display: flex;
-  flex-direction: column;
-}
-
 .header {
-  padding: var(--space-4);
-  border-bottom: 2px solid var(--moss-dark);
-  text-align: center;
+  padding: var(--space-3);
+  border-bottom: var(--border-thick);
+  background: var(--brown-dark);
+  flex-shrink: 0;
 }
 
 .title {
   font-family: 'Press Start 2P', monospace;
-  font-size: 0.55rem;
-  color: var(--gold-light);
-  text-shadow: 1px 1px 0 var(--brown-dark);
+  font-size: 0.5rem;
+  color: var(--gold);
   text-transform: uppercase;
-  letter-spacing: 1px;
+  text-shadow: 1px 1px 0 var(--brown-deep);
 }
 
-.content {
+.list {
   flex: 1;
   overflow-y: auto;
-  padding: var(--space-4) var(--space-2);
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-5);
+  padding: var(--space-2) 0;
 }
 
 .section {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2);
-}
-
-.heading {
+  display: block;
   font-family: 'Press Start 2P', monospace;
   font-size: 0.4rem;
-  color: var(--text-muted);
-  padding: 0 var(--space-2);
+  color: var(--moss-light);
+  padding: var(--space-3) var(--space-3) var(--space-1);
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
 
-.list {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
-.userCard {
+.row {
   display: flex;
   align-items: center;
-  gap: var(--space-3);
-  padding: var(--space-2);
-  border-radius: 4px;
-  cursor: default;
+  gap: var(--space-2);
+  padding: var(--space-1) var(--space-2);
   transition: background 0.1s;
 }
 
-.userCard:hover {
-  background: rgba(255, 255, 255, 0.05);
+.row:hover {
+  background: rgba(255,255,255,0.04);
 }
 
-.offlineCard {
-  opacity: 0.6;
-}
+.online { opacity: 1; }
+.offline { opacity: 0.45; }
 
-.avatarWrap {
+.spriteWrap {
   position: relative;
+  flex-shrink: 0;
+  /* Show just the upper body / head region of the 48×64 sprite */
+  width: 32px;
+  height: 40px;
+  overflow: hidden;
 }
 
-.statusDot {
+.dot {
   position: absolute;
-  bottom: -2px;
-  right: -2px;
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  border: 2px solid var(--night-mid);
+  bottom: 2px;
+  right: 2px;
+  width: 8px;
+  height: 8px;
+  border: 2px solid var(--bg-panel);
 }
 
-.online {
-  background: var(--moss-light);
-}
-
-.offline {
-  background: var(--text-muted);
-}
+.dotOnline  { background: var(--moss-light); }
+.dotOffline { background: var(--text-muted); }
 
 .username {
   font-family: 'VT323', monospace;
-  font-size: 1.1rem;
-  color: var(--text-on-dark);
+  font-size: 1rem;
+  color: var(--text-secondary);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;

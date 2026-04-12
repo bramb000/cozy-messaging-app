@@ -1,12 +1,13 @@
 'use client'
 import { useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
+import { CharacterSprite } from '@/components/character/CharacterSprite'
 import styles from './UserRosterSidebar.module.css'
 
 interface RosterUser {
   id: string
   username: string
-  avatar_url: string | null
+  character_config: Record<string, unknown> | null
   isOnline: boolean
 }
 
@@ -15,18 +16,24 @@ export default function UserRosterSidebar() {
   const supabase = createClient()
 
   async function fetchRoster() {
-    const { data: profiles } = await supabase.from('profiles').select('*').order('username') as { data: { id: string, username: string, avatar_url: string | null }[] | null }
-    const { data: activeSessions } = await supabase.from('sessions').select('user_id').eq('active', true) as { data: { user_id: string }[] | null }
-    
+    const { data: profiles } = await supabase
+      .from('profiles')
+      .select('id, username, character_config')
+      .order('username') as { data: { id: string; username: string; character_config: Record<string, unknown> | null }[] | null }
+
+    const { data: activeSessions } = await supabase
+      .from('sessions')
+      .select('user_id')
+      .eq('active', true) as { data: { user_id: string }[] | null }
+
     if (profiles) {
       const activeIds = new Set((activeSessions || []).map(s => s.user_id))
-      const mapped = profiles.map(p => ({
+      setUsers(profiles.map(p => ({
         id: p.id,
         username: p.username,
-        avatar_url: p.avatar_url,
-        isOnline: activeIds.has(p.id)
-      }))
-      setUsers(mapped)
+        character_config: p.character_config,
+        isOnline: activeIds.has(p.id),
+      })))
     }
   }
 
@@ -34,61 +41,53 @@ export default function UserRosterSidebar() {
     fetchRoster()
     const channel = supabase
       .channel('roster-changes')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'sessions' }, () => {
-        fetchRoster()
-      })
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'profiles' }, () => {
-        fetchRoster()
-      })
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'sessions' }, fetchRoster)
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'profiles' }, fetchRoster)
       .subscribe()
-
     return () => { supabase.removeChannel(channel) }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  const onlineUsers = users.filter(u => u.isOnline)
-  const offlineUsers = users.filter(u => !u.isOnline)
+  const online  = users.filter(u => u.isOnline)
+  const offline = users.filter(u => !u.isOnline)
 
   return (
-    <aside className={`roster-sidebar ${styles.sidebar}`}>
+    <aside className="roster-sidebar" aria-label="Member List">
       <div className={styles.header}>
-        <span className={styles.title}>Town Directory</span>
+        <span className={styles.title}>Directory</span>
       </div>
-      <div className={styles.content}>
-        <div className={styles.section}>
-          <h3 className={styles.heading}>Online — {onlineUsers.length}</h3>
-          <div className={styles.list}>
-            {onlineUsers.map(u => (
-              <div key={u.id} className={styles.userCard}>
-                <div className={styles.avatarWrap}>
-                  <div className="avatar avatar-sm">
-                    {u.avatar_url ? <img src={u.avatar_url} alt={u.username} /> : <span>🌱</span>}
-                  </div>
-                  <div className={`${styles.statusDot} ${styles.online}`} />
-                </div>
-                <span className={styles.username}>{u.username}</span>
-              </div>
-            ))}
-          </div>
-        </div>
 
-        <div className={styles.section}>
-          <h3 className={styles.heading}>Offline — {offlineUsers.length}</h3>
-          <div className={styles.list}>
-            {offlineUsers.map(u => (
-              <div key={u.id} className={`${styles.userCard} ${styles.offlineCard}`}>
-                <div className={styles.avatarWrap}>
-                  <div className="avatar avatar-sm">
-                    {u.avatar_url ? <img src={u.avatar_url} alt={u.username} /> : <span>💤</span>}
-                  </div>
-                  <div className={`${styles.statusDot} ${styles.offline}`} />
-                </div>
-                <span className={styles.username}>{u.username}</span>
-              </div>
-            ))}
-          </div>
-        </div>
+      <div className={styles.list}>
+        {online.length > 0 && (
+          <>
+            <span className={styles.section}>Online — {online.length}</span>
+            {online.map(u => <UserRow key={u.id} user={u} online />)}
+          </>
+        )}
+
+        {offline.length > 0 && (
+          <>
+            <span className={styles.section}>Offline — {offline.length}</span>
+            {offline.map(u => <UserRow key={u.id} user={u} online={false} />)}
+          </>
+        )}
       </div>
     </aside>
+  )
+}
+
+function UserRow({ user, online }: { user: RosterUser; online: boolean }) {
+  return (
+    <div className={`${styles.row} ${online ? styles.online : styles.offline}`}>
+      <div className={styles.spriteWrap}>
+        <CharacterSprite
+          config={user.character_config ?? {}}
+          size="sm"
+          animated={false}
+        />
+        <span className={`${styles.dot} ${online ? styles.dotOnline : styles.dotOffline}`} />
+      </div>
+      <span className={styles.username}>{user.username}</span>
+    </div>
   )
 }

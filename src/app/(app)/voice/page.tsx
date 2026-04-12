@@ -6,95 +6,74 @@ import {
 } from '@livekit/components-react'
 import '@livekit/components-styles'
 import styles from './VoicePage.module.css'
-import PixelButton from '@/components/ui/PixelButton'
-import { PageContainer } from '@/components/ui/Layout/PageContainer'
-import { PageContent } from '@/components/ui/Layout/PageContent'
-import { Stack } from '@/components/ui/Layout/Stack'
-import { Box } from '@/components/ui/Layout/Box'
-import { Text } from '@/components/ui/Typography/Text'
 import type { RemoteParticipant, LocalParticipant } from 'livekit-client'
 import { createClient } from '@/lib/supabase/client'
+import { CharacterSprite } from '@/components/character/CharacterSprite'
+import type { CharacterConfig } from '@/lib/sprites'
 
-// Simple string hash function to reliably map a string to a number 0-24
-function stringHashToIndex(str: string, maxSeats: number): number {
-  let hash = 0;
+function stringHashToIndex(str: string, max: number): number {
+  let hash = 0
   for (let i = 0; i < str.length; i++) {
-    const char = str.charCodeAt(i)
-    hash = ((hash << 5) - hash) + char
-    hash = hash & hash // Convert to 32bit integer
+    hash = ((hash << 5) - hash) + str.charCodeAt(i)
+    hash = hash & hash
   }
-  return Math.abs(hash) % maxSeats;
+  return Math.abs(hash) % max
 }
 
-// Pre-calculate 25 seats in a circle
-const TOTAL_SEATS = 25;
-const radius = 42; // Percentage of the container size (50% is edge)
-const RADIUS_UNIT = '%';
+const TOTAL_SEATS = 25
+const RADIUS_PCT = 40 // % of container radius
 const seats = Array.from({ length: TOTAL_SEATS }).map((_, i) => {
-  const angle = (i / TOTAL_SEATS) * 2 * Math.PI;
-  // Offset by -90deg (-PI/2) to start top-center
-  const x = Math.cos(angle - Math.PI / 2) * radius;
-  const y = Math.sin(angle - Math.PI / 2) * radius;
-  return { x, y };
-});
+  const angle = (i / TOTAL_SEATS) * 2 * Math.PI - Math.PI / 2
+  return {
+    x: Math.cos(angle) * RADIUS_PCT,
+    y: Math.sin(angle) * RADIUS_PCT,
+  }
+})
 
 export default function VoicePage() {
-  const [token, setToken] = useState<string | null>(null)
+  const [token, setToken]         = useState<string | null>(null)
   const [serverUrl, setServerUrl] = useState('')
   const [connected, setConnected] = useState(false)
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState('')
+  const [loading, setLoading]     = useState(false)
+  const [error, setError]         = useState('')
 
   async function joinRoom() {
-    setLoading(true)
-    setError('')
+    setLoading(true); setError('')
     const res = await fetch('/api/livekit-token', { method: 'POST' })
     if (!res.ok) { setError('Failed to get token'); setLoading(false); return }
     const data = await res.json()
-    setToken(data.token)
-    setServerUrl(data.url)
-    setConnected(true)
-    setLoading(false)
+    setToken(data.token); setServerUrl(data.url)
+    setConnected(true); setLoading(false)
   }
 
-  function leaveRoom() {
-    setToken(null)
-    setConnected(false)
-  }
+  function leaveRoom() { setToken(null); setConnected(false) }
 
   return (
-    <PageContainer>
-      <PageContent centered className={styles.body}>
-        {!connected ? (
-          <Stack direction="column" align="center" gap="space-4" p="space-10" className={styles.joinCard}>
-            <div className={styles.roomIcon}>🔊</div>
-            <Text variant="h3" style={{ color: '#fff', textShadow: '1px 1px 0 #000' }}>Cozy Corner Voice</Text>
-            <Text variant="subtitle" align="center" style={{ color: '#3e2723' }}>Open to everyone. Just press join.</Text>
-            {error && <Box p="space-2" style={{ background: '#f8d7da', border: '2px solid #f5c6cb' }}><Text variant="body" color="red">⚠ {error}</Text></Box>}
-            <PixelButton
-              id="join-voice-btn"
-              variant="primary"
-              onClick={joinRoom}
-              disabled={loading}
-            >
-              {loading ? 'Connecting...' : '→ Join Voice Room'}
-            </PixelButton>
-          </Stack>
-        ) : (
-          <LiveKitRoom
-            token={token!}
-            serverUrl={serverUrl}
-            connect={true}
-            audio={true}
-            video={false}
-            onDisconnected={leaveRoom}
+    <div className={styles.page}>
+      {!connected ? (
+        /* ── Join State ────────────────────────────────── */
+        <div className={styles.joinState}>
+          <div className={styles.firePlaceholder}>🔥</div>
+          <h2 className={styles.joinTitle}>Town Bonfire</h2>
+          <p className={styles.joinSubtitle}>Gather around the fire. Everyone is welcome.</p>
+          {error && <p className={styles.error}>⚠ {error}</p>}
+          <button
+            id="join-voice-btn"
+            className="btn btn-primary"
+            onClick={joinRoom}
+            disabled={loading}
           >
-            <RoomAudioRenderer />
-            <VoiceRoomUI onLeave={leaveRoom} />
-          </LiveKitRoom>
-        )}
-      </PageContent>
-    </PageContainer>
+            {loading ? 'Connecting...' : '→ Join the Conversation'}
+          </button>
+        </div>
+      ) : (
+        /* ── Connected State ───────────────────────────── */
+        <LiveKitRoom token={token!} serverUrl={serverUrl} connect audio video={false} onDisconnected={leaveRoom}>
+          <RoomAudioRenderer />
+          <VoiceRoomUI onLeave={leaveRoom} />
+        </LiveKitRoom>
+      )}
+    </div>
   )
 }
 
@@ -102,21 +81,21 @@ function VoiceRoomUI({ onLeave }: { onLeave: () => void }) {
   const participants = useParticipants()
   const { localParticipant } = useLocalParticipant()
   const [muted, setMuted] = useState(false)
-  const [profilesMap, setProfilesMap] = useState<Record<string, {avatar_url: string | null}>>({})
-
+  const [profileMap, setProfileMap] = useState<Record<string, CharacterConfig>>({})
   const supabase = createClient()
 
   useEffect(() => {
-    // Fetch all profiles so we have their avatars
     async function fetchProfiles() {
-      const { data } = await supabase.from('profiles').select('id, avatar_url')
+      const { data } = await supabase.from('profiles').select('id, character_config')
       if (data) {
-        const map: Record<string, {avatar_url: string | null}> = {}
-        data.forEach((p: any) => map[p.id] = { avatar_url: p.avatar_url })
-        setProfilesMap(map)
+        const map: Record<string, CharacterConfig> = {}
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        data.forEach((p: any) => { if (p.character_config) map[p.id] = p.character_config })
+        setProfileMap(map)
       }
     }
     fetchProfiles()
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const toggleMute = useCallback(async () => {
@@ -125,84 +104,65 @@ function VoiceRoomUI({ onLeave }: { onLeave: () => void }) {
   }, [localParticipant, muted])
 
   return (
-    <Stack direction="column" align="center" gap="space-6" w="100%" style={{ maxWidth: 800 }}>
-      
-      {/* The Circular Bonfire Area */}
-      <div className={styles.bonfireContainer}>
-        <div className={styles.centerFire}>🔥</div>
-        
-        {participants.map(p => {
-          const seatIndex = stringHashToIndex(p.identity, TOTAL_SEATS)
-          const seat = seats[seatIndex]
-          const profile = profilesMap[p.identity] || { avatar_url: null }
-          
+    <div className={styles.roomWrap}>
+      {/* Bonfire Circle */}
+      <div className={styles.bonfireArea}>
+        <div className={styles.fire}>🔥</div>
+
+        {seats.map((seat, i) => {
+          const participant = participants.find(p => stringHashToIndex(p.identity, TOTAL_SEATS) === i)
           return (
-            <ParticipantCard 
-              key={p.identity} 
-              participant={p} 
-              profile={profile}
-              style={{
-                transform: `translate(-50%, -50%) translate(${seat.x * 2.5}px, ${seat.y * 2.5}px)`
-              }}
+            <SeatSlot
+              key={i}
               seat={seat}
+              participant={participant ?? null}
+              config={participant ? (profileMap[participant.identity] ?? {}) : null}
             />
           )
         })}
       </div>
 
-      <Stack direction="row" gap="space-3" className={styles.controlsBar}>
-        <button
-          id="toggle-mute-btn"
-          className={styles.controlBtn}
-          onClick={toggleMute}
-        >
-          {muted ? '🔇 Muted' : '🎙️ Mute'}
+      {/* Controls Bar */}
+      <div className={styles.controlsBar}>
+        <button id="toggle-mute-btn" className={styles.ctrlBtn} onClick={toggleMute}>
+          {muted ? '🔇 Unmute' : '🎙️ Mute'}
         </button>
-        <button className={styles.controlBtn}>
+        <button className={styles.ctrlBtn}>
           🎧 Deafen
         </button>
-        <button id="leave-voice-btn" className={styles.controlBtn} onClick={onLeave}>
+        <button id="leave-voice-btn" className={`${styles.ctrlBtn} ${styles.leaveBtn}`} onClick={onLeave}>
           🪵 Leave Bonfire
         </button>
-      </Stack>
-    </Stack>
+      </div>
+    </div>
   )
 }
 
-function ParticipantCard({ 
-  participant, 
-  profile,
-  seat 
-}: { 
-  participant: RemoteParticipant | LocalParticipant,
-  profile: { avatar_url: string | null },
-  style?: React.CSSProperties,
-  seat: { x: number, y: number }
+function SeatSlot({
+  seat, participant, config,
+}: {
+  seat: { x: number; y: number }
+  participant: RemoteParticipant | LocalParticipant | null
+  config: Partial<CharacterConfig> | null
 }) {
-  const isSpeaking = participant.isSpeaking
+  const speaking = participant?.isSpeaking ?? false
+
   return (
-    <div 
-      className={`${styles.participantCard} ${isSpeaking ? styles.speaking : ''}`}
+    <div
+      className={`${styles.seat} ${participant ? styles.seatOccupied : styles.seatEmpty} ${speaking ? styles.speaking : ''}`}
       style={{
-        transform: `translate(calc(-50% + ${seat.x * 3}px), calc(-50% + ${seat.y * 3}px))`
+        left: `calc(50% + ${seat.x}%)`,
+        top:  `calc(50% + ${seat.y}%)`,
       }}
     >
-      {isSpeaking && <div className={styles.waveformLeft}>ılı</div>}
-      
-      <div className={styles.avatarCircle}>
-        {profile.avatar_url ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img src={profile.avatar_url} alt="Avatar" className={styles.avatarImage} />
-        ) : (
-          <span className={styles.avatarEmoji}>🧑‍🌾</span>
-        )}
-      </div>
-      
-      {isSpeaking && <div className={styles.waveformRight}>ılı</div>}
-      
-      <Text variant="caption" style={{ color: 'var(--text-primary)', textShadow: '1px 1px 0px rgba(0,0,0,0.8)', marginTop: 'var(--space-2)' }}>
-        {participant.name ?? participant.identity}
-      </Text>
+      {participant ? (
+        <>
+          <CharacterSprite config={config ?? {}} size="sm" animated={speaking} />
+          <span className={styles.seatLabel}>{participant.name ?? participant.identity}</span>
+        </>
+      ) : (
+        <div className={styles.emptyPlot} />
+      )}
     </div>
   )
 }

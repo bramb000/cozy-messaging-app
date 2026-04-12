@@ -1,153 +1,330 @@
 'use client'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { useAuth } from '@/context/AuthContext'
-import type { Profile } from '@/types/database'
 import styles from './ProfilePage.module.css'
-import PixelButton from '@/components/ui/PixelButton'
-import PixelPanel from '@/components/ui/PixelPanel'
-import { Stack } from '@/components/ui/Layout/Stack'
-import { Box } from '@/components/ui/Layout/Box'
-import { Text } from '@/components/ui/Typography/Text'
-import { PageContainer } from '@/components/ui/Layout/PageContainer'
-import { PageContent } from '@/components/ui/Layout/PageContent'
+import { CharacterSprite } from '@/components/character/CharacterSprite'
+import {
+  HAIR_STYLES, HAIR_COLORS,
+  TOP_STYLES, BOTTOM_STYLES, SHOE_COLORS,
+  HAT_STYLES, HELMET_STYLES,
+  DEFAULT_CHARACTER_CONFIG,
+  type CharacterConfig,
+} from '@/lib/sprites'
+
+type TabId = 'hair' | 'top' | 'bottom' | 'shoes' | 'hat'
+const TABS: { id: TabId; label: string }[] = [
+  { id: 'hair',   label: 'Hair'   },
+  { id: 'top',    label: 'Top'    },
+  { id: 'bottom', label: 'Bottom' },
+  { id: 'shoes',  label: 'Shoes'  },
+  { id: 'hat',    label: 'Hat'    },
+]
 
 export default function ProfilePage() {
   const { user, profile: myProfile, refreshProfile } = useAuth()
   const supabase = createClient()
-  const [editing, setEditing] = useState(false)
-  const [username, setUsername] = useState('')
-  const [avatarFile, setAvatarFile] = useState<File | null>(null)
-  const [avatarPreview, setAvatarPreview] = useState<string | null>(null)
-  const [error, setError] = useState('')
-  const [saving, setSaving] = useState(false)
-  const [members, setMembers] = useState<Profile[]>([])
-  const fileRef = useRef<HTMLInputElement>(null)
+
+  const [username, setUsername]     = useState('')
+  const [config, setConfig]         = useState<CharacterConfig>(DEFAULT_CHARACTER_CONFIG)
+  const [activeTab, setActiveTab]   = useState<TabId>('hair')
+  const [saving, setSaving]         = useState(false)
+  const [error, setError]           = useState('')
+  const [saved, setSaved]           = useState(false)
 
   useEffect(() => {
-    if (myProfile) setUsername(myProfile.username)
-    // Load all members
-    supabase.from('profiles').select('*').order('created_at').then(({ data }) => {
-      setMembers((data ?? []) as Profile[])
-    })
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    if (!myProfile) return
+    setUsername(myProfile.username)
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const cc = (myProfile as any).character_config
+    if (cc) setConfig({ ...DEFAULT_CHARACTER_CONFIG, ...cc })
   }, [myProfile])
 
-  function handleAvatarChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0]
-    if (!file) return
-    setAvatarFile(file)
-    setAvatarPreview(URL.createObjectURL(file))
+  function set<K extends keyof CharacterConfig>(key: K, value: CharacterConfig[K]) {
+    setConfig(prev => ({ ...prev, [key]: value }))
   }
 
-  async function handleSave(e: React.FormEvent) {
-    e.preventDefault()
+  async function handleSave() {
     if (!user) return
-    setSaving(true)
-    setError('')
+    setSaving(true); setError(''); setSaved(false)
 
+    // Check username uniqueness
     const { data: existing } = await supabase
-      .from('profiles')
-      .select('id')
-      .eq('username', username.trim())
-      .neq('id', user.id)
-      .maybeSingle()
-    if (existing) { setError('Username taken!'); setSaving(false); return }
-
-    let avatarUrl = myProfile?.avatar_url
-    if (avatarFile) {
-      const ext = avatarFile.name.split('.').pop()
-      await supabase.storage.from('avatars').upload(`${user.id}.${ext}`, avatarFile, { upsert: true })
-      const { data } = supabase.storage.from('avatars').getPublicUrl(`${user.id}.${ext}`)
-      avatarUrl = data.publicUrl
-    }
+      .from('profiles').select('id')
+      .eq('username', username.trim()).neq('id', user.id).maybeSingle()
+    if (existing) { setError('Username already taken!'); setSaving(false); return }
 
     // @ts-expect-error Supabase types misaligned
-    await supabase.from('profiles').update({ username: username.trim(), avatar_url: avatarUrl }).eq('id', user.id)
+    await supabase.from('profiles').update({
+      username: username.trim(),
+      character_config: config,
+    }).eq('id', user.id)
+
     await refreshProfile()
-    setEditing(false)
     setSaving(false)
-    setAvatarFile(null)
-    setAvatarPreview(null)
+    setSaved(true)
+    setTimeout(() => setSaved(false), 2500)
   }
 
   if (!myProfile) return <div className="loading-screen"><div className="pixel-spinner" /></div>
 
+  // Resolve available styles/colors for the current tab
+  const currentTop    = TOP_STYLES.find(t => t.id === config.topStyle)
+  const currentBottom = BOTTOM_STYLES.find(b => b.id === config.bottomStyle)
+
   return (
-    <PageContainer>
-      <PageContent centered className={styles.body}>
-        {/* My profile card */}
-        <PixelPanel variant="standard" className={styles.myCard} style={{ maxWidth: '400px', width: '100%', padding: 'var(--space-6)' }}>
-          <div className={styles.avatarWrap}>
-            <div className="avatar avatar-md" style={{ margin: '0 auto' }}>
-              {(avatarPreview ?? myProfile.avatar_url)
-                ? <img src={avatarPreview ?? myProfile.avatar_url!} alt={myProfile.username} />
-                : <span>🌱</span>}
-            </div>
-            {editing && (
-              <>
-                <PixelButton type="button" variant="secondary" className={styles.uploadBtn} onClick={() => fileRef.current?.click()}>
-                  Change Photo
-                </PixelButton>
-                <input ref={fileRef} type="file" accept="image/*" className="sr-only" onChange={handleAvatarChange} />
-              </>
-            )}
-          </div>
-
-          {editing ? (
-            <form onSubmit={handleSave} className={styles.editForm}>
-              <div className="form-group">
-                <label className="input-label" htmlFor="profile-username">Username</label>
-                <input
-                  id="profile-username"
-                  className="input"
-                  value={username}
-                  onChange={e => setUsername(e.target.value)}
-                  maxLength={20}
-                  required
-                />
-              </div>
-              {error && <p className={styles.error}>⚠ {error}</p>}
-              <div className={styles.editActions}>
-                <PixelButton type="submit" variant="primary" id="save-profile-btn" disabled={saving}>
-                  {saving ? 'Saving...' : 'Save'}
-                </PixelButton>
-                <PixelButton type="button" variant="ghost" onClick={() => { setEditing(false); setUsername(myProfile.username); setAvatarFile(null); setAvatarPreview(null) }}>
-                  Cancel
-                </PixelButton>
-              </div>
-            </form>
-          ) : (
-            <div className={styles.viewProfile}>
-              <h3 className={styles.profileUsername}>{myProfile.username}</h3>
-              <p className={styles.joined}>Member since {new Date(myProfile.created_at!).toLocaleDateString()}</p>
-              <PixelButton variant="secondary" id="edit-profile-btn" onClick={() => setEditing(true)}>
-                ✏️ Edit Profile
-              </PixelButton>
-            </div>
-          )}
-        </PixelPanel>
-
-        {/* Community members */}
-        <div className={styles.membersSection}>
-          <h3 className={styles.sectionTitle}>Community Members</h3>
-          <div className={styles.memberGrid}>
-            {members.map(m => (
-              <PixelPanel key={m.id} variant="warm" className={styles.memberCard}>
-                <Stack direction="row" align="center" gap="space-3">
-                  <div className="avatar">
-                    {m.avatar_url ? <img src={m.avatar_url} alt={m.username} /> : <span>🌱</span>}
-                  </div>
-                  <Stack direction="column" gap="space-1" className={styles.memberInfo}>
-                    <Text variant="body" color="primary">{m.username}</Text>
-                    {m.id === user?.id && <span className={styles.youBadge}>You</span>}
-                  </Stack>
-                </Stack>
-              </PixelPanel>
-            ))}
-          </div>
+    <div className={styles.page}>
+      {/* ── Left: Character Preview ──────────────────── */}
+      <div className={styles.previewPanel}>
+        <div className={styles.spriteStage}>
+          <CharacterSprite config={config} size="lg" animated />
         </div>
-      </PageContent>
-    </PageContainer>
+        <div className={styles.previewName}>{username || myProfile.username}</div>
+      </div>
+
+      {/* ── Right: Customizer ───────────────────────── */}
+      <div className={styles.customizerPanel}>
+        {/* Username */}
+        <div className={styles.usernameRow}>
+          <label className="input-label" htmlFor="profile-username">Username</label>
+          <div className={styles.usernameInputRow}>
+            <input
+              id="profile-username"
+              className={`input ${styles.usernameInput}`}
+              value={username}
+              onChange={e => setUsername(e.target.value)}
+              maxLength={20}
+              placeholder="YourName"
+            />
+            <button
+              className={`btn btn-primary ${styles.saveBtn}`}
+              id="save-profile-btn"
+              onClick={handleSave}
+              disabled={saving}
+            >
+              {saving ? '...' : saved ? '✓ Saved' : 'Save'}
+            </button>
+          </div>
+          {error && <p className={styles.error}>⚠ {error}</p>}
+        </div>
+
+        {/* Appearance heading */}
+        <div className={styles.sectionHeading}>Appearance</div>
+
+        {/* Tabs */}
+        <div className={styles.tabs}>
+          {TABS.map(t => (
+            <button
+              key={t.id}
+              className={`${styles.tab} ${activeTab === t.id ? styles.tabActive : ''}`}
+              onClick={() => setActiveTab(t.id)}
+              type="button"
+            >
+              {t.label}
+            </button>
+          ))}
+        </div>
+
+        {/* Tab content */}
+        <div className={styles.tabBody}>
+          {/* ── HAIR ── */}
+          {activeTab === 'hair' && (
+            <>
+              <div className={styles.optionLabel}>Style</div>
+              <div className={styles.optionGrid}>
+                {HAIR_STYLES.map(h => (
+                  <button
+                    key={h.id}
+                    className={`${styles.optionChip} ${config.hairStyle === h.id ? styles.optionActive : ''}`}
+                    onClick={() => set('hairStyle', h.id)}
+                    type="button"
+                  >
+                    {h.label}
+                  </button>
+                ))}
+              </div>
+              <div className={styles.optionLabel}>Colour</div>
+              <div className={styles.colorRow}>
+                {HAIR_COLORS.map(c => (
+                  <button
+                    key={c}
+                    className={`${styles.colorSwatch} ${config.hairColor === c ? styles.swatchActive : ''}`}
+                    title={c}
+                    style={{ background: colorHex(c, 'hair') }}
+                    onClick={() => set('hairColor', c)}
+                    type="button"
+                  />
+                ))}
+              </div>
+            </>
+          )}
+
+          {/* ── TOP ── */}
+          {activeTab === 'top' && (
+            <>
+              <div className={styles.optionLabel}>Style</div>
+              <div className={styles.optionGrid}>
+                {TOP_STYLES.map(t => (
+                  <button
+                    key={t.id}
+                    className={`${styles.optionChip} ${config.topStyle === t.id ? styles.optionActive : ''}`}
+                    onClick={() => set('topStyle', t.id)}
+                    type="button"
+                  >
+                    {t.label}
+                  </button>
+                ))}
+              </div>
+              <div className={styles.optionLabel}>Colour</div>
+              <div className={styles.colorRow}>
+                {(currentTop?.colors ?? []).map(c => (
+                  <button
+                    key={c}
+                    className={`${styles.colorSwatch} ${config.topColor === c ? styles.swatchActive : ''}`}
+                    title={c}
+                    style={{ background: colorHex(c, 'outfit') }}
+                    onClick={() => set('topColor', c)}
+                    type="button"
+                  />
+                ))}
+              </div>
+            </>
+          )}
+
+          {/* ── BOTTOM ── */}
+          {activeTab === 'bottom' && (
+            <>
+              <div className={styles.optionLabel}>Style</div>
+              <div className={styles.optionGrid}>
+                {BOTTOM_STYLES.map(b => (
+                  <button
+                    key={b.id}
+                    className={`${styles.optionChip} ${config.bottomStyle === b.id ? styles.optionActive : ''}`}
+                    onClick={() => set('bottomStyle', b.id)}
+                    type="button"
+                  >
+                    {b.label}
+                  </button>
+                ))}
+              </div>
+              <div className={styles.optionLabel}>Colour</div>
+              <div className={styles.colorRow}>
+                {(currentBottom?.colors ?? []).map(c => (
+                  <button
+                    key={c}
+                    className={`${styles.colorSwatch} ${config.bottomColor === c ? styles.swatchActive : ''}`}
+                    title={c}
+                    style={{ background: colorHex(c, 'outfit') }}
+                    onClick={() => set('bottomColor', c)}
+                    type="button"
+                  />
+                ))}
+              </div>
+            </>
+          )}
+
+          {/* ── SHOES ── */}
+          {activeTab === 'shoes' && (
+            <>
+              <div className={styles.optionLabel}>Colour</div>
+              <div className={styles.colorRow}>
+                {SHOE_COLORS.map(c => (
+                  <button
+                    key={c}
+                    className={`${styles.colorSwatch} ${config.shoeColor === c ? styles.swatchActive : ''}`}
+                    title={c}
+                    style={{ background: colorHex(c, 'shoe') }}
+                    onClick={() => set('shoeColor', c)}
+                    type="button"
+                  />
+                ))}
+              </div>
+            </>
+          )}
+
+          {/* ── HAT ── */}
+          {activeTab === 'hat' && (
+            <>
+              <div className={styles.optionLabel}>Hat</div>
+              <div className={styles.optionGrid}>
+                {HAT_STYLES.map(h => (
+                  <button
+                    key={h.id ?? 'none'}
+                    className={`${styles.optionChip} ${config.hatStyle === h.id ? styles.optionActive : ''}`}
+                    onClick={() => set('hatStyle', h.id)}
+                    type="button"
+                  >
+                    {h.label}
+                  </button>
+                ))}
+              </div>
+              <div className={styles.optionLabel}>Helmet</div>
+              <div className={styles.optionGrid}>
+                {HELMET_STYLES.map(h => (
+                  <button
+                    key={h.id ?? 'none'}
+                    className={`${styles.optionChip} ${config.helmetStyle === h.id ? styles.optionActive : ''}`}
+                    onClick={() => { set('helmetStyle', h.id); if (!config.helmetColor && h.colors.length) set('helmetColor', h.colors[0]) }}
+                    type="button"
+                  >
+                    {h.label}
+                  </button>
+                ))}
+              </div>
+              {config.helmetStyle && (
+                <>
+                  <div className={styles.optionLabel}>Helmet Colour</div>
+                  <div className={styles.colorRow}>
+                    {(HELMET_STYLES.find(h => h.id === config.helmetStyle)?.colors ?? []).map(c => (
+                      <button
+                        key={c}
+                        className={`${styles.colorSwatch} ${config.helmetColor === c ? styles.swatchActive : ''}`}
+                        title={c}
+                        style={{ background: colorHex(c, 'outfit') }}
+                        onClick={() => set('helmetColor', c)}
+                        type="button"
+                      />
+                    ))}
+                  </div>
+                </>
+              )}
+            </>
+          )}
+        </div>
+
+        {/* Save Appearance */}
+        <div className={styles.saveRow}>
+          <button
+            className="btn btn-primary btn-full"
+            id="save-appearance-btn"
+            onClick={handleSave}
+            disabled={saving}
+          >
+            {saving ? 'Saving...' : saved ? '✓ Appearance Saved!' : 'Save Appearance'}
+          </button>
+        </div>
+      </div>
+    </div>
   )
+}
+
+// Approximate hex values for display swatches based on the color name
+const HAIR_HEX: Record<string, string> = {
+  Black: '#1a1a1a', Blonde: '#f4d03f', Brown: '#7b5234', Ginger: '#c0392b', Grey: '#aab7b8',
+}
+const OUTFIT_HEX: Record<string, string> = {
+  Black: '#2d2d2d', Blue: '#2e86c1', Brown: '#784212', Green: '#27ae60',
+  Orange: '#e67e22', Pink: '#e91e8c', Purple: '#7d3c98', Red: '#c0392b',
+  White: '#f0f0f0', White_and_Brown: '#d5c5a1', Bronze: '#a87c4f',
+  Gold: '#d4af37', Iron: '#8d8d8d',
+}
+const SHOE_HEX: Record<string, string> = {
+  Black: '#1a1a1a', Blue: '#2e86c1', Brown: '#7b5234', Green: '#27ae60',
+  Orange: '#e67e22', Pink: '#e91e8c', Purple: '#7d3c98', Red: '#c0392b', White: '#f0f0f0',
+}
+
+function colorHex(name: string, type: 'hair' | 'outfit' | 'shoe'): string {
+  if (type === 'hair')   return HAIR_HEX[name]   ?? '#888'
+  if (type === 'shoe')   return SHOE_HEX[name]   ?? '#888'
+  return OUTFIT_HEX[name] ?? '#888'
 }

@@ -1,3 +1,53 @@
-.sidebar {
-  /* additional sidebar specifics if needed */
+.brand {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-3);
+  border-bottom: var(--border-thick);
+  background: var(--brown-dark);
+  flex-shrink: 0;
+}
+
+.brandIcon {
+  font-size: 1.4rem;
+}
+
+.userPanel {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2);
+  margin-top: var(--space-2);
+  border: 2px solid var(--moss-dark);
+  background: rgba(0,0,0,0.2);
+}
+
+.userAvatar {
+  flex-shrink: 0;
+  display: block;
+  /* The sprite itself is 48×64 but we clip it to just show the character head */
+  width: 32px;
+  height: 48px;
+  overflow: hidden;
+}
+
+.userInfo {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.username {
+  display: block;
+  font-family: 'VT323', monospace;
+  font-size: 1rem;
+  color: var(--cream);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.signOutBtn {
+  font-size: 0.9rem;
+  flex-shrink: 0;
 }

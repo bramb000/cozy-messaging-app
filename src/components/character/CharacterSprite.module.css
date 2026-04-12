@@ -1,0 +1,24 @@
+.spriteContainer {
+  position: relative;
+  image-rendering: pixelated;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.layer {
+  position: absolute;
+  inset: 0;
+  background-repeat: no-repeat;
+  image-rendering: pixelated;
+  /* Default: show first frame, no animation */
+}
+
+/* Animated idle: step through all columns in the row */
+.layer.animated {
+  animation: sprite-walk calc(var(--cols) * 0.1s) steps(var(--cols)) infinite;
+}
+
+@keyframes sprite-walk {
+  from { background-position-x: 0px; }
+  to   { background-position-x: calc(var(--total-w) * -1); }
+}
