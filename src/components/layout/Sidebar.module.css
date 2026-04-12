@@ -24,11 +24,17 @@
 
 .userAvatar {
   flex-shrink: 0;
-  display: block;
-  /* The sprite itself is 48×64 but we clip it to just show the character head */
-  width: 32px;
-  height: 48px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  /* The sprite itself is 48×64. Centering a 48px wide sprite in a 40px wide 
+     container hides 4px of empty space on each side, perfectly framing the head. */
+  width: 40px;
+  height: 40px;
   overflow: hidden;
+  border: 2px solid var(--moss);
+  background: var(--bg-input);
+  border-radius: 4px;
 }
 
 .userInfo {

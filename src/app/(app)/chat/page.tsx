@@ -116,20 +116,18 @@ export default function ChatPage() {
               {isUnread && <div className={styles.unreadDivider}>New Messages</div>}
 
               <div className={`${styles.row} ${me ? styles.rowMe : styles.rowOther} ${isGroupStart ? styles.groupStart : styles.groupFollow}`}>
-                {/* Avatar (other users only, on group start) */}
-                {!me && (
-                  <div className={styles.avatarSlot}>
-                    {isGroupStart && (
-                      <div className={styles.avatarWrap}>
-                        <CharacterSprite
-                          config={(msg.profile as any)?.character_config ?? {}}
-                          size="sm"
-                          animated={false}
-                        />
-                      </div>
-                    )}
-                  </div>
-                )}
+                {/* Avatar (visible on group start) */}
+                <div className={styles.avatarSlot}>
+                  {isGroupStart && (
+                    <div className={styles.avatarWrap}>
+                      <CharacterSprite
+                        config={(msg.profile as any)?.character_config ?? {}}
+                        size="sm"
+                        animated={false}
+                      />
+                    </div>
+                  )}
+                </div>
 
                 <div className={styles.bubble}>
                   {isGroupStart && (
