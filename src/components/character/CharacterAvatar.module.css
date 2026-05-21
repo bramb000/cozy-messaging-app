@@ -36,16 +36,17 @@
   /* no extra styles */
 }
 
-/* Online/offline dot indicator */
+/* Online/offline pixel indicator — square, no glow, farm-themed */
 .dot {
   position: absolute;
-  bottom: 4px;
+  bottom: var(--space-1);
   right: 2px;
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
+  width: var(--space-2);   /* 8px — one grid unit */
+  height: var(--space-2);
+  border-radius: var(--radius-sharp); /* crisp pixel square, not a circle */
   border: 2px solid var(--bg-panel);
   pointer-events: none;
+  image-rendering: pixelated;
 }
 
 .dotOnline  { background: var(--moss-light); }

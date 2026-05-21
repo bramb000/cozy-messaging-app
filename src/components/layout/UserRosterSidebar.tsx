@@ -79,13 +79,19 @@ export default function UserRosterSidebar() {
 function UserRow({ user, online }: { user: RosterUser; online: boolean }) {
   return (
     <div className={`${styles.row} ${online ? styles.online : styles.offline}`}>
+      {/* Avatar — no dot overlay; status shown via leaf marker instead */}
       <CharacterAvatar
         config={user.character_config ?? {}}
         variant="roster"
-        showDot
-        dotOnline={online}
+        showDot={false}
       />
       <span className={styles.username}>{user.username}</span>
+      {/* Leaf marker replaces glowing dot — nature-themed online indicator */}
+      {online && (
+        <span className={styles.statusLeaf} aria-label="online" title="Online">
+          ✿
+        </span>
+      )}
     </div>
   )
 }
