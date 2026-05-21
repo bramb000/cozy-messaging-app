@@ -35,8 +35,8 @@
 }
 
 .swatchLabel {
-  font-family: 'Press Start 2P', monospace;
-  font-size: 0.4rem;
+  font-family: var(--font-heading);
+  font-size: var(--font-size-ui-xs);
   color: var(--text-muted);
   width: 38px;
   flex-shrink: 0;
@@ -45,9 +45,9 @@
 .swatch {
   width: 18px;
   height: 18px;
-  border: 2px solid var(--border-dark);
+  border: var(--border-w-thin) solid var(--border-color);
   cursor: pointer;
-  transition: transform 0.08s;
+  transition: transform var(--transition-base);
 }
 
 .swatch:hover { transform: scale(1.2); }
@@ -66,14 +66,14 @@
 .tagActive {
   border-color: var(--moss) !important;
   color: var(--gold-light) !important;
-  background: rgba(90,122,58,0.2) !important;
+  background: rgba(90,122,58,0.2) !important; /* moss-dark at 20% — intentional subtle tint */
 }
 
 .error {
-  font-family: 'VT323', monospace;
-  font-size: 1rem;
-  color: #e74c3c;
+  font-family: var(--font-body);
+  font-size: var(--font-size-ui-lg);
+  color: var(--color-error);
   padding: var(--space-2);
-  border: 2px solid #e74c3c;
-  background: rgba(231,76,60,0.1);
+  border: var(--border-w-thin) solid var(--color-error-border);
+  background: var(--color-error-bg);
 }

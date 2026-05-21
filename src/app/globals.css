@@ -20,6 +20,8 @@
   --gold:          #d4af37;
   --gold-light:    #f4d799;
   --red-earth:     #8b2e2e;
+  --red-deep:      #5a1c1c;
+  --muted-green:   #7a8a7a;
 
   /* ── Semantic tokens ─────────────────────────────────────── */
   --bg-main:      var(--forest-deep);
@@ -28,10 +30,16 @@
   --bg-input:     rgba(0,0,0,0.4);
   --text-primary: var(--cream);
   --text-secondary: var(--cream-dim);
-  --text-muted:   #7a8a7a;
+  --text-muted:   var(--muted-green);
+  --text-on-dark: var(--cream);
+  --text-on-light: var(--brown-deep);
   --accent:       var(--moss);
   --border-color: var(--brown-dark);
   --border-thick: 4px solid var(--brown-dark);
+  /* Error state */
+  --color-error:    var(--red-earth);
+  --color-error-bg: rgba(139,46,46,0.12);
+  --color-error-border: var(--red-deep);
 
   /* ── Spacing (strict 8pt grid) ───────────────────────────── */
   --space-1: 4px;
@@ -45,12 +53,35 @@
   --space-12: 80px;
 
   /* ── Layout — App Shell Column Ratios (mapping to grid columns) ── */
-  --sidebar-cols-desktop: 4fr; /* Left sidebar: 4 columns out of 12 (increased from 3fr) */
-  --main-cols-desktop: 6fr;    /* Center main: 6 columns out of 12 */
+  --sidebar-cols-desktop: 2fr; /* Left sidebar: 2 columns out of 12 */
+  --main-cols-desktop: 8fr;    /* Center main: 8 columns out of 12 */
   --roster-cols-desktop: 2fr;  /* Right roster: 2 columns out of 12 */
 
-  --sidebar-cols-tablet: 3fr;  /* Left sidebar: 3 columns out of 8 */
-  --main-cols-tablet: 5fr;     /* Center main: 5 columns out of 8 */
+  --sidebar-cols-tablet: 2fr;  /* Left sidebar: 2 columns out of 8 */
+  --main-cols-tablet: 6fr;     /* Center main: 6 columns out of 8 */
+
+  /* ── Typography tokens ───────────────────────────────────── */
+  --font-heading:    'Press Start 2P', monospace;
+  --font-body:       'VT323', monospace;
+  --font-size-base:  20px;
+  --font-size-ui-xs: 0.4rem;
+  --font-size-ui-sm: 0.5rem;
+  --font-size-ui-md: 0.65rem;
+  --font-size-ui-lg: 1rem;
+  --line-height-base: 1.4;
+  --line-height-heading: 1.6;
+
+  /* ── Elevation & Shadow tokens ───────────────────────────── */
+  --shadow-drop:        4px 4px 0 0 rgba(0,0,0,0.5);
+  --shadow-drop-light:  4px 4px 0 0 rgba(0,0,0,0.3);
+  --shadow-drop-heavy:  4px 4px 0 0 rgba(0,0,0,0.65);
+  --shadow-inset:       inset 4px 4px 0 rgba(0,0,0,0.5);
+  --shadow-inset-light: inset 4px 4px 0 rgba(0,0,0,0.3);
+
+  /* ── Transition tokens ───────────────────────────────────── */
+  --transition-fast:   0.07s ease;
+  --transition-base:   0.1s ease;
+  --transition-slow:   0.2s ease;
 
   /* ── Sizing & Structural Tokens ──────────────────────────── */
   --avatar-size-xs: 32px;
@@ -84,6 +115,65 @@
   --app-columns-tablet: var(--sidebar-cols-tablet) var(--main-cols-tablet);
   --app-columns-mobile: 1fr;
   --app-columns: var(--app-columns-desktop);
+
+  /* ── Button Design Tokens ─────────────────────────────────── */
+  /* Shared geometry */
+  --btn-font:           'Press Start 2P', monospace;
+  --btn-font-size-sm:   0.45rem;
+  --btn-font-size-md:   0.55rem;
+  --btn-font-size-lg:   0.7rem;
+  --btn-h-sm:           32px;
+  --btn-h-md:           40px;
+  --btn-h-lg:           52px;
+  --btn-px-sm:          var(--space-3);
+  --btn-px-md:          var(--space-4);
+  --btn-px-lg:          var(--space-5);
+  --btn-border-w:       3px;          /* crisp pixel border width */
+  --btn-shadow-depth:   3px;          /* how far the 3-D drop-shadow extrudes */
+  --btn-press-offset:   2px;          /* how far button sinks on click */
+  --btn-transition:     filter 0.07s ease, transform 0.07s ease, box-shadow 0.07s ease;
+
+  /* Primary (CTA) — moss green */
+  --btn-primary-bg:          #5a7a3a;
+  --btn-primary-bg-hover:    #6a8e44;
+  --btn-primary-border-top:  #7fa854;   /* lighter highlight */
+  --btn-primary-border-side: #3d5427;   /* mid tone */
+  --btn-primary-border-bot:  #2b3c1c;   /* darkest shadow */
+  --btn-primary-shadow:      #1e2b13;   /* drop shadow color */
+  --btn-primary-text:        #f5e6c8;
+  --btn-primary-text-shadow: 1px 1px 0 #1e2b13;
+
+  /* Secondary (action) — warm brown */
+  --btn-secondary-bg:          #6b4423;
+  --btn-secondary-bg-hover:    #7d5028;
+  --btn-secondary-border-top:  #a06030;
+  --btn-secondary-border-side: #4a2e19;
+  --btn-secondary-border-bot:  #2c1a10;
+  --btn-secondary-shadow:      #1a0f09;
+  --btn-secondary-text:        #f5e6c8;
+  --btn-secondary-text-shadow: 1px 1px 0 #1a0f09;
+
+  /* Danger (destructive) — red earth */
+  --btn-danger-bg:          #7a2626;
+  --btn-danger-bg-hover:    #8f2e2e;
+  --btn-danger-border-top:  #b03636;
+  --btn-danger-border-side: #5a1c1c;
+  --btn-danger-border-bot:  #3a1010;
+  --btn-danger-shadow:      #260a0a;
+  --btn-danger-text:        #f5e6c8;
+  --btn-danger-text-shadow: 1px 1px 0 #260a0a;
+
+  /* Ghost / Tertiary (close, cancel) — transparent */
+  --btn-ghost-text:          var(--cream-dim);
+  --btn-ghost-text-hover:    var(--cream);
+  --btn-ghost-border:        var(--brown-dark);
+  --btn-ghost-border-hover:  var(--gold);
+  --btn-ghost-bg-hover:      rgba(255,255,255,0.06);
+
+  /* Icon button */
+  --btn-icon-size:  36px;
+  --btn-icon-color: var(--cream-dim);
+  --btn-icon-color-hover: var(--gold);
 }
 
 /* ============================================================
@@ -98,9 +188,9 @@
 html, body {
   height: 100%;
   overflow: hidden;
-  font-family: 'VT323', monospace;
-  font-size: 20px;
-  line-height: 1.4;
+  font-family: var(--font-body);
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-base);
   background-color: var(--bg-main);
   color: var(--text-primary);
   image-rendering: pixelated;
@@ -207,8 +297,8 @@ html, body {
 }
 
 .nav-brand-text {
-  font-family: 'Press Start 2P', monospace;
-  font-size: 0.55rem;
+  font-family: var(--font-heading);
+  font-size: var(--font-size-ui-sm);
   color: var(--gold);
   text-shadow: 2px 2px 0 var(--brown-deep);
   line-height: 1.8;
@@ -229,13 +319,13 @@ html, body {
   align-items: center;
   gap: var(--space-2);
   padding: var(--space-2) var(--space-3);
-  font-family: 'VT323', monospace;
-  font-size: 1.2rem;
+  font-family: var(--font-body);
+  font-size: var(--font-size-ui-lg);
   color: var(--text-secondary);
   cursor: pointer;
   text-decoration: none;
-  transition: background 0.08s, color 0.08s;
-  border-left: 4px solid transparent;
+  transition: background var(--transition-base), color var(--transition-base);
+  border-left: var(--border-w-thick) solid transparent;
   line-height: 1;
 }
 
@@ -250,7 +340,7 @@ html, body {
   color: var(--gold);
 }
 
-.nav-item-icon { font-size: 1rem; flex-shrink: 0; }
+.nav-item-icon { font-size: var(--font-size-ui-lg); flex-shrink: 0; }
 
 .nav-footer {
   border-top: var(--border-thick);
@@ -259,8 +349,8 @@ html, body {
 }
 
 .online-dot {
-  width: 8px;
-  height: 8px;
+  width: var(--space-2);
+  height: var(--space-2);
   background: var(--moss-light);
   border: 1px solid var(--moss-dark);
   animation: blink 2s infinite;
@@ -276,8 +366,8 @@ html, body {
    TYPOGRAPHY
    ============================================================ */
 h1, h2, h3 {
-  font-family: 'Press Start 2P', monospace;
-  line-height: 1.6;
+  font-family: var(--font-heading);
+  line-height: var(--line-height-heading);
   color: var(--gold-light);
   text-shadow: 2px 2px 0 var(--brown-dark);
 }
@@ -290,70 +380,194 @@ a { color: var(--cream); text-decoration: none; }
 a:hover { color: var(--gold); }
 
 /* ============================================================
-   BUTTONS
+   BUTTONS — Pure CSS pixel-art style, no image assets
+   Technique: layered box-shadow creates the crisp raised-bevel
+   look. Top-left highlight + bottom-right shadow + drop shadow.
    ============================================================ */
+
+/* ── Base button ─────────────────────────────────────────── */
 .btn {
+  /* Layout */
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: var(--space-2);
-  padding: var(--space-2) var(--space-4);
-  font-family: 'Press Start 2P', monospace;
-  font-size: 0.6rem;
-  cursor: pointer;
-  border-style: solid;
-  border-color: transparent;
-  border-width: 4px 16px;
-  transition: transform 0.08s, filter 0.08s;
-  image-rendering: pixelated;
+  min-height: var(--btn-h-md);
+  padding: 0 var(--btn-px-md);
+  /* Typography */
+  font-family: var(--btn-font);
+  font-size: var(--btn-font-size-md);
+  line-height: 1;
   white-space: nowrap;
   text-decoration: none;
-  line-height: 1.5;
+  /* Interaction */
+  cursor: pointer;
+  user-select: none;
+  outline: none;
+  /* Rendering */
+  image-rendering: pixelated;
+  border: none;
+  background: none;
+  /* Animation */
+  transition: var(--btn-transition);
+  position: relative;
 }
 
-.btn:active {
-  transform: translate(2px, 2px);
+/* Focus ring — gold pixel outline */
+.btn:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 2px;
+}
+
+/* Disabled state — shared */
+.btn:disabled,
+.btn[aria-disabled="true"] {
+  opacity: 0.45;
+  filter: saturate(0.3);
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* ── Primary (CTA) — moss green ─────────────────────────── */
+.btn-primary {
+  background-color: var(--btn-primary-bg);
+  color: var(--btn-primary-text);
+  text-shadow: var(--btn-primary-text-shadow);
+  /* Pixel-art bevel: inset top-left highlight, inset bottom-right shadow, outset drop */
+  box-shadow:
+    inset  var(--btn-border-w)  var(--btn-border-w) 0 var(--btn-primary-border-top),   /* top-left inner highlight */
+    inset calc(-1 * var(--btn-border-w)) calc(-1 * var(--btn-border-w)) 0 var(--btn-primary-border-bot), /* bottom-right inner shadow */
+    var(--btn-shadow-depth) var(--btn-shadow-depth) 0 var(--btn-primary-shadow);       /* drop shadow */
+}
+.btn-primary:hover:not(:disabled) {
+  background-color: var(--btn-primary-bg-hover);
+  box-shadow:
+    inset  var(--btn-border-w)  var(--btn-border-w) 0 var(--btn-primary-border-top),
+    inset calc(-1 * var(--btn-border-w)) calc(-1 * var(--btn-border-w)) 0 var(--btn-primary-border-bot),
+    var(--btn-shadow-depth) var(--btn-shadow-depth) 0 var(--btn-primary-shadow);
+  filter: brightness(1.1);
+}
+.btn-primary:active:not(:disabled) {
+  transform: translate(var(--btn-press-offset), var(--btn-press-offset));
+  box-shadow:
+    inset  var(--btn-border-w)  var(--btn-border-w) 0 var(--btn-primary-border-bot),  /* inverted — pressed */
+    inset calc(-1 * var(--btn-border-w)) calc(-1 * var(--btn-border-w)) 0 var(--btn-primary-border-top),
+    0 0 0 var(--btn-primary-shadow);
+  filter: brightness(0.9);
+}
+
+/* ── Secondary (action) — warm brown ────────────────────── */
+.btn-secondary {
+  background-color: var(--btn-secondary-bg);
+  color: var(--btn-secondary-text);
+  text-shadow: var(--btn-secondary-text-shadow);
+  box-shadow:
+    inset  var(--btn-border-w)  var(--btn-border-w) 0 var(--btn-secondary-border-top),
+    inset calc(-1 * var(--btn-border-w)) calc(-1 * var(--btn-border-w)) 0 var(--btn-secondary-border-bot),
+    var(--btn-shadow-depth) var(--btn-shadow-depth) 0 var(--btn-secondary-shadow);
+}
+.btn-secondary:hover:not(:disabled) {
+  background-color: var(--btn-secondary-bg-hover);
+  box-shadow:
+    inset  var(--btn-border-w)  var(--btn-border-w) 0 var(--btn-secondary-border-top),
+    inset calc(-1 * var(--btn-border-w)) calc(-1 * var(--btn-border-w)) 0 var(--btn-secondary-border-bot),
+    var(--btn-shadow-depth) var(--btn-shadow-depth) 0 var(--btn-secondary-shadow);
+  filter: brightness(1.1);
+}
+.btn-secondary:active:not(:disabled) {
+  transform: translate(var(--btn-press-offset), var(--btn-press-offset));
+  box-shadow:
+    inset  var(--btn-border-w)  var(--btn-border-w) 0 var(--btn-secondary-border-bot),
+    inset calc(-1 * var(--btn-border-w)) calc(-1 * var(--btn-border-w)) 0 var(--btn-secondary-border-top),
+    0 0 0 var(--btn-secondary-shadow);
+  filter: brightness(0.9);
+}
+
+/* ── Danger (destructive) — red earth ───────────────────── */
+.btn-danger {
+  background-color: var(--btn-danger-bg);
+  color: var(--btn-danger-text);
+  text-shadow: var(--btn-danger-text-shadow);
+  box-shadow:
+    inset  var(--btn-border-w)  var(--btn-border-w) 0 var(--btn-danger-border-top),
+    inset calc(-1 * var(--btn-border-w)) calc(-1 * var(--btn-border-w)) 0 var(--btn-danger-border-bot),
+    var(--btn-shadow-depth) var(--btn-shadow-depth) 0 var(--btn-danger-shadow);
+}
+.btn-danger:hover:not(:disabled) {
+  background-color: var(--btn-danger-bg-hover);
+  box-shadow:
+    inset  var(--btn-border-w)  var(--btn-border-w) 0 var(--btn-danger-border-top),
+    inset calc(-1 * var(--btn-border-w)) calc(-1 * var(--btn-border-w)) 0 var(--btn-danger-border-bot),
+    var(--btn-shadow-depth) var(--btn-shadow-depth) 0 var(--btn-danger-shadow);
+  filter: brightness(1.15);
+}
+.btn-danger:active:not(:disabled) {
+  transform: translate(var(--btn-press-offset), var(--btn-press-offset));
+  box-shadow:
+    inset  var(--btn-border-w)  var(--btn-border-w) 0 var(--btn-danger-border-bot),
+    inset calc(-1 * var(--btn-border-w)) calc(-1 * var(--btn-border-w)) 0 var(--btn-danger-border-top),
+    0 0 0 var(--btn-danger-shadow);
+  filter: brightness(0.9);
+}
+
+/* ── Ghost / Tertiary (close, cancel, toggle) ─────────── */
+.btn-ghost {
+  background: transparent;
+  color: var(--btn-ghost-text);
+  border: var(--btn-border-w) solid var(--btn-ghost-border);
+  box-shadow: none;
+  padding: 0 var(--btn-px-sm);
+  min-height: var(--btn-h-sm);
+  font-size: var(--btn-font-size-sm);
+}
+.btn-ghost:hover:not(:disabled) {
+  color: var(--btn-ghost-text-hover);
+  border-color: var(--btn-ghost-border-hover);
+  background: var(--btn-ghost-bg-hover);
+}
+.btn-ghost:active:not(:disabled) {
+  transform: translate(1px, 1px);
+  filter: brightness(0.9);
+}
+
+/* ── Icon button (small square, no label) ────────────────── */
+.btn-icon {
+  width:  var(--btn-icon-size);
+  height: var(--btn-icon-size);
+  padding: 0;
+  min-height: unset;
+  background: transparent;
+  color: var(--btn-icon-color);
+  border: 2px solid transparent;
+  font-size: 1rem;
+  line-height: 1;
+  flex-shrink: 0;
+  box-shadow: none;
+}
+.btn-icon:hover:not(:disabled) {
+  color: var(--btn-icon-color-hover);
+  border-color: var(--btn-ghost-border);
+  background: var(--btn-ghost-bg-hover);
+}
+.btn-icon:active:not(:disabled) {
+  transform: translate(1px, 1px);
   filter: brightness(0.85);
 }
 
-.btn-primary {
-  border-image: url('/ui/button-green-normal.png') 6 14 fill stretch;
-  color: #fff;
+/* ── Size modifiers ──────────────────────────────────────── */
+.btn-sm {
+  min-height: var(--btn-h-sm);
+  padding: 0 var(--btn-px-sm);
+  font-size: var(--btn-font-size-sm);
 }
-.btn-primary:hover {
-  border-image: url('/ui/button-green-hover.png') 6 14 fill stretch;
-}
-
-.btn-secondary {
-  border-image: url('/ui/button-brown-normal.png') 6 14 fill stretch;
-  color: #fff;
-}
-.btn-secondary:hover {
-  border-image: url('/ui/button-brown-hover.png') 6 14 fill stretch;
+.btn-lg {
+  min-height: var(--btn-h-lg);
+  padding: 0 var(--btn-px-lg);
+  font-size: var(--btn-font-size-lg);
 }
 
-.btn-ghost {
-  background: transparent;
-  color: var(--text-secondary);
-  border: 2px solid transparent;
-}
-.btn-ghost:hover {
-  color: var(--cream);
-  border-color: var(--border-color);
-  background: rgba(255,255,255,0.05);
-}
-
-.btn-icon {
-  padding: var(--space-2);
-  background: transparent;
-  border: 2px solid transparent;
-  color: var(--text-secondary);
-}
-.btn-icon:hover {
-  color: var(--gold);
-  border-color: var(--border-color);
-}
-
-.btn-full { width: 100%; justify-content: center; }
+/* ── Layout modifier ─────────────────────────────────────── */
+.btn-full { width: 100%; }
 
 /* ============================================================
    INPUTS
@@ -361,13 +575,13 @@ a:hover { color: var(--gold); }
 .input {
   width: 100%;
   padding: var(--space-2) var(--space-3);
-  font-family: 'VT323', monospace;
-  font-size: 1.1rem;
+  font-family: var(--font-body);
+  font-size: var(--font-size-ui-lg);
   background: var(--bg-input);
   color: var(--cream);
-  border: 2px solid var(--border-color);
+  border: var(--border-w-thin) solid var(--border-color);
   outline: none;
-  transition: border-color 0.1s;
+  transition: border-color var(--transition-base);
 }
 .input:focus {
   border-color: var(--moss);
@@ -377,8 +591,8 @@ a:hover { color: var(--gold); }
 
 .input-label {
   display: block;
-  font-family: 'Press Start 2P', monospace;
-  font-size: 0.5rem;
+  font-family: var(--font-heading);
+  font-size: var(--font-size-ui-sm);
   color: var(--gold-light);
   margin-bottom: var(--space-2);
   text-shadow: 1px 1px 0 var(--brown-dark);
@@ -439,9 +653,9 @@ a:hover { color: var(--gold); }
 }
 
 .pixel-spinner {
-  width: 32px;
-  height: 32px;
-  border: 4px solid var(--moss-dark);
+  width: var(--space-5);
+  height: var(--space-5);
+  border: var(--border-w-thick) solid var(--moss-dark);
   border-top-color: var(--moss-light);
   animation: spin 0.6s steps(8) infinite;
 }

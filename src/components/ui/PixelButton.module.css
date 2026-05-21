@@ -1,7 +1,12 @@
+/* PixelButton.module.css
+   Pure CSS pixel-art buttons — no border-image assets.
+   All visual properties driven by :root design tokens.
+   ---------------------------------------------------------------- */
+
 .wrapper {
   display: inline-flex;
   flex-direction: column;
-  align-items: center;
+  align-items: stretch;
   gap: var(--space-1);
 }
 
@@ -9,118 +14,193 @@
   width: 100%;
 }
 
+/* ── Base ──────────────────────────────────────────────────── */
 .button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: var(--space-2);
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  image-rendering: pixelated;
-  border-style: solid;
-  border-color: transparent;
-  border-width: 4px 10px;
-  font-family: 'Press Start 2P', monospace;
-  color: var(--text-primary);
-  transition: transform 0.05s, filter 0.1s;
-  outline: none;
+  min-height: var(--btn-h-md);
+  padding: 0 var(--btn-px-md);
+  font-family: var(--btn-font);
+  font-size: var(--btn-font-size-md);
+  line-height: 1;
+  white-space: nowrap;
   text-decoration: none;
+  cursor: pointer;
+  user-select: none;
+  outline: none;
+  image-rendering: pixelated;
+  border: none;
+  background: none;
+  transition: var(--btn-transition);
+  position: relative;
+  width: 100%;
 }
 
-.button:active:not(.disabled) {
-  transform: translateY(2px);
+/* Focus ring */
+.button:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 2px;
+}
+
+/* Disabled */
+.button.disabled,
+.button:disabled {
+  opacity: 0.45;
+  filter: saturate(0.3);
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* ── Size modifiers ────────────────────────────────────────── */
+.size-sm {
+  min-height: var(--btn-h-sm);
+  padding: 0 var(--btn-px-sm);
+  font-size: var(--btn-font-size-sm);
+}
+.size-md {
+  min-height: var(--btn-h-md);
+  padding: 0 var(--btn-px-md);
+  font-size: var(--btn-font-size-md);
+}
+.size-lg {
+  min-height: var(--btn-h-lg);
+  padding: 0 var(--btn-px-lg);
+  font-size: var(--btn-font-size-lg);
+}
+
+/* ── Primary (CTA) — moss green ────────────────────────────── */
+.variant-primary {
+  background-color: var(--btn-primary-bg);
+  color: var(--btn-primary-text);
+  text-shadow: var(--btn-primary-text-shadow);
+  box-shadow:
+    inset  var(--btn-border-w)  var(--btn-border-w) 0 var(--btn-primary-border-top),
+    inset calc(-1 * var(--btn-border-w)) calc(-1 * var(--btn-border-w)) 0 var(--btn-primary-border-bot),
+    var(--btn-shadow-depth) var(--btn-shadow-depth) 0 var(--btn-primary-shadow);
+}
+.variant-primary:hover:not(.disabled) {
+  background-color: var(--btn-primary-bg-hover);
+  filter: brightness(1.1);
+}
+.variant-primary:active:not(.disabled) {
+  transform: translate(var(--btn-press-offset), var(--btn-press-offset));
+  box-shadow:
+    inset  var(--btn-border-w)  var(--btn-border-w) 0 var(--btn-primary-border-bot),
+    inset calc(-1 * var(--btn-border-w)) calc(-1 * var(--btn-border-w)) 0 var(--btn-primary-border-top),
+    0 0 0 var(--btn-primary-shadow);
   filter: brightness(0.9);
 }
 
-.button.disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-  filter: grayscale(1);
+/* ── Secondary (action) — warm brown ──────────────────────── */
+.variant-secondary {
+  background-color: var(--btn-secondary-bg);
+  color: var(--btn-secondary-text);
+  text-shadow: var(--btn-secondary-text-shadow);
+  box-shadow:
+    inset  var(--btn-border-w)  var(--btn-border-w) 0 var(--btn-secondary-border-top),
+    inset calc(-1 * var(--btn-border-w)) calc(-1 * var(--btn-border-w)) 0 var(--btn-secondary-border-bot),
+    var(--btn-shadow-depth) var(--btn-shadow-depth) 0 var(--btn-secondary-shadow);
+}
+.variant-secondary:hover:not(.disabled) {
+  background-color: var(--btn-secondary-bg-hover);
+  filter: brightness(1.1);
+}
+.variant-secondary:active:not(.disabled) {
+  transform: translate(var(--btn-press-offset), var(--btn-press-offset));
+  box-shadow:
+    inset  var(--btn-border-w)  var(--btn-border-w) 0 var(--btn-secondary-border-bot),
+    inset calc(-1 * var(--btn-border-w)) calc(-1 * var(--btn-border-w)) 0 var(--btn-secondary-border-top),
+    0 0 0 var(--btn-secondary-shadow);
+  filter: brightness(0.9);
 }
 
-/* Variant handling */
-.variant-generic-blue { border-image: url('/ui/generic-btn-blue-normal.png?v=4') 4 10 fill stretch; }
-.variant-generic-blue:hover:not(.disabled) { border-image: url('/ui/generic-btn-blue-hover.png?v=4') 4 10 fill stretch; }
-.variant-generic-blue:active:not(.disabled) { border-image: url('/ui/generic-btn-blue-flat.png?v=4') 4 10 fill stretch; }
+/* ── Danger (destructive) — red earth ─────────────────────── */
+.variant-danger {
+  background-color: var(--btn-danger-bg);
+  color: var(--btn-danger-text);
+  text-shadow: var(--btn-danger-text-shadow);
+  box-shadow:
+    inset  var(--btn-border-w)  var(--btn-border-w) 0 var(--btn-danger-border-top),
+    inset calc(-1 * var(--btn-border-w)) calc(-1 * var(--btn-border-w)) 0 var(--btn-danger-border-bot),
+    var(--btn-shadow-depth) var(--btn-shadow-depth) 0 var(--btn-danger-shadow);
+}
+.variant-danger:hover:not(.disabled) {
+  background-color: var(--btn-danger-bg-hover);
+  filter: brightness(1.15);
+}
+.variant-danger:active:not(.disabled) {
+  transform: translate(var(--btn-press-offset), var(--btn-press-offset));
+  box-shadow:
+    inset  var(--btn-border-w)  var(--btn-border-w) 0 var(--btn-danger-border-bot),
+    inset calc(-1 * var(--btn-border-w)) calc(-1 * var(--btn-border-w)) 0 var(--btn-danger-border-top),
+    0 0 0 var(--btn-danger-shadow);
+  filter: brightness(0.9);
+}
 
-.variant-generic-brown { border-image: url('/ui/generic-btn-brown-normal.png?v=4') 4 10 fill stretch; }
-.variant-generic-brown:hover:not(.disabled) { border-image: url('/ui/generic-btn-brown-hover.png?v=4') 4 10 fill stretch; }
-.variant-generic-brown:active:not(.disabled) { border-image: url('/ui/generic-btn-brown-flat.png?v=4') 4 10 fill stretch; }
+/* ── Ghost / Tertiary ──────────────────────────────────────── */
+.variant-ghost {
+  background: transparent;
+  color: var(--btn-ghost-text);
+  border: var(--btn-border-w) solid var(--btn-ghost-border);
+  box-shadow: none;
+  min-height: var(--btn-h-sm);
+  padding: 0 var(--btn-px-sm);
+  font-size: var(--btn-font-size-sm);
+}
+.variant-ghost:hover:not(.disabled) {
+  color: var(--btn-ghost-text-hover);
+  border-color: var(--btn-ghost-border-hover);
+  background: var(--btn-ghost-bg-hover);
+}
+.variant-ghost:active:not(.disabled) {
+  transform: translate(1px, 1px);
+  filter: brightness(0.9);
+}
 
-.variant-generic-green { border-image: url('/ui/generic-btn-green-normal.png?v=4') 4 10 fill stretch; }
-.variant-generic-green:hover:not(.disabled) { border-image: url('/ui/generic-btn-green-hover.png?v=4') 4 10 fill stretch; }
-.variant-generic-green:active:not(.disabled) { border-image: url('/ui/generic-btn-green-flat.png?v=4') 4 10 fill stretch; }
+/* ── Icon (square, no label) ───────────────────────────────── */
+.variant-icon {
+  width:  var(--btn-icon-size);
+  height: var(--btn-icon-size);
+  min-height: unset;
+  padding: 0;
+  background: transparent;
+  color: var(--btn-icon-color);
+  border: 2px solid transparent;
+  font-size: 1rem;
+  flex-shrink: 0;
+  box-shadow: none;
+}
+.variant-icon:hover:not(.disabled) {
+  color: var(--btn-icon-color-hover);
+  border-color: var(--btn-ghost-border);
+  background: var(--btn-ghost-bg-hover);
+}
+.variant-icon:active:not(.disabled) {
+  transform: translate(1px, 1px);
+  filter: brightness(0.85);
+}
 
-.variant-generic-orange { border-image: url('/ui/generic-btn-orange-normal.png?v=4') 4 10 fill stretch; }
-.variant-generic-orange:hover:not(.disabled) { border-image: url('/ui/generic-btn-orange-hover.png?v=4') 4 10 fill stretch; }
-.variant-generic-orange:active:not(.disabled) { border-image: url('/ui/generic-btn-orange-flat.png?v=4') 4 10 fill stretch; }
-
-.variant-generic-purple { border-image: url('/ui/generic-btn-purple-normal.png?v=4') 4 10 fill stretch; }
-.variant-generic-purple:hover:not(.disabled) { border-image: url('/ui/generic-btn-purple-hover.png?v=4') 4 10 fill stretch; }
-.variant-generic-purple:active:not(.disabled) { border-image: url('/ui/generic-btn-purple-flat.png?v=4') 4 10 fill stretch; }
-
-.variant-generic-red { border-image: url('/ui/generic-btn-red-normal.png?v=4') 4 10 fill stretch; }
-.variant-generic-red:hover:not(.disabled) { border-image: url('/ui/generic-btn-red-hover.png?v=4') 4 10 fill stretch; }
-.variant-generic-red:active:not(.disabled) { border-image: url('/ui/generic-btn-red-flat.png?v=4') 4 10 fill stretch; }
-
-.variant-generic-silver { border-image: url('/ui/generic-btn-silver-normal.png?v=4') 4 10 fill stretch; }
-.variant-generic-silver:hover:not(.disabled) { border-image: url('/ui/generic-btn-silver-hover.png?v=4') 4 10 fill stretch; }
-.variant-generic-silver:active:not(.disabled) { border-image: url('/ui/generic-btn-silver-flat.png?v=4') 4 10 fill stretch; }
-
-.variant-generic-yellow { border-image: url('/ui/generic-btn-yellow-normal.png?v=4') 4 10 fill stretch; }
-.variant-generic-yellow:hover:not(.disabled) { border-image: url('/ui/generic-btn-yellow-hover.png?v=4') 4 10 fill stretch; }
-.variant-generic-yellow:active:not(.disabled) { border-image: url('/ui/generic-btn-yellow-flat.png?v=4') 4 10 fill stretch; }
-
-.variant-color-blue { border-image: url('/ui/button-blue-normal.png?v=4') 6 14 fill stretch; }
-.variant-color-blue:hover:not(.disabled) { border-image: url('/ui/button-blue-hover.png?v=4') 6 14 fill stretch; }
-.variant-color-blue:active:not(.disabled) { border-image: url('/ui/button-blue-flat.png?v=4') 6 14 fill stretch; }
-
-.variant-color-brown { border-image: url('/ui/button-brown-normal.png?v=4') 6 14 fill stretch; }
-.variant-color-brown:hover:not(.disabled) { border-image: url('/ui/button-brown-hover.png?v=4') 6 14 fill stretch; }
-.variant-color-brown:active:not(.disabled) { border-image: url('/ui/button-brown-flat.png?v=4') 6 14 fill stretch; }
-
-.variant-color-green { border-image: url('/ui/button-green-normal.png?v=4') 6 14 fill stretch; }
-.variant-color-green:hover:not(.disabled) { border-image: url('/ui/button-green-hover.png?v=4') 6 14 fill stretch; }
-.variant-color-green:active:not(.disabled) { border-image: url('/ui/button-green-flat.png?v=4') 6 14 fill stretch; }
-
-.variant-color-purple { border-image: url('/ui/button-purple-normal.png?v=4') 6 14 fill stretch; }
-.variant-color-purple:hover:not(.disabled) { border-image: url('/ui/button-purple-hover.png?v=4') 6 14 fill stretch; }
-.variant-color-purple:active:not(.disabled) { border-image: url('/ui/button-purple-flat.png?v=4') 6 14 fill stretch; }
-
-.variant-color-red { border-image: url('/ui/button-red-normal.png?v=4') 6 14 fill stretch; }
-.variant-color-red:hover:not(.disabled) { border-image: url('/ui/button-red-hover.png?v=4') 6 14 fill stretch; }
-.variant-color-red:active:not(.disabled) { border-image: url('/ui/button-red-flat.png?v=4') 6 14 fill stretch; }
-
-.variant-color-silver { border-image: url('/ui/button-silver-normal.png?v=4') 6 14 fill stretch; }
-.variant-color-silver:hover:not(.disabled) { border-image: url('/ui/button-silver-hover.png?v=4') 6 14 fill stretch; }
-.variant-color-silver:active:not(.disabled) { border-image: url('/ui/button-silver-flat.png?v=4') 6 14 fill stretch; }
-
-.variant-color-yellow { border-image: url('/ui/button-yellow-normal.png?v=4') 6 14 fill stretch; }
-.variant-color-yellow:hover:not(.disabled) { border-image: url('/ui/button-yellow-hover.png?v=4') 6 14 fill stretch; }
-.variant-color-yellow:active:not(.disabled) { border-image: url('/ui/button-yellow-flat.png?v=4') 6 14 fill stretch; }
-
-/* Sizes */
-
-.size-sm.variant-primary, .size-sm.variant-secondary, .size-sm.variant-danger { font-size: 12px; height: 32px; padding: 0 var(--space-1); }
-.size-md.variant-primary, .size-md.variant-secondary, .size-md.variant-danger { font-size: 14px; height: 40px; padding: 0 var(--space-2); }
-.size-lg.variant-primary, .size-lg.variant-secondary, .size-lg.variant-danger { font-size: 16px; height: 48px; padding: 0 var(--space-3); }
-
+/* ── Label & icon slots ────────────────────────────────────── */
 .label {
-    text-shadow: 1px 1px 0 rgba(0,0,0,0.5);
-    line-height: 1;
-    margin-top: 2px; /* Font baseline adjustment */
+  text-shadow: inherit;
+  line-height: 1;
+  margin-top: 2px; /* pixel-font baseline correction */
 }
 
 .icon {
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
 }
 
+/* ── Info below ────────────────────────────────────────────── */
 .infoBelow {
-  font-family: 'Press Start 2P', monospace;
+  font-family: var(--btn-font);
   font-size: 8px;
   color: var(--cream-dim);
   text-shadow: 1px 1px 0 rgba(0,0,0,0.5);
+  text-align: center;
 }

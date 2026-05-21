@@ -1,21 +1,23 @@
 import React from 'react';
 import styles from './PixelButton.module.css';
 
+export type ButtonVariant = 'primary' | 'secondary' | 'danger' | 'ghost' | 'icon';
+export type ButtonSize    = 'sm' | 'md' | 'lg';
+
 interface PixelButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'primary' | 'secondary' | 'danger' | 'ghost' | 'icon' |
-    'generic-blue' | 'generic-brown' | 'generic-green' | 'generic-orange' | 'generic-purple' | 'generic-red' | 'generic-silver' | 'generic-yellow' |
-    'color-blue' | 'color-brown' | 'color-green' | 'color-purple' | 'color-red' | 'color-silver' | 'color-yellow';
-  size?: 'sm' | 'md' | 'lg';
+  variant?: ButtonVariant;
+  size?: ButtonSize;
   fullWidth?: boolean;
   iconLeft?: React.ReactNode;
   iconRight?: React.ReactNode;
+  /** Small caption text rendered below the button */
   infoBelow?: string;
 }
 
 const PixelButton = React.forwardRef<HTMLButtonElement, PixelButtonProps>(
-  ({ 
-    children, 
-    variant = 'primary', 
+  ({
+    children,
+    variant = 'primary',
     size = 'md',
     fullWidth = false,
     iconLeft,
@@ -23,24 +25,28 @@ const PixelButton = React.forwardRef<HTMLButtonElement, PixelButtonProps>(
     infoBelow,
     className = '',
     disabled,
-    ...props 
+    ...props
   }, ref) => {
-    
+
+    const cls = [
+      styles.button,
+      styles[`variant-${variant}`],
+      styles[`size-${size}`],
+      fullWidth ? styles.fullWidth : '',
+      disabled  ? styles.disabled  : '',
+      className,
+    ].filter(Boolean).join(' ');
+
     return (
-      <div className={`${styles.wrapper} ${fullWidth ? styles.fullWidth : ''} ${className}`}>
-        <button 
+      <div className={`${styles.wrapper} ${fullWidth ? styles.fullWidth : ''}`}>
+        <button
           ref={ref}
-          className={`
-            ${styles.button} 
-            ${styles[`variant-${variant}`]} 
-            ${styles[`size-${size}`]}
-            ${fullWidth ? styles.fullWidth : ''}
-            ${disabled ? styles.disabled : ''}
-          `}
+          className={cls}
           disabled={disabled}
+          aria-disabled={disabled}
           {...props}
         >
-          {iconLeft && <span className={styles.icon}>{iconLeft}</span>}
+          {iconLeft  && <span className={styles.icon}>{iconLeft}</span>}
           <span className={styles.label}>{children}</span>
           {iconRight && <span className={styles.icon}>{iconRight}</span>}
         </button>

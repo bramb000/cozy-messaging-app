@@ -13,8 +13,8 @@
   display: flex;
   align-items: center;
   gap: var(--space-3);
-  font-family: 'VT323', monospace;
-  font-size: 1rem;
+  font-family: var(--font-body);
+  font-size: var(--font-size-ui-lg);
   color: var(--text-muted);
 }
 
@@ -23,15 +23,15 @@
   content: '';
   flex: 1;
   height: 1px;
-  background: var(--border-dark);
+  background: var(--border-color);
 }
 
 .error {
-  font-family: 'VT323', monospace;
-  font-size: 1rem;
-  color: #e74c3c;
+  font-family: var(--font-body);
+  font-size: var(--font-size-ui-lg);
+  color: var(--color-error);
   margin-bottom: var(--space-3);
   padding: var(--space-2) var(--space-3);
-  border: 2px solid #e74c3c;
-  background: rgba(231,76,60,0.1);
+  border: var(--border-w-thin) solid var(--color-error-border);
+  background: var(--color-error-bg);
 }

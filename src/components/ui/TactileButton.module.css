@@ -1,56 +1,89 @@
+/* TactileButton.module.css
+   Pure CSS pixel-art buttons for the TactileButton (framer-motion) wrapper.
+   Shares the same :root button design tokens as PixelButton and .btn globals.
+   ---------------------------------------------------------------- */
+
 .button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  padding: 8px 16px;
-  font-family: 'Press Start 2P', monospace;
-  font-size: 0.7rem;
-  cursor: pointer;
-  border: none;
-  image-rendering: pixelated;
+  gap: var(--space-2);
+  min-height: var(--btn-h-md);
+  padding: 0 var(--btn-px-md);
+  font-family: var(--btn-font);
+  font-size: var(--btn-font-size-md);
+  line-height: 1;
   white-space: nowrap;
+  cursor: pointer;
+  user-select: none;
   outline: none;
+  image-rendering: pixelated;
+  border: none;
+  background: none;
   position: relative;
+}
+
+.button:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 2px;
+}
+
+.button:disabled {
+  opacity: 0.45;
+  filter: saturate(0.3);
+  cursor: not-allowed;
+  pointer-events: none;
 }
 
 .fullWidth {
   width: 100%;
 }
 
+/* ── Primary (CTA) — moss green ────────────────────────────── */
 .primary {
-  background-color: #5A7A3A; /* Moss */
-  color: #F5E6C8;
-  border: 4px solid #3D5427;
-  box-shadow: 4px 4px 0 0 rgba(0, 0, 0, 0.4);
+  background-color: var(--btn-primary-bg);
+  color: var(--btn-primary-text);
+  text-shadow: var(--btn-primary-text-shadow);
+  box-shadow:
+    inset  var(--btn-border-w)  var(--btn-border-w) 0 var(--btn-primary-border-top),
+    inset calc(-1 * var(--btn-border-w)) calc(-1 * var(--btn-border-w)) 0 var(--btn-primary-border-bot),
+    var(--btn-shadow-depth) var(--btn-shadow-depth) 0 var(--btn-primary-shadow);
 }
 
+/* ── Secondary (action) — warm brown ──────────────────────── */
 .secondary {
-  background-color: #8B5E3C; /* Brown */
-  color: #F5E6C8;
-  border: 4px solid #6B4423;
-  box-shadow: 4px 4px 0 0 rgba(0, 0, 0, 0.4);
+  background-color: var(--btn-secondary-bg);
+  color: var(--btn-secondary-text);
+  text-shadow: var(--btn-secondary-text-shadow);
+  box-shadow:
+    inset  var(--btn-border-w)  var(--btn-border-w) 0 var(--btn-secondary-border-top),
+    inset calc(-1 * var(--btn-border-w)) calc(-1 * var(--btn-border-w)) 0 var(--btn-secondary-border-bot),
+    var(--btn-shadow-depth) var(--btn-shadow-depth) 0 var(--btn-secondary-shadow);
 }
 
+/* ── Danger (destructive) — red earth ─────────────────────── */
 .danger {
-  background-color: #C0392B; /* Red */
-  color: #F5E6C8;
-  border: 4px solid #922b21;
-  box-shadow: 4px 4px 0 0 rgba(0, 0, 0, 0.4);
+  background-color: var(--btn-danger-bg);
+  color: var(--btn-danger-text);
+  text-shadow: var(--btn-danger-text-shadow);
+  box-shadow:
+    inset  var(--btn-border-w)  var(--btn-border-w) 0 var(--btn-danger-border-top),
+    inset calc(-1 * var(--btn-border-w)) calc(-1 * var(--btn-border-w)) 0 var(--btn-danger-border-bot),
+    var(--btn-shadow-depth) var(--btn-shadow-depth) 0 var(--btn-danger-shadow);
 }
 
+/* ── Ghost / Tertiary ──────────────────────────────────────── */
 .ghost {
-  background-color: transparent;
-  color: #A8B8C8;
-  border: 4px solid transparent;
+  background: transparent;
+  color: var(--btn-ghost-text);
+  border: var(--btn-border-w) solid var(--btn-ghost-border);
   box-shadow: none;
+  min-height: var(--btn-h-sm);
+  padding: 0 var(--btn-px-sm);
+  font-size: var(--btn-font-size-sm);
 }
-
 .ghost:hover {
-  color: #F5E6C8;
-  border-color: #DFC98A;
-}
-
-.button:active {
-  box-shadow: none;
+  color: var(--btn-ghost-text-hover);
+  border-color: var(--btn-ghost-border-hover);
+  background: var(--btn-ghost-bg-hover);
 }

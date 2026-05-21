@@ -1,3 +1,7 @@
+/* CharacterCustomizer.module.css
+   Fully token-driven — no hardcoded hex or rem values.
+   ---------------------------------------------------------------- */
+
 .container {
   display: flex;
   gap: var(--grid-gap);
@@ -12,123 +16,132 @@
   }
 }
 
+/* ── Left preview pane ─────────────────────────────────────── */
 .leftPane {
   flex: 1;
-  background-color: #6d5b4b; /* Temp room bg */
-  border: 4px solid #3c2a1e;
-  border-radius: 8px;
+  background-color: var(--brown-mid);
+  border: var(--border-w-thick) solid var(--brown-deep);
+  border-radius: var(--radius-pixel);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 2rem;
+  padding: var(--space-6);
   position: relative;
   min-height: 400px;
-  gap: 1.5rem;
+  gap: var(--space-5);
 }
 
+/* ── Right options pane ────────────────────────────────────── */
 .rightPane {
   flex: 1;
-  background-color: #d1a36a; /* Wooden panel */
-  border: 4px solid #8b5e34;
-  border-radius: 8px;
-  padding: 1rem;
+  background-color: var(--brown-light);
+  border: var(--border-w-thick) solid var(--brown-mid);
+  border-radius: var(--radius-pixel);
+  padding: var(--space-3);
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: var(--space-3);
 }
 
+/* ── Tabs ──────────────────────────────────────────────────── */
 .tabs {
   display: flex;
-  gap: 0.25rem;
-  border-bottom: 4px solid #8b5e34;
-  padding-bottom: 0.5rem;
+  gap: var(--space-1);
+  border-bottom: var(--border-w-thick) solid var(--brown-mid);
+  padding-bottom: var(--space-2);
   overflow-x: auto;
 }
 
 .tabBtn {
-  background: #a67c52;
-  border: 2px solid #8b5e34;
+  background: var(--brown-mid);
+  border: var(--border-w-thin) solid var(--brown-dark);
   border-bottom: none;
-  border-radius: 4px 4px 0 0;
-  padding: 0.5rem 0.75rem;
-  font-family: inherit;
-  font-weight: bold;
-  color: #fff;
+  border-radius: var(--radius-pixel) var(--radius-pixel) 0 0;
+  padding: var(--space-2) var(--space-3);
+  font-family: var(--font-heading);
+  font-size: var(--font-size-ui-xs);
+  color: var(--text-on-dark);
   cursor: pointer;
+  transition: background var(--transition-fast), color var(--transition-fast);
 }
 
 .tabActive {
-  background: #d1a36a;
-  color: #3e2723;
+  background: var(--brown-light);
+  color: var(--brown-deep);
 }
 
+/* ── Tab content ───────────────────────────────────────────── */
 .tabContent {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
-  padding: 1rem 0;
+  gap: var(--space-3);
+  padding: var(--space-3) 0;
 }
 
+/* ── Form layout ───────────────────────────────────────────── */
 .form {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: var(--space-5);
 }
 
 .section {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: var(--space-3);
 }
 
+/* ── Avatar row ────────────────────────────────────────────── */
 .avatarRow {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: var(--space-3);
 }
 
 .avatarPreview {
   width: var(--avatar-size-sm-w);
   height: var(--avatar-size-sm-h);
-  background: rgba(0, 0, 0, 0.1);
-  border: var(--border-w-thick) solid #8b5e3c;
+  background: rgba(0,0,0,0.1);
+  border: var(--border-w-thick) solid var(--brown-light);
   display: flex;
   align-items: center;
   justify-content: center;
   image-rendering: pixelated;
 }
 
+/* ── Character preview (scaled) ────────────────────────────── */
 .charPreview {
   display: flex;
   justify-content: center;
-  padding: 1rem;
+  padding: var(--space-3);
   image-rendering: pixelated;
   transform: scale(2);
 }
 
+/* ── Swatch row ────────────────────────────────────────────── */
 .swatchRow {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: var(--space-2);
   flex-wrap: wrap;
 }
 
 .swatchLabel {
   min-width: 50px;
-  font-size: 0.85rem;
-  color: #5c3a21;
-  font-weight: bold;
+  font-family: var(--font-heading);
+  font-size: var(--font-size-ui-xs);
+  color: var(--brown-deep);
 }
 
 .swatch {
-  width: 32px;
-  height: 32px;
-  border-radius: 4px;
-  border: 2px solid #8b5e34;
+  width: var(--space-5);   /* 32px */
+  height: var(--space-5);
+  border-radius: var(--radius-pixel);
+  border: var(--border-w-thin) solid var(--brown-mid);
   cursor: pointer;
   padding: 0;
-  transition: transform 0.1s;
+  transition: transform var(--transition-fast);
 }
 
 .swatch:hover {
@@ -136,31 +149,34 @@
 }
 
 .swatchActive {
-  border-color: #f1c27d;
-  box-shadow: 0 0 0 2px #5c3a21;
+  border-color: var(--gold-light);
+  box-shadow: 0 0 0 2px var(--brown-deep);
 }
 
+/* ── Tag/chip buttons ──────────────────────────────────────── */
 .tagBtn {
-  font-size: 0.75rem;
-  padding: 0.5rem 0.75rem;
-  border: 2px solid #8b5e34;
+  font-family: var(--font-body);
+  font-size: var(--font-size-ui-md);
+  padding: var(--space-2) var(--space-3);
+  border: var(--border-w-thin) solid var(--brown-mid);
   background: transparent;
-  color: #5c3a21;
-  font-weight: bold;
+  color: var(--brown-deep);
   cursor: pointer;
+  transition: background var(--transition-fast), color var(--transition-fast);
 }
 
 .tagActive {
-  background: #8b5e34;
-  color: white;
+  background: var(--brown-mid);
+  color: var(--text-on-dark);
 }
 
+/* ── Error message ─────────────────────────────────────────── */
 .error {
-  color: #721c24;
-  background: #f8d7da;
-  padding: 0.75rem;
-  border-radius: 6px;
-  font-size: 0.85rem;
-  border: 2px solid #f5c6cb;
+  font-family: var(--font-body);
+  font-size: var(--font-size-ui-lg);
+  color: var(--color-error);
+  background: var(--color-error-bg);
+  padding: var(--space-3);
+  border: var(--border-w-thin) solid var(--color-error-border);
   text-align: center;
 }
