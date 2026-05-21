@@ -23,9 +23,14 @@ export async function updateSession(request: NextRequest) {
     }
   )
 
+  // getSession() reads from the cookie — no network call, safe for edge middleware.
+  // getUser() makes a network round-trip to Supabase auth on every request and will
+  // cause MIDDLEWARE_INVOCATION_TIMEOUT on Vercel edge. Use it only in server components
+  // where you need to validate the JWT server-side.
   const {
-    data: { user },
-  } = await supabase.auth.getUser()
+    data: { session },
+  } = await supabase.auth.getSession()
+  const user = session?.user ?? null
 
   const { pathname } = request.nextUrl
 
