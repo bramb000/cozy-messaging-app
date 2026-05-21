@@ -45,8 +45,13 @@ export async function GET(
 
   // ─── Strategy A: Local filesystem (development) ───────────────
   // If the assets/ folder exists locally (not in production), serve from disk.
-  const localPath = normalize(join(process.cwd(), 'assets', 'sprites', safePath))
-  const assetsRoot = normalize(join(process.cwd(), 'assets', 'sprites'))
+  let assetsRoot = normalize(join(process.cwd(), 'assets', 'sprites'))
+  let localPath = normalize(join(assetsRoot, safePath))
+
+  if (!existsSync(assetsRoot)) {
+    assetsRoot = normalize(join(process.cwd(), 'cozy-messaging-app', 'assets', 'sprites'))
+    localPath = normalize(join(assetsRoot, safePath))
+  }
 
   if (localPath.startsWith(assetsRoot) && existsSync(localPath)) {
     try {

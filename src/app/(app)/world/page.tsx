@@ -34,6 +34,8 @@ export default function WorldPage() {
   const [tooltip, setTooltip] = useState<{ name: string; x: number; y: number } | null>(null)
   const animFrameRef = useRef<number>(0)
   const updateThrottleRef = useRef(0)
+  const dbUpdateThrottleRef = useRef(0)
+  const dbStopTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   useEffect(() => {
     if (!user || !profile) return
@@ -291,10 +293,8 @@ export default function WorldPage() {
         // Throttle DB + broadcast updates
         if (time - updateThrottleRef.current > 100) {
           updateThrottleRef.current = time
-          const tileX = Math.round(nx / TILE)
-          const tileY = Math.round(ny / TILE)
-          // @ts-expect-error Supabase types misaligned
-          supabase.from('world_positions').upsert({ user_id: user!.id, x: tileX, y: tileY, direction: dir, updated_at: new Date().toISOString() })
+          
+          // 1. Send fast real-time movement broadcast to peer players via WebSocket (no DB hit)
           const payloadData = { 
              userId: user!.id, 
              username: profile!.username, 
@@ -307,6 +307,39 @@ export default function WorldPage() {
              hatIndex: (profile!.character_config as any)?.hatIndex
           }
           channel.send({ type: 'broadcast', event: 'move', payload: payloadData })
+
+          // Clear any existing resting stop debounce timer
+          if (dbStopTimeoutRef.current) {
+            clearTimeout(dbStopTimeoutRef.current)
+            dbStopTimeoutRef.current = null
+          }
+
+          // 2. Slow database backup (only once every 5 seconds) to avoid Disk IO exhaustion
+          if (time - dbUpdateThrottleRef.current > 5000) {
+            dbUpdateThrottleRef.current = time
+            const tileX = Math.round(nx / TILE)
+            const tileY = Math.round(ny / TILE)
+            supabase
+              .from('world_positions')
+              // @ts-expect-error Supabase types misaligned
+              .upsert({ user_id: user!.id, x: tileX, y: tileY, direction: dir, updated_at: new Date().toISOString() })
+              .then(({ error }) => {
+                if (error) console.error('Error backup upserting position:', error)
+              })
+          }
+
+          // 3. Set a debounce timer to save the final resting position when movement ceases
+          dbStopTimeoutRef.current = setTimeout(() => {
+            const tileX = Math.round(myPosRef.current.x / TILE)
+            const tileY = Math.round(myPosRef.current.y / TILE)
+            supabase
+              .from('world_positions')
+              // @ts-expect-error Supabase types misaligned
+              .upsert({ user_id: user!.id, x: tileX, y: tileY, direction: myPosRef.current.direction, updated_at: new Date().toISOString() })
+              .then(({ error }) => {
+                if (error) console.error('Error upserting resting position:', error)
+              })
+          }, 1500)
         }
       }
 
@@ -340,6 +373,9 @@ export default function WorldPage() {
       window.removeEventListener('keyup', onKeyUp)
       canvas.removeEventListener('click', onClick)
       supabase.removeChannel(channel)
+      if (dbStopTimeoutRef.current) {
+        clearTimeout(dbStopTimeoutRef.current)
+      }
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user, profile])
