@@ -214,7 +214,7 @@ export default function CharacterCustomizer({ initialData, onComplete, buttonTex
             />
           </div>
           <div className={styles.avatarRow}>
-            <div className={`avatar img-responsive ${styles.avatarPreview}`} style={{ width: 40, height: 40 }}>
+            <div className={`avatar img-responsive ${styles.avatarPreview}`}>
               {avatarPreview ? <img src={avatarPreview} alt="preview" /> : <span>🌱</span>}
             </div>
             <button type="button" className={styles.tagBtn} onClick={() => fileRef.current?.click()} style={{ background: '#a67c52', color: '#fff' }}>

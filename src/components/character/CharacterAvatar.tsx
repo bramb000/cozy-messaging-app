@@ -8,15 +8,17 @@ export type AvatarVariant = 'roster' | 'chat' | 'panel'
 
 const VARIANT_MAP: Record<AvatarVariant, {
   spriteSize: SpriteSize  // which CharacterSprite size to render inside
-  viewW: number           // viewport clip width
-  viewH: number           // viewport clip height
+  viewW: number           // viewport clip width fallback
+  viewH: number           // viewport clip height fallback
+  cssWidthVar: string     // CSS token variable for width
+  cssHeightVar: string    // CSS token variable for height
 }> = {
   // Roster sidebar: compact, shows head only. Sprite is 48×64, we clip to 40×44.
-  roster: { spriteSize: 'sm', viewW: 40, viewH: 44 },
-  // Chat bubbles: natural sprite size, no box.
-  chat:   { spriteSize: 'sm', viewW: 48, viewH: 64 },
-  // Sidebar user panel: slight scale-up, no clipping box.
-  panel:  { spriteSize: 'sm', viewW: 48, viewH: 64 },
+  roster: { spriteSize: 'sm', viewW: 40, viewH: 44, cssWidthVar: '--avatar-size-sm-w', cssHeightVar: '--avatar-size-sm-h' },
+  // Chat bubbles: rich details at 2x scale, chest-up crop (64x72).
+  chat:   { spriteSize: 'md', viewW: 64, viewH: 72, cssWidthVar: '--avatar-size-md-w', cssHeightVar: '--avatar-size-md-h' },
+  // Sidebar user panel: 1x scale chest-up crop (48x56) to fit sidebar perfectly.
+  panel:  { spriteSize: 'sm', viewW: 48, viewH: 56, cssWidthVar: '--avatar-size-panel-w', cssHeightVar: '--avatar-size-panel-h' },
 }
 
 interface CharacterAvatarProps {
@@ -35,15 +37,20 @@ export function CharacterAvatar({
   dotOnline = false,
   className = '',
 }: CharacterAvatarProps) {
-  const { spriteSize, viewW, viewH } = VARIANT_MAP[variant]
+  const { spriteSize, viewW, viewH, cssWidthVar, cssHeightVar } = VARIANT_MAP[variant]
+
+  const styleDimension = {
+    width: `var(${cssWidthVar}, ${viewW}px)`,
+    height: `var(${cssHeightVar}, ${viewH}px)`,
+  }
 
   return (
     <div
       className={`${styles.avatar} ${styles[variant]} ${className}`}
-      style={{ width: viewW, height: viewH }}
+      style={styleDimension}
     >
       {/* The sprite is rendered at its natural size then the viewport clips it */}
-      <div className={styles.spriteViewport} style={{ width: viewW, height: viewH }}>
+      <div className={styles.spriteViewport} style={styleDimension}>
         <CharacterSprite config={config} size={spriteSize} animated={false} />
       </div>
       {showDot && (

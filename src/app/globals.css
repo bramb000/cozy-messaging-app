@@ -44,9 +44,46 @@
   --space-10: 64px;
   --space-12: 80px;
 
-  /* ── Layout ──────────────────────────────────────────────── */
-  --sidebar-w:  180px;
-  --roster-w:   200px;
+  /* ── Layout — App Shell Column Ratios (mapping to grid columns) ── */
+  --sidebar-cols-desktop: 4fr; /* Left sidebar: 4 columns out of 12 (increased from 3fr) */
+  --main-cols-desktop: 6fr;    /* Center main: 6 columns out of 12 */
+  --roster-cols-desktop: 2fr;  /* Right roster: 2 columns out of 12 */
+
+  --sidebar-cols-tablet: 3fr;  /* Left sidebar: 3 columns out of 8 */
+  --main-cols-tablet: 5fr;     /* Center main: 5 columns out of 8 */
+
+  /* ── Sizing & Structural Tokens ──────────────────────────── */
+  --avatar-size-xs: 32px;
+  --avatar-size-sm-w: 40px;
+  --avatar-size-sm-h: 44px;
+  --avatar-size-panel-w: 48px;
+  --avatar-size-panel-h: 56px;
+  --avatar-size-md-w: 64px;
+  --avatar-size-md-h: 72px;
+  --avatar-size-lg-w: 144px;
+  --avatar-size-lg-h: 192px;
+
+  --interactive-h-sm: 36px;
+  --interactive-h-md: 48px;
+
+  --border-w-thin: 2px;
+  --border-w-thick: 4px;
+  --radius-sharp: 0px;
+  --radius-pixel: 4px;
+  --radius-round: 50%;
+
+  /* ── Responsive Column Grid Tokens ───────────────────────── */
+  --grid-cols-desktop: 12;
+  --grid-cols-tablet: 8;
+  --grid-cols-mobile: 4;
+  --grid-gap: var(--space-3);
+  --grid-gap-mobile: var(--space-2);
+
+  /* ── App Shell Column Tokens (driven purely by fractional columns) ─ */
+  --app-columns-desktop: var(--sidebar-cols-desktop) var(--main-cols-desktop) var(--roster-cols-desktop);
+  --app-columns-tablet: var(--sidebar-cols-tablet) var(--main-cols-tablet);
+  --app-columns-mobile: 1fr;
+  --app-columns: var(--app-columns-desktop);
 }
 
 /* ============================================================
@@ -76,14 +113,14 @@ html, body {
    ============================================================ */
 .app-shell {
   display: grid;
-  grid-template-columns: var(--sidebar-w) 1fr var(--roster-w);
+  grid-template-columns: var(--app-columns);
   grid-template-rows: 100vh;
   height: 100vh;
   overflow: hidden;
 }
 
 .app-shell.no-roster {
-  grid-template-columns: var(--sidebar-w) 1fr;
+  --app-columns: var(--app-columns-tablet);
 }
 
 /* ── Left sidebar ──────────────────────────────────────────── */
@@ -121,17 +158,39 @@ html, body {
 
 /* ── Responsive ───────────────────────────────────────────── */
 @media (max-width: 1100px) {
-  .app-shell {
-    grid-template-columns: var(--sidebar-w) 1fr;
+  :root {
+    --app-columns: var(--app-columns-tablet);
   }
   .roster-sidebar { display: none; }
 }
 
 @media (max-width: 640px) {
-  .app-shell {
-    grid-template-columns: 1fr;
+  :root {
+    --app-columns: var(--app-columns-mobile);
   }
   .sidebar { display: none; }
+}
+
+/* ============================================================
+   RESPONSIVE GRID SYSTEM (Utility columns)
+   ============================================================ */
+.grid-system {
+  display: grid;
+  grid-template-columns: repeat(var(--grid-cols-desktop), 1fr);
+  gap: var(--grid-gap);
+}
+
+@media (max-width: 1024px) {
+  .grid-system {
+    grid-template-columns: repeat(var(--grid-cols-tablet), 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .grid-system {
+    grid-template-columns: repeat(var(--grid-cols-mobile), 1fr);
+    gap: var(--grid-gap-mobile);
+  }
 }
 
 /* ============================================================
@@ -336,9 +395,10 @@ a:hover { color: var(--gold); }
    AVATAR (legacy fallback for profile images)
    ============================================================ */
 .avatar {
-  width: 40px;
-  height: 40px;
-  border: 2px solid var(--border-color);
+  width: var(--avatar-size-sm-w);
+  height: var(--avatar-size-sm-h);
+  border: var(--border-w-thin) solid var(--border-color);
+  border-radius: var(--radius-pixel);
   background: var(--bg-panel);
   display: flex;
   align-items: center;
@@ -354,8 +414,17 @@ a:hover { color: var(--gold); }
   object-fit: cover;
   image-rendering: pixelated;
 }
-.avatar-sm { width: 32px; height: 32px; font-size: 0.9rem; }
-.avatar-lg { width: 64px; height: 64px; font-size: 2rem; }
+.avatar-sm {
+  width: var(--avatar-size-xs);
+  height: var(--avatar-size-xs);
+  border-radius: var(--radius-round);
+  font-size: 0.9rem;
+}
+.avatar-lg {
+  width: var(--avatar-size-md-w);
+  height: var(--avatar-size-md-h);
+  font-size: 2rem;
+}
 
 /* ============================================================
    LOADING

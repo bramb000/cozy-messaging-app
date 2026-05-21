@@ -30,10 +30,10 @@
 .groupStart  { margin-top: var(--space-3); }
 .groupFollow { margin-top: 2px; }
 
-/* Avatar column — standardized 48px for 'sm' sprites */
+/* Avatar column — standardized to match the MD avatar sizing token */
 .avatarSlot {
-  width: 48px;
-  min-width: 48px;
+  width: var(--avatar-size-md-w);
+  min-width: var(--avatar-size-md-w);
   flex-shrink: 0;
   align-self: flex-end;
   display: flex;
