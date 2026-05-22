@@ -1,4 +1,10 @@
-/* Chat Page — rigid columnar layout */
+/* ChatPage.module.css
+   Discord-style: all messages left-aligned, avatar always on left.
+   Chain logic: avatar + header shown for chain-starts only,
+   chained messages get an indent + hover timestamp instead.
+   ---------------------------------------------------------------- */
+
+/* ── Page shell ────────────────────────────────────────────── */
 .page {
   display: flex;
   flex-direction: column;
@@ -6,121 +12,142 @@
   overflow: hidden;
 }
 
-/* ── Message history ──────────────────────────── */
+/* ── Message history scroll area ───────────────────────────── */
 .messages {
   flex: 1;
   overflow-y: auto;
-  padding: var(--space-4) var(--space-4);
+  padding: var(--space-4) var(--space-3) var(--space-2);
   display: flex;
   flex-direction: column;
   gap: 0;
 }
 
-/* ── Message row ─────────────────────────────── */
+/* ── Message row — always left-to-right ────────────────────── */
 .row {
   display: flex;
-  align-items: flex-end;
-  gap: var(--space-2);
-  padding: 1px 0;
+  flex-direction: row;          /* LTR always */
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding: 1px var(--space-2);
+  position: relative;
+  border-radius: var(--radius-pixel);
+  transition: background var(--transition-fast);
 }
 
-.rowOther { flex-direction: row; }
-.rowMe    { flex-direction: row-reverse; }
+.row:hover {
+  background: rgba(255,255,255,0.03);
+}
 
-.groupStart  { margin-top: var(--space-3); }
-.groupFollow { margin-top: 2px; }
+/* Extra gap before a new group (chain-start) */
+.chainStart  { margin-top: var(--space-4); }
+.chainFollow { margin-top: 2px; }
+.chainEnd    { margin-bottom: var(--space-1); }
 
-/* Avatar column — standardized to match the MD avatar sizing token */
+/* Own messages — subtle highlight tint to distinguish sender */
+.rowMe .bubbleContent {
+  color: var(--cream);
+}
+
+/* ── Avatar column ─────────────────────────────────────────── */
+/* Fixed-width column matching the chat avatar token exactly */
 .avatarSlot {
-  width: var(--avatar-size-md-w);
+  width: var(--avatar-size-md-w);    /* 64px */
   min-width: var(--avatar-size-md-w);
   flex-shrink: 0;
-  align-self: flex-end;
   display: flex;
   justify-content: center;
+  align-items: flex-start;
+  padding-top: 2px;
 }
 
+/* Compact timestamp shown in the avatar column for chained rows.
+   Invisible by default, shown on row hover — Discord-style. */
+.chainTime {
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  opacity: 0;
+  transition: opacity var(--transition-fast);
+  white-space: nowrap;
+  width: 100%;
+  text-align: right;
+  padding-top: 3px;
+  line-height: 1;
+}
 
-/* ── Bubble ─────────────────────────────────── */
+.row:hover .chainTime {
+  opacity: 1;
+}
+
+/* ── Bubble (text column) ──────────────────────────────────── */
 .bubble {
   display: flex;
   flex-direction: column;
-  max-width: 72%;
+  flex: 1;
   min-width: 0;
 }
 
+/* Chain-start header: username + full timestamp */
 .bubbleHeader {
   display: flex;
   align-items: baseline;
   gap: var(--space-2);
-  margin-bottom: 3px;
-  padding: 0 var(--space-2);
+  margin-bottom: var(--space-1);
 }
 
-.rowMe .bubbleHeader { flex-direction: row-reverse; }
-
 .bubbleUser {
-  font-family: 'Press Start 2P', monospace;
+  font-family: var(--font-heading);
   font-size: 0.42rem;
   color: var(--gold-light);
-  text-shadow: 1px 1px 0 rgba(0,0,0,0.7);
+  text-shadow: 1px 1px 0 rgba(0,0,0,0.6);
+  line-height: 1.8;
+}
+
+/* Own messages: moss-green username */
+.bubbleUserMe {
+  color: var(--moss-light);
 }
 
 .bubbleTime {
-  font-family: 'VT323', monospace;
-  font-size: 0.85rem;
+  font-family: var(--font-body);
+  font-size: 0.9rem;
   color: var(--text-muted);
+  line-height: 1;
 }
 
+/* ── Message text ──────────────────────────────────────────── */
 .bubbleContent {
-  padding: var(--space-2) var(--space-3);
-  font-family: 'VT323', monospace;
+  font-family: var(--font-body);
   font-size: 1.15rem;
-  line-height: 1.4;
+  line-height: 1.5;
+  color: var(--text-primary);
   word-break: break-word;
-  border: 3px solid var(--border-color);
-}
-
-/* Other user's messages — dark panel, left-aligned */
-.bubbleOther {
-  background: var(--bg-panel);
-  color: var(--cream);
-  box-shadow: 3px 3px 0 var(--brown-deep);
-  align-self: flex-start;
-}
-
-/* My messages — moss green, right aligned */
-.bubbleMe {
-  background: var(--moss-dark);
-  color: var(--cream);
-  border-color: var(--moss);
-  box-shadow: 3px 3px 0 rgba(0,0,0,0.4);
-  align-self: flex-end;
+  white-space: pre-wrap;
 }
 
 .bubbleContent p { margin: 0; }
 .bubbleContent strong { color: var(--gold-light); }
 .bubbleContent em { color: var(--cream-dim); font-style: italic; }
 
-/* ── Unread divider ─────────────────────────── */
+/* ── Unread divider ─────────────────────────────────────────── */
 .unreadDivider {
   display: flex;
   align-items: center;
   gap: var(--space-3);
   margin: var(--space-3) 0;
-  font-family: 'Press Start 2P', monospace;
-  font-size: 0.4rem;
-  color: var(--red-earth);
+  font-family: var(--font-heading);
+  font-size: var(--font-size-ui-xs);
+  color: var(--color-error);
   text-align: center;
 }
 .unreadDivider::before,
 .unreadDivider::after {
   content: '';
   flex: 1;
-  border-bottom: 1px solid var(--red-earth);
+  border-bottom: 1px solid var(--color-error);
 }
 
-/* ── Input bar — rigid bottom strip ─────────── */
+/* ── Input bar — rigid bottom strip ────────────────────────── */
 .inputBar {
   border-top: var(--border-thick);
   background: var(--bg-sidebar);
@@ -132,15 +159,15 @@
   display: flex;
   align-items: center;
   gap: var(--space-2);
-  border: 3px solid var(--border-color);
+  border: var(--border-w-thick) solid var(--border-color);
   background: var(--bg-main);
-  padding: var(--space-2) var(--space-2);
+  padding: var(--space-2);
   min-height: 48px;
 }
 
 .editor {
   flex: 1;
-  font-family: 'VT323', monospace;
+  font-family: var(--font-body);
   font-size: 1.2rem;
   color: var(--cream);
   outline: none;
@@ -166,12 +193,12 @@
   flex-shrink: 0;
 }
 
-/* Emoji picker positioning */
+/* Emoji picker — positioned above the input bar */
 .emojiWrap { position: relative; }
 .emojiMenu {
   position: absolute;
   bottom: calc(100% + var(--space-2));
   right: 0;
   z-index: 50;
-  box-shadow: 4px 4px 0 0 rgba(0,0,0,0.5);
+  box-shadow: var(--shadow-drop);
 }

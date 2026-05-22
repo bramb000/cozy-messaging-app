@@ -5,9 +5,10 @@ import { useAuth } from '@/context/AuthContext'
 import type { MessageWithProfile } from '@/types/database'
 import styles from './ChatPage.module.css'
 import PixelEmojiPicker from '@/components/ui/PixelEmojiPicker'
-import PixelButton from '@/components/ui/PixelButton'
 import { CharacterAvatar } from '@/components/character/CharacterAvatar'
 import { parseEmojisToHtml } from '@/utils/emojiParser'
+
+const CHAIN_GAP_MS = 20_000 // 20 seconds — messages within this window are chained
 
 export default function ChatPage() {
   const { user } = useAuth()
@@ -86,7 +87,33 @@ export default function ChatPage() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  function formatTime(ts: string | null) {
+  /**
+   * Format timestamp — shows full date + time on chain-start headers.
+   * e.g. "21 May 2025 at 09:41 AM"
+   */
+  function formatTimestamp(ts: string | null): string {
+    if (!ts || !mounted) return ''
+    const d = new Date(ts)
+    const today     = new Date()
+    const yesterday = new Date(today)
+    yesterday.setDate(today.getDate() - 1)
+
+    const isSameDay = (a: Date, b: Date) =>
+      a.getDate() === b.getDate() &&
+      a.getMonth() === b.getMonth() &&
+      a.getFullYear() === b.getFullYear()
+
+    const timeStr = d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+
+    if (isSameDay(d, today)) return `Today at ${timeStr}`
+    if (isSameDay(d, yesterday)) return `Yesterday at ${timeStr}`
+
+    const dateStr = d.toLocaleDateString([], { day: 'numeric', month: 'short', year: 'numeric' })
+    return `${dateStr} at ${timeStr}`
+  }
+
+  /** Compact hover timestamp shown for chained messages */
+  function formatHoverTime(ts: string | null): string {
     if (!ts || !mounted) return ''
     return new Date(ts).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
   }
@@ -100,14 +127,25 @@ export default function ChatPage() {
         {loading && <div className="loading-screen"><div className="pixel-spinner" /></div>}
 
         {messages.map((msg, i) => {
-          const me = isMe(msg)
-          const prevMsg = i > 0 ? messages[i - 1] : null
-          const isSameUser = prevMsg?.user_id === msg.user_id
+          const me       = isMe(msg)
+          const prevMsg  = i > 0 ? messages[i - 1] : null
+          const nextMsg  = i < messages.length - 1 ? messages[i + 1] : null
+
           const timeDiff = prevMsg
             ? new Date(msg.created_at || 0).getTime() - new Date(prevMsg.created_at || 0).getTime()
             : Infinity
-          const isGroupStart = !isSameUser || timeDiff > 60000
-          const msgDate = new Date(msg.created_at || 0)
+
+          // New chain if: different user OR more than 20s since last message
+          const isSameUser    = prevMsg?.user_id === msg.user_id
+          const isChainStart  = !isSameUser || timeDiff > CHAIN_GAP_MS
+
+          // Is next message part of the same chain? (used for bottom padding)
+          const nextTimeDiff  = nextMsg
+            ? new Date(nextMsg.created_at || 0).getTime() - new Date(msg.created_at || 0).getTime()
+            : Infinity
+          const isChainEnd    = !nextMsg || nextMsg.user_id !== msg.user_id || nextTimeDiff > CHAIN_GAP_MS
+
+          const msgDate  = new Date(msg.created_at || 0)
           const prevDate = prevMsg ? new Date(prevMsg.created_at || 0) : new Date(0)
           const isUnread = lastReadTs && msgDate > lastReadTs && prevDate <= lastReadTs
 
@@ -115,26 +153,35 @@ export default function ChatPage() {
             <React.Fragment key={msg.id}>
               {isUnread && <div className={styles.unreadDivider}>New Messages</div>}
 
-              <div className={`${styles.row} ${me ? styles.rowMe : styles.rowOther} ${isGroupStart ? styles.groupStart : styles.groupFollow}`}>
-                {/* Avatar (visible on group start) */}
+              <div className={`${styles.row} ${isChainStart ? styles.chainStart : styles.chainFollow} ${isChainEnd ? styles.chainEnd : ''} ${me ? styles.rowMe : ''}`}>
+
+                {/* Avatar column — always on the left */}
                 <div className={styles.avatarSlot}>
-                  {isGroupStart && (
+                  {isChainStart ? (
                     <CharacterAvatar
                       config={(msg.profile as any)?.character_config ?? {}}
                       variant="chat"
                     />
+                  ) : (
+                    /* Blank indent + hover timestamp for chained messages */
+                    <span className={styles.chainTime} aria-hidden="true">
+                      {formatHoverTime(msg.created_at)}
+                    </span>
                   )}
                 </div>
 
+                {/* Message content column */}
                 <div className={styles.bubble}>
-                  {isGroupStart && (
+                  {isChainStart && (
                     <div className={styles.bubbleHeader}>
-                      <span className={styles.bubbleUser}>{me ? 'You' : msg.profile?.username}</span>
-                      <span className={styles.bubbleTime}>{formatTime(msg.created_at)}</span>
+                      <span className={`${styles.bubbleUser} ${me ? styles.bubbleUserMe : ''}`}>
+                        {me ? 'You' : msg.profile?.username}
+                      </span>
+                      <span className={styles.bubbleTime}>{formatTimestamp(msg.created_at)}</span>
                     </div>
                   )}
                   <div
-                    className={`${styles.bubbleContent} ${me ? styles.bubbleMe : styles.bubbleOther}`}
+                    className={styles.bubbleContent}
                     dangerouslySetInnerHTML={{ __html: parseEmojisToHtml(msg.content) }}
                   />
                 </div>
