@@ -7,7 +7,6 @@ import { CharacterSprite } from '@/components/character/CharacterSprite'
 import {
   HAIR_STYLES, HAIR_COLORS,
   TOP_STYLES, BOTTOM_STYLES, SHOE_COLORS,
-  HAT_STYLES, HELMET_STYLES,
   DEFAULT_CHARACTER_CONFIG,
   type CharacterConfig,
 } from '@/lib/sprites'
@@ -19,6 +18,13 @@ const TABS: { id: TabId; label: string }[] = [
   { id: 'bottom', label: 'Bottom' },
   { id: 'shoes',  label: 'Shoes'  },
   { id: 'hat',    label: 'Hat'    },
+]
+
+const HEADWEAR_STYLES = [
+  { id: null, type: 'none' as const, label: 'None', colors: null },
+  { id: 'Farmer_Hat_1', type: 'hat' as const, label: 'Farmer Hat', colors: null },
+  { id: 'Plate_Helmet_1', type: 'helmet' as const, label: 'Plate I', colors: ['Blue', 'Bronze', 'Gold', 'Green', 'Iron', 'Orange', 'Purple', 'Red'] },
+  { id: 'Plate_Helmet_2', type: 'helmet' as const, label: 'Plate II', colors: ['Blue', 'Bronze', 'Gold', 'Green', 'Iron', 'Orange', 'Purple', 'Red'] },
 ]
 
 export default function ProfilePage() {
@@ -45,6 +51,35 @@ export default function ProfilePage() {
 
   function set<K extends keyof CharacterConfig>(key: K, value: CharacterConfig[K]) {
     setConfig(prev => ({ ...prev, [key]: value }))
+  }
+
+  const activeHeadwear = config.helmetStyle
+    ? HEADWEAR_STYLES.find(h => h.id === config.helmetStyle)
+    : config.hatStyle
+    ? HEADWEAR_STYLES.find(h => h.id === config.hatStyle)
+    : HEADWEAR_STYLES[0]
+
+  function handleSelectHeadwear(h: typeof HEADWEAR_STYLES[number]) {
+    if (h.type === 'none') {
+      setConfig(prev => ({
+        ...prev,
+        hatStyle: null,
+        helmetStyle: null,
+      }))
+    } else if (h.type === 'hat') {
+      setConfig(prev => ({
+        ...prev,
+        hatStyle: h.id,
+        helmetStyle: null,
+      }))
+    } else if (h.type === 'helmet') {
+      setConfig(prev => ({
+        ...prev,
+        hatStyle: null,
+        helmetStyle: h.id,
+        helmetColor: prev.helmetColor || (h.colors ? h.colors[0] : null),
+      }))
+    }
   }
 
   async function handleSave() {
@@ -248,37 +283,30 @@ export default function ProfilePage() {
           {/* ── HAT ── */}
           {activeTab === 'hat' && (
             <>
-              <div className={styles.optionLabel}>Hat</div>
+              <div className={styles.optionLabel}>Style</div>
               <div className={styles.optionGrid}>
-                {HAT_STYLES.map(h => (
+                {HEADWEAR_STYLES.map(h => (
                   <button
                     key={h.id ?? 'none'}
-                    className={`${styles.optionChip} ${config.hatStyle === h.id ? styles.optionActive : ''}`}
-                    onClick={() => set('hatStyle', h.id)}
+                    className={`${styles.optionChip} ${
+                      (h.type === 'none' && !config.hatStyle && !config.helmetStyle) ||
+                      (h.type === 'hat' && config.hatStyle === h.id) ||
+                      (h.type === 'helmet' && config.helmetStyle === h.id)
+                        ? styles.optionActive
+                        : ''
+                    }`}
+                    onClick={() => handleSelectHeadwear(h)}
                     type="button"
                   >
                     {h.label}
                   </button>
                 ))}
               </div>
-              <div className={styles.optionLabel}>Helmet</div>
-              <div className={styles.optionGrid}>
-                {HELMET_STYLES.map(h => (
-                  <button
-                    key={h.id ?? 'none'}
-                    className={`${styles.optionChip} ${config.helmetStyle === h.id ? styles.optionActive : ''}`}
-                    onClick={() => { set('helmetStyle', h.id); if (!config.helmetColor && h.colors.length) set('helmetColor', h.colors[0]) }}
-                    type="button"
-                  >
-                    {h.label}
-                  </button>
-                ))}
-              </div>
-              {config.helmetStyle && (
+              {activeHeadwear?.type === 'helmet' && activeHeadwear.colors && (
                 <>
-                  <div className={styles.optionLabel}>Helmet Colour</div>
+                  <div className={styles.optionLabel}>Colour</div>
                   <div className={styles.colorRow}>
-                    {(HELMET_STYLES.find(h => h.id === config.helmetStyle)?.colors ?? []).map(c => (
+                    {activeHeadwear.colors.map(c => (
                       <button
                         key={c}
                         className={`${styles.colorSwatch} ${config.helmetColor === c ? styles.swatchActive : ''}`}
