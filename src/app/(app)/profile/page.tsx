@@ -34,10 +34,13 @@ export default function ProfilePage() {
 
   useEffect(() => {
     if (!myProfile) return
-    setUsername(myProfile.username)
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const cc = (myProfile as any).character_config
-    if (cc) setConfig({ ...DEFAULT_CHARACTER_CONFIG, ...cc })
+    const timer = setTimeout(() => {
+      setUsername(myProfile.username)
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const cc = (myProfile as any).character_config
+      if (cc) setConfig({ ...DEFAULT_CHARACTER_CONFIG, ...cc })
+    }, 0);
+    return () => clearTimeout(timer);
   }, [myProfile])
 
   function set<K extends keyof CharacterConfig>(key: K, value: CharacterConfig[K]) {

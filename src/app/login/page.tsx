@@ -103,7 +103,6 @@ export default function LoginPage() {
           </div>
 
           {/* Email / Password */}
-          {/* @ts-expect-error - stack as form is valid but types limit it */}
           <Stack as="form" direction="column" gap="space-4" onSubmit={handleEmailAuth}>
             <Stack direction="column" gap="space-1">
               <Text variant="label" as="label" htmlFor="email">Email</Text>

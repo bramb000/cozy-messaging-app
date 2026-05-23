@@ -68,6 +68,10 @@
   filter: drop-shadow(0 8px 12px rgba(255, 140, 0, 0.15));
 }
 
+.spriteStage > div {
+  transform: translateY(-28px); /* Shift the sprite upwards to center the character's body on the Y axis */
+}
+
 .previewName {
   font-family: 'Press Start 2P', monospace;
   font-size: 0.55rem;
