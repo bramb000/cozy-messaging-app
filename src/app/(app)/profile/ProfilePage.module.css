@@ -60,20 +60,16 @@
 .spriteStage {
   /* The sprite itself is 144×192px (lg). */
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: center;
-  width: 144px; /* Full scale-3 frame width (no horizontal cropping, keeping hair and arms intact) */
-  height: 120px; /* Exact scale-3 height of the character's head and body */
-  overflow: hidden;
-  position: relative;
+  width: 100%;
+  min-height: 200px;
   /* Faint glow under the character */
   filter: drop-shadow(0 8px 12px rgba(255, 140, 0, 0.15));
 }
 
 .spriteStage > div {
-  position: absolute;
-  top: -72px; /* Crop out exactly the top 72px of empty sky space */
-  left: 0;    /* Keep X-axis centered naturally at 0 */
+  transform: translateY(-28px); /* Shift the sprite upwards to center the character's body on the Y axis */
 }
 
 .previewName {
