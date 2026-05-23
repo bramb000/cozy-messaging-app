@@ -28,7 +28,6 @@
   flex-direction: row;          /* LTR always */
   align-items: flex-start;
   gap: var(--space-3);
-  padding: 1px var(--space-2);
   position: relative;
   border-radius: var(--radius-pixel);
   transition: background var(--transition-fast);
@@ -38,10 +37,21 @@
   background: rgba(255,255,255,0.03);
 }
 
-/* Extra gap before a new group (chain-start) */
-.chainStart  { margin-top: var(--space-4); }
-.chainFollow { margin-top: 2px; }
-.chainEnd    { margin-bottom: var(--space-1); }
+/* Extra gap and padding before a new group (chain-start) */
+.chainStart {
+  padding: var(--space-2) var(--space-3); /* 8px top/bottom, 16px left/right */
+  margin-top: var(--space-3); /* 16px */
+}
+
+/* Tighter padding for continuation messages (chain-follow) */
+.chainFollow {
+  padding: var(--space-1) var(--space-3); /* 4px top/bottom, 16px left/right */
+  margin-top: 0;
+}
+
+.chainEnd {
+  margin-bottom: var(--space-2); /* 8px */
+}
 
 /* Own messages — subtle highlight tint to distinguish sender */
 .rowMe .bubbleContent {

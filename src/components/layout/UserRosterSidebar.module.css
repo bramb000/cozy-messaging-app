@@ -79,6 +79,7 @@
   text-overflow: ellipsis;
   flex: 1;
   min-width: 0;
+  transform: translateY(-3px); /* Shift up to align with the vertical center of the pixel avatar */
 }
 
 .online .username {
@@ -95,4 +96,5 @@
   line-height: 1;
   /* pixel-aligned — no sub-pixel rendering */
   image-rendering: pixelated;
+  transform: translateY(-3px); /* Shift up to keep perfectly aligned with the translated text */
 }

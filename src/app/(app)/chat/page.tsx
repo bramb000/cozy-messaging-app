@@ -159,7 +159,7 @@ export default function ChatPage() {
                 <div className={styles.avatarSlot}>
                   {isChainStart ? (
                     <CharacterAvatar
-                      config={(msg.profile as any)?.character_config ?? {}}
+                      config={(msg.profile?.character_config as Record<string, unknown>) ?? {}}
                       variant="chat"
                     />
                   ) : (
