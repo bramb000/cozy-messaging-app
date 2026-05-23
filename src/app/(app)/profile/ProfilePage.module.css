@@ -62,8 +62,8 @@
   display: flex;
   align-items: flex-start;
   justify-content: center;
-  width: 48px;  /* Exact scale-3 width of the character body */
-  height: 96px; /* Exact scale-3 height of the character body */
+  width: 144px; /* Full scale-3 frame width (no horizontal cropping, keeping hair and arms intact) */
+  height: 120px; /* Exact scale-3 height of the character's head and body */
   overflow: hidden;
   position: relative;
   /* Faint glow under the character */
@@ -72,8 +72,8 @@
 
 .spriteStage > div {
   position: absolute;
-  top: -96px;  /* Crop out the top 96px of empty sky */
-  left: -48px; /* Crop out the left 48px of empty side padding */
+  top: -72px; /* Crop out exactly the top 72px of empty sky space */
+  left: 0;    /* Keep X-axis centered naturally at 0 */
 }
 
 .previewName {
