@@ -25,15 +25,24 @@
 .roster {
   /* no extra styles — size is driven by the viewW/viewH style prop */
 }
+.roster .spriteViewport > div {
+  transform: translateY(-12px); /* Shift sm sprite up to crop out empty space above head */
+}
 
 /* Variant: chat — natural sprite size, no visual decoration */
 .chat {
   /* no extra styles */
 }
+.chat .spriteViewport > div {
+  transform: translateY(-24px); /* Shift md sprite up to crop out empty space above head */
+}
 
 /* Variant: panel — sidebar user panel, no border box */
 .panel {
   /* no extra styles */
+}
+.panel .spriteViewport > div {
+  transform: translateY(-12px); /* Shift sm sprite up to crop out empty space above head */
 }
 
 /* Online/offline pixel indicator — square, no glow, farm-themed */

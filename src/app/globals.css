@@ -691,3 +691,82 @@ a:hover { color: var(--gold); }
   vertical-align: middle;
   transform: translateY(-0.1em);
 }
+
+/* ============================================================
+   SKY SCENE & FLOATING CLOUDS
+   ============================================================ */
+.sky-scene {
+  background: linear-gradient(to bottom, #7fc9ff 0%, #a3daff 70%, #d8f0ff 100%);
+  width: 100vw;
+  height: 100vh;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: var(--space-4);
+  image-rendering: pixelated;
+  z-index: 0;
+}
+
+/* Green pixel rolling hills at the bottom */
+.sky-grass {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 140px;
+  background-color: var(--moss);
+  border-top: 6px solid var(--moss-dark);
+  z-index: 1;
+  /* Pixelated grid overlay */
+  background-image: 
+    linear-gradient(rgba(255,255,255,0.06) 4px, transparent 4px),
+    linear-gradient(90deg, rgba(255,255,255,0.06) 4px, transparent 4px);
+  background-size: 16px 16px;
+  box-shadow: inset 0 6px 0 rgba(255,255,255,0.1);
+}
+
+/* Stylized blocky pixel-art clouds */
+.cloud, .cloud-b, .cloud-c {
+  position: absolute;
+  background-color: rgba(255, 255, 255, 0.85);
+  border: 4px solid var(--brown-deep);
+  box-shadow: 
+    inset -4px -4px 0 var(--cream-dim),
+    4px 4px 0 rgba(0,0,0,0.15);
+  z-index: 0;
+  pointer-events: none;
+}
+
+.cloud {
+  width: 120px;
+  height: 36px;
+  top: 15%;
+  animation: floatCloud 75s linear infinite;
+}
+
+.cloud-b {
+  width: 160px;
+  height: 48px;
+  top: 25%;
+  animation: floatCloud 110s linear infinite;
+  opacity: 0.75;
+}
+
+.cloud-c {
+  width: 90px;
+  height: 28px;
+  top: 8%;
+  animation: floatCloud 55s linear infinite;
+  opacity: 0.9;
+}
+
+@keyframes floatCloud {
+  0% {
+    transform: translateX(-200px);
+  }
+  100% {
+    transform: translateX(calc(100vw + 200px));
+  }
+}

@@ -16,23 +16,36 @@ export function getPixelatedEmoji(unicode: string): string {
 
   const canvas = document.createElement('canvas');
   
-  // Render at 32x32 for a 'true 32x32' pixel art aesthetic. Blockier and more retro.
-  canvas.width = 32;
-  canvas.height = 32;
+  // Render at 16x16 for a 'true 16x16' retro pixel art aesthetic.
+  canvas.width = 16;
+  canvas.height = 16;
   
   const ctx = canvas.getContext('2d');
   if (!ctx) return '';
   
-  ctx.clearRect(0, 0, 32, 32);
+  ctx.clearRect(0, 0, 16, 16);
   
   // Use optimal native emoji fonts depending on the OS
-  // A 27px font on 32px canvas gives us a nice border-less fill
-  ctx.font = '27px "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif';
+  // A 13px font on 16x16 canvas gives us a nice border-less fill
+  ctx.font = '13px "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif';
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
   
-  // Draw emoji in the center of the 32x32 canvas
-  ctx.fillText(unicode, 16, 18);
+  // Draw emoji in the center of the 16x16 canvas
+  ctx.fillText(unicode, 8, 9);
+
+  // Threshold the alpha channel to remove anti-aliasing blur and get clean pixel edges
+  const imgData = ctx.getImageData(0, 0, 16, 16);
+  const data = imgData.data;
+  for (let i = 0; i < data.length; i += 4) {
+    const alpha = data[i + 3];
+    if (alpha < 128) {
+      data[i + 3] = 0;
+    } else {
+      data[i + 3] = 255;
+    }
+  }
+  ctx.putImageData(imgData, 0, 0);
 
   const dataUrl = canvas.toDataURL('image/png');
   

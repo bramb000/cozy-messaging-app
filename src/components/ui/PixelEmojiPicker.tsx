@@ -18,12 +18,15 @@ export default function PixelEmojiPicker({ onEmojiSelect }: PixelEmojiPickerProp
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    setMounted(true);
+    const timer = setTimeout(() => {
+      setMounted(true);
+    }, 0);
+    return () => clearTimeout(timer);
   }, []);
 
   return (
     <div className={styles.picker}>
-      <span className={styles.header}>Emojis (64x64)</span>
+      <span className={styles.header}>Emojis (16x16)</span>
       <div className={styles.grid}>
         {mounted && COMMON_EMOJIS.map((unicode) => (
           <button
