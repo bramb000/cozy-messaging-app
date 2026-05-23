@@ -15,11 +15,12 @@
 .userPanel {
   display: flex;
   align-items: center;
-  gap: var(--space-2);
-  padding: var(--space-2);
-  margin-top: var(--space-2);
-  border: 2px solid var(--moss-dark);
-  background: rgba(0,0,0,0.2);
+  gap: var(--space-3);                     /* 16px gap to match directory */
+  padding: var(--space-2) var(--space-3);   /* 8px top/bottom, 16px left/right to match directory */
+  border: 3px solid var(--border-color);    /* chunky RPG pixel-art frame */
+  background: rgba(0, 0, 0, 0.35);         /* deep background contrast */
+  box-shadow: var(--shadow-inset);         /* inner bevel shadow */
+  position: relative;
 }
 
 .userAvatar {
@@ -38,15 +39,45 @@
 .username {
   display: block;
   font-family: 'VT323', monospace;
-  font-size: 1rem;
-  color: var(--cream);
+  font-size: var(--font-size-ui-lg);        /* 1rem */
+  color: var(--text-primary);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  transform: translateY(-3px); /* Shift up to compensate for the low baseline of the VT323 pixel font */
+  transform: translateY(-3px);              /* baseline correction for VT323 */
 }
 
+/* Custom premium tactile danger button for log out */
 .signOutBtn {
-  font-size: 0.9rem;
-  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--btn-danger-bg);
+  border: none;
+  font-size: 0.8rem;
+  box-shadow:
+    inset 2px 2px 0 var(--btn-danger-border-top),
+    inset -2px -2px 0 var(--btn-danger-border-bot),
+    2px 2px 0 var(--btn-danger-shadow);
+  cursor: pointer;
+  transition: transform 0.07s ease, box-shadow 0.07s ease;
+  transform: translate(0, 0);
+  image-rendering: pixelated;
+  padding: 0;
 }
+
+.signOutBtn:hover {
+  background-color: var(--btn-danger-bg-hover);
+  filter: brightness(1.15);
+}
+
+.signOutBtn:active {
+  transform: translate(2px, 2px);          /* shift down and right */
+  box-shadow:
+    inset 2px 2px 0 var(--btn-danger-border-bot),
+    inset -2px -2px 0 var(--btn-danger-border-top),
+    0px 0px 0 var(--btn-danger-shadow);    /* sink shadow completely */
+}
+

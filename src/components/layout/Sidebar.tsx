@@ -64,7 +64,7 @@ export default function Sidebar() {
             </div>
 
             <button
-              className={`btn-icon ${styles.signOutBtn}`}
+              className={styles.signOutBtn}
               onClick={handleSignOut}
               title="Sign out"
               id="sign-out-btn"

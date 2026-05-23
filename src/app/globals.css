@@ -344,9 +344,24 @@ html, body {
 
 .nav-footer {
   border-top: var(--border-thick);
-  padding: var(--space-2);
+  padding: var(--space-3);
   flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
 }
+
+.online-count {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-family: var(--font-heading);
+  font-size: var(--font-size-ui-xs);
+  color: var(--text-muted);
+  text-shadow: 1px 1px 0 rgba(0,0,0,0.5);
+  line-height: 1;
+}
+
 
 .online-dot {
   width: var(--space-2);
