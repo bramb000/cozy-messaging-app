@@ -11,14 +11,18 @@
   align-items: flex-start;
 }
 
-/* The spriteViewport centres the sprite horizontally within the clip area */
+/* The spriteViewport clips the sprite to the defined avatar box size */
 .spriteViewport {
   overflow: hidden;
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  /* The CharacterSprite is 48px wide. When viewW < 48, this centres the
-     character so both sides are equally cropped — keeping the head centred. */
+  position: relative;
+}
+
+/* Position the sprite absolutely and center it horizontally using a 50% left shift.
+   Combined with the transform translate X-axis shift, this ensures perfect, symmetrical
+   horizontal centering even when the inner sprite width overflows the parent viewport. */
+.spriteViewport > div {
+  position: absolute;
+  left: 50%;
 }
 
 /* Variant: roster — compact, just head+shoulders */
@@ -26,7 +30,7 @@
   /* no extra styles — size is driven by the viewW/viewH style prop */
 }
 .roster .spriteViewport > div {
-  transform: translateY(-12px); /* Shift sm sprite up to crop out empty space above head */
+  transform: translate(-50%, -12px); /* Centred horizontally, shifted vertically to crop out empty space */
 }
 
 /* Variant: chat — natural sprite size, no visual decoration */
@@ -34,7 +38,7 @@
   /* no extra styles */
 }
 .chat .spriteViewport > div {
-  transform: translateY(-24px); /* Shift md sprite up to crop out empty space above head */
+  transform: translate(-50%, -24px); /* Centred horizontally, shifted vertically to crop out empty space */
 }
 
 /* Variant: panel — sidebar user panel, no border box */
@@ -42,7 +46,7 @@
   /* no extra styles */
 }
 .panel .spriteViewport > div {
-  transform: translateY(-12px); /* Shift sm sprite up to crop out empty space above head */
+  transform: translate(-50%, -12px); /* Centred horizontally, shifted vertically to crop out empty space */
 }
 
 /* Online/offline pixel indicator — square, no glow, farm-themed */
