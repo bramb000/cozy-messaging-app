@@ -60,16 +60,19 @@
 .spriteStage {
   /* The sprite itself is 144×192px (lg). */
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
   width: 100%;
-  min-height: 200px;
+  height: 128px; /* Cropped height of scale 3 sprite to fit character body exactly */
+  overflow: hidden;
+  position: relative;
   /* Faint glow under the character */
   filter: drop-shadow(0 8px 12px rgba(255, 140, 0, 0.15));
 }
 
 .spriteStage > div {
-  transform: translateY(-28px); /* Shift the sprite upwards to center the character's body on the Y axis */
+  position: relative;
+  top: -48px; /* Physically shift the 192px sprite up in the layout to crop top empty padding */
 }
 
 .previewName {

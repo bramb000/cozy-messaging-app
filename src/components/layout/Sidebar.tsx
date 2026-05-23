@@ -54,7 +54,7 @@ export default function Sidebar() {
             {/* Character sprite preview */}
             <Link href="/profile" className={styles.userAvatar} title="Your Profile">
               <CharacterAvatar
-                config={(profile as any).character_config ?? {}}
+                config={(profile?.character_config as Record<string, unknown>) ?? {}}
                 variant="panel"
               />
             </Link>
