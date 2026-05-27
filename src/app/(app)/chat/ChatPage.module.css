@@ -10,6 +10,21 @@
   flex-direction: column;
   height: 100%;
   overflow: hidden;
+  position: relative;
+}
+
+.scrim {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: rgba(0, 0, 0, 0.5);
+  pointer-events: none;
+}
+
+.messages,
+.inputBar {
+  position: relative;
+  z-index: 2;
 }
 
 /* ── Message history scroll area ───────────────────────────── */

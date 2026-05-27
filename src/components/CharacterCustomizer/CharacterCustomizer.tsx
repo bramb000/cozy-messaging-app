@@ -6,6 +6,7 @@ import styles from './CharacterCustomizer.module.css'
 import { PhysicalCard } from '../ui/PhysicalCard'
 import { TactileButton } from '../ui/TactileButton'
 import { RevealText } from '../ui/RevealText'
+import { DEFAULT_CHAT_BACKGROUND } from '@/lib/chatBackgrounds'
 
 const SKIN_TONES = ['#FDBCB4','#F1C27D','#E0AC69','#C68642','#8D5524','#4A2912']
 const HAIR_COLORS = ['#4A3728','#2C1810','#8B4513','#D2691E','#F4C430','#FF6B6B','#9B59B6','#2ECC71','#ECF0F1']
@@ -86,7 +87,12 @@ export default function CharacterCustomizer({ initialData, onComplete, buttonTex
     const { error: profileError } = await supabase
       .from('profiles')
       // @ts-expect-error Supabase types misaligned
-      .update({ username: username.trim(), avatar_url: avatarUrl, character_config: characterConfig })
+      .update({
+        username: username.trim(),
+        avatar_url: avatarUrl,
+        character_config: characterConfig,
+        chat_background: initialData?.chat_background ?? DEFAULT_CHAT_BACKGROUND,
+      })
       .eq('id', user.id)
 
     if (profileError) {

@@ -10,6 +10,12 @@ import {
   DEFAULT_CHARACTER_CONFIG,
   type CharacterConfig,
 } from '@/lib/sprites'
+import {
+  CHAT_BACKGROUND_SCENES,
+  DEFAULT_CHAT_BACKGROUND,
+  resolveChatBackground,
+  type ChatBackgroundId,
+} from '@/lib/chatBackgrounds'
 
 type TabId = 'hair' | 'top' | 'bottom' | 'shoes' | 'hat'
 const TABS: { id: TabId; label: string }[] = [
@@ -33,6 +39,7 @@ export default function ProfilePage() {
 
   const [username, setUsername]     = useState('')
   const [config, setConfig]         = useState<CharacterConfig>(DEFAULT_CHARACTER_CONFIG)
+  const [chatBackground, setChatBackground] = useState<ChatBackgroundId>(DEFAULT_CHAT_BACKGROUND)
   const [activeTab, setActiveTab]   = useState<TabId>('hair')
   const [saving, setSaving]         = useState(false)
   const [error, setError]           = useState('')
@@ -45,6 +52,7 @@ export default function ProfilePage() {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const cc = (myProfile as any).character_config
       if (cc) setConfig({ ...DEFAULT_CHARACTER_CONFIG, ...cc })
+      setChatBackground(resolveChatBackground(myProfile.chat_background))
     }, 0);
     return () => clearTimeout(timer);
   }, [myProfile])
@@ -96,6 +104,7 @@ export default function ProfilePage() {
     await supabase.from('profiles').update({
       username: username.trim(),
       character_config: config,
+      chat_background: chatBackground,
     }).eq('id', user.id)
 
     await refreshProfile()
@@ -144,6 +153,24 @@ export default function ProfilePage() {
             </button>
           </div>
           {error && <p className={styles.error}>⚠ {error}</p>}
+        </div>
+
+        {/* Chat background */}
+        <div className={styles.sectionHeading}>Chat background</div>
+        <div className={styles.chatBgSection}>
+          <div className={styles.optionLabel}>Scene</div>
+          <div className={styles.optionGrid}>
+            {CHAT_BACKGROUND_SCENES.map(scene => (
+              <button
+                key={scene.id}
+                className={`${styles.optionChip} ${chatBackground === scene.id ? styles.optionActive : ''}`}
+                onClick={() => setChatBackground(scene.id)}
+                type="button"
+              >
+                {scene.label}
+              </button>
+            ))}
+          </div>
         </div>
 
         {/* Appearance heading */}

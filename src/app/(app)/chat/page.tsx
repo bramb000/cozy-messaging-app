@@ -2,6 +2,8 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { useAuth } from '@/context/AuthContext'
+import { ChatSceneBackground } from '@/components/chat/ChatSceneBackground'
+import { resolveChatBackground } from '@/lib/chatBackgrounds'
 import type { MessageWithProfile } from '@/types/database'
 import styles from './ChatPage.module.css'
 import PixelEmojiPicker from '@/components/ui/PixelEmojiPicker'
@@ -11,7 +13,8 @@ import { parseEmojisToHtml } from '@/utils/emojiParser'
 const CHAIN_GAP_MS = 20_000 // 20 seconds — messages within this window are chained
 
 export default function ChatPage() {
-  const { user } = useAuth()
+  const { user, profile } = useAuth()
+  const chatBackground = resolveChatBackground(profile?.chat_background)
   const supabase = createClient()
   const [messages, setMessages] = useState<MessageWithProfile[]>([])
   const [loading, setLoading]   = useState(true)
@@ -122,6 +125,9 @@ export default function ChatPage() {
 
   return (
     <div className={styles.page}>
+      <ChatSceneBackground sceneId={chatBackground} />
+      <div className={styles.scrim} aria-hidden="true" />
+
       {/* ── Message history ──────────────────────────────── */}
       <div className={styles.messages}>
         {loading && <div className="loading-screen"><div className="pixel-spinner" /></div>}

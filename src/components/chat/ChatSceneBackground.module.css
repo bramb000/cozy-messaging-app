@@ -1,0 +1,36 @@
+.scene {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.layer,
+.layerFloating {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center bottom;
+  image-rendering: pixelated;
+  user-select: none;
+}
+
+.layerFloating {
+  animation-name: chatLayerSway;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+  animation-direction: alternate;
+  will-change: transform;
+}
+
+@keyframes chatLayerSway {
+  from {
+    transform: translateX(-1.25%);
+  }
+  to {
+    transform: translateX(1.25%);
+  }
+}

@@ -8,6 +8,31 @@ import { Stack } from '@/components/ui/Layout/Stack'
 import { Box } from '@/components/ui/Layout/Box'
 import { Text } from '@/components/ui/Typography/Text'
 
+const LOGIN_CLOUDS = [
+  { src: '/clouds/cloud-1.png', delay: '0s', top: '15%', size: 'cloudSizeMd' },
+  { src: '/clouds/cloud-2.png', delay: '-12s', top: '20%', size: 'cloudSizeLg', speed: 'cloudSlow' },
+  { src: '/clouds/cloud-1.png', delay: '-25s', top: '8%', size: 'cloudSizeSm' },
+  { src: '/clouds/cloud-2.png', delay: '-40s', top: '12%', size: 'cloudSizeMd', speed: 'cloudFast' },
+  { src: '/clouds/cloud-1.png', delay: '-55s', top: '3%', size: 'cloudSizeLg' },
+  { src: '/clouds/cloud-2.png', delay: '-70s', top: '25%', size: 'cloudSizeMd', speed: 'cloudSlow' },
+] as const
+
+function LoginSkyClouds() {
+  return (
+    <>
+      {LOGIN_CLOUDS.map(({ src, delay, top, size, speed }) => (
+        <img
+          key={`${src}-${delay}-${top}`}
+          src={src}
+          alt=""
+          className={[styles.cloud, styles[size], speed && styles[speed]].filter(Boolean).join(' ')}
+          style={{ animationDelay: delay, top }}
+        />
+      ))}
+    </>
+  )
+}
+
 export default function LoginPage() {
   const supabase = createClient()
   const [email, setEmail] = useState('')
@@ -46,10 +71,7 @@ export default function LoginPage() {
   if (magicSent) {
     return (
       <div className={`${styles.container} sky-scene`}>
-        <div className="cloud"  style={{ animationDelay: '0s' }} />
-        <div className="cloud-b" style={{ animationDelay: '-12s', top: '20%' }} />
-        <div className="cloud"  style={{ animationDelay: '-25s', top: '15%' }} />
-        <div className="cloud-c" style={{ animationDelay: '-40s', top: '8%' }} />
+        <LoginSkyClouds />
         <div className="sky-grass" />
         <div className="sky-grass" />
         <PixelPanel variant="wood-h">
@@ -67,15 +89,7 @@ export default function LoginPage() {
 
   return (
     <div className={`${styles.container} sky-scene`}>
-      {/* Sky clouds — three layers at different speeds */}
-      <div className="cloud"  style={{ animationDelay: '0s' }} />
-      <div className="cloud-b" style={{ animationDelay: '-12s', top: '20%' }} />
-      <div className="cloud"  style={{ animationDelay: '-25s', top: '15%' }} />
-      <div className="cloud-c" style={{ animationDelay: '-40s', top: '8%' }} />
-      <div className="cloud"  style={{ animationDelay: '-55s', top: '3%' }} />
-      <div className="cloud-b" style={{ animationDelay: '-70s', top: '25%' }} />
-      
-      {/* Landscape layer */}
+      <LoginSkyClouds />
       <div className="sky-grass" />
 
       <PixelPanel variant="wood-h" style={{ width: '100%', maxWidth: '400px', position: 'relative', zIndex: 5 }}>

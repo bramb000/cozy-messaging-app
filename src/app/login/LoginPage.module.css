@@ -7,6 +7,39 @@
   align-items: center;
 }
 
+/* Pixel cloud sprites — floatCloud animation matches sky-scene timing */
+.cloud {
+  position: absolute;
+  height: auto;
+  image-rendering: pixelated;
+  pointer-events: none;
+  z-index: 0;
+  animation: floatCloud 75s linear infinite;
+}
+
+.cloudSizeSm { width: 96px; }
+.cloudSizeMd { width: 128px; }
+.cloudSizeLg { width: 160px; }
+
+.cloudSlow {
+  animation-duration: 110s;
+  opacity: 0.85;
+}
+
+.cloudFast {
+  animation-duration: 55s;
+  opacity: 0.9;
+}
+
+@keyframes floatCloud {
+  0% {
+    transform: translateX(-200px);
+  }
+  100% {
+    transform: translateX(calc(100vw + 200px));
+  }
+}
+
 .icon {
   font-size: 3rem;
   animation: float 3s ease-in-out infinite;
