@@ -105,8 +105,8 @@
 }
 
 /* ── Bubble (text column) ──────────────────────────────────── */
-.bubbleOutline {
-  /* Outer black outline (not full width) */
+.bubble {
+  /* Pixel speech bubble (not full width) */
   position: relative;
   display: inline-flex;
   flex-direction: column;
@@ -115,17 +115,21 @@
   max-width: min(72ch, 70%);
   min-width: 0;
 
-  --bubble-fill: rgba(0, 0, 0, 0.62); /* intended semi-transparent black */
-  --bubble-border: rgba(255, 255, 255, 0.95);
-  --bubble-outline: rgba(0, 0, 0, 0.92);
-  --o: 2px; /* outline thickness */
-  --b: 2px; /* border thickness */
+  --bubble-fill: rgba(0, 0, 0, 0.5); /* intended semi-transparent black */
+  --bubble-outline: rgba(0, 0, 0, 0.92); /* outer outline */
+  --o: 2px; /* black outline thickness */
   --tail: 16px; /* tail length to the left */
   --cr: 6px; /* pixel corner radius (16-bit style) */
 
-  padding: var(--o);
-  background: var(--bubble-outline);
-  box-shadow: 6px 6px 0 rgba(0, 0, 0, 0.45);
+  /* Extra left padding so text doesn't hug the tail-side edge */
+  padding: var(--space-3) var(--space-4);
+  padding-left: calc(var(--space-4) + 10px);
+  background: var(--bubble-fill);
+  background-clip: padding-box;
+  /* Outline drawn via spread shadow so the tail is always aligned */
+  box-shadow:
+    0 0 0 var(--o) rgba(0, 0, 0, 0.65),
+    6px 6px 0 rgba(0, 0, 0, 0.45);
 
   /* Single union silhouette (bubble + tail) with stepped pixel corners */
   clip-path: polygon(
@@ -171,20 +175,6 @@
   );
 }
 
-.bubbleBorder {
-  padding: var(--b);
-  background: var(--bubble-border);
-  clip-path: inherit;
-}
-
-.bubble {
-  /* Inner fill (actual readable surface) */
-  padding: var(--space-3) var(--space-4);
-  background: var(--bubble-fill);
-  clip-path: inherit;
-  background-clip: padding-box;
-}
-
 /* Chain-start header: username + full timestamp */
 .bubbleHeader {
   display: flex;
@@ -228,10 +218,6 @@
 .bubbleContent em { color: var(--cream-dim); font-style: italic; }
 
 /* Ensure no leftover pseudo-borders render */
-.bubbleOutline::before,
-.bubbleOutline::after,
-.bubbleBorder::before,
-.bubbleBorder::after,
 .bubble::before,
 .bubble::after {
   content: none;

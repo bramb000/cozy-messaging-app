@@ -177,23 +177,19 @@ export default function ChatPage() {
                 </div>
 
                 {/* Message content column */}
-                <div className={styles.bubbleOutline}>
-                  <div className={styles.bubbleBorder}>
-                    <div className={styles.bubble}>
-                      {isChainStart && (
-                        <div className={styles.bubbleHeader}>
-                          <span className={`${styles.bubbleUser} ${me ? styles.bubbleUserMe : ''}`}>
-                            {me ? 'You' : msg.profile?.username}
-                          </span>
-                          <span className={styles.bubbleTime}>{formatTimestamp(msg.created_at)}</span>
-                        </div>
-                      )}
-                      <div
-                        className={styles.bubbleContent}
-                        dangerouslySetInnerHTML={{ __html: parseEmojisToHtml(msg.content) }}
-                      />
+                <div className={styles.bubble}>
+                  {isChainStart && (
+                    <div className={styles.bubbleHeader}>
+                      <span className={`${styles.bubbleUser} ${me ? styles.bubbleUserMe : ''}`}>
+                        {me ? 'You' : msg.profile?.username}
+                      </span>
+                      <span className={styles.bubbleTime}>{formatTimestamp(msg.created_at)}</span>
                     </div>
-                  </div>
+                  )}
+                  <div
+                    className={styles.bubbleContent}
+                    dangerouslySetInnerHTML={{ __html: parseEmojisToHtml(msg.content) }}
+                  />
                 </div>
               </div>
             </React.Fragment>
