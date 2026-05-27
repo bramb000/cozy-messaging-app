@@ -4,18 +4,19 @@
   overflow: hidden;
   pointer-events: none;
   z-index: 0;
+  background: transparent;
 }
 
 .layer,
 .layerFloating {
   position: absolute;
-  inset: 0;
-  width: 100%;
+  /* Respect source aspect ratio, scale by container height, and center. */
+  left: 50%;
+  top: 50%;
   height: 100%;
-  /* These scene assets are authored on same-size canvases with transparency.
-     Use contain to avoid per-layer cropping that can misalign the composite. */
-  object-fit: contain;
-  object-position: center;
+  width: auto;
+  transform: translate(-50%, -50%);
+  max-width: none;
   image-rendering: pixelated;
   user-select: none;
 }
@@ -30,9 +31,9 @@
 
 @keyframes chatLayerSway {
   from {
-    transform: translateX(-10px);
+    transform: translate(-50%, -50%) translateX(-10px);
   }
   to {
-    transform: translateX(10px);
+    transform: translate(-50%, -50%) translateX(10px);
   }
 }
