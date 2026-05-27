@@ -65,11 +65,10 @@ export default function ProfilePage() {
 
   // Debug: measure whether preview avatar is centered.
   useEffect(() => {
-    if (process.env.NODE_ENV === 'production') return
     const el = spriteStageRef.current
     if (!el) return
 
-    const raf = requestAnimationFrame(() => {
+    const dump = () => {
       const stage = el.getBoundingClientRect()
       const avatar = el.querySelector('[data-avatar-preview="true"]') as HTMLElement | null
       const spriteRoot = avatar?.querySelector('div') as HTMLElement | null
@@ -81,12 +80,19 @@ export default function ProfilePage() {
       const spriteCx = spriteRect ? spriteRect.left + spriteRect.width / 2 : null
 
       // eslint-disable-next-line no-console
-      console.debug('[profile preview centering]', {
+      console.log('[profile preview centering]', {
         stage: { w: stage.width, h: stage.height, cx: stageCx },
         avatar: avatarRect ? { w: avatarRect.width, h: avatarRect.height, cx: avatarCx, dx: avatarCx! - stageCx } : null,
         sprite: spriteRect ? { w: spriteRect.width, h: spriteRect.height, cx: spriteCx, dx: spriteCx! - stageCx } : null,
       })
-    })
+    }
+
+    // Expose a manual helper for quick re-checks.
+    if (typeof window !== 'undefined') {
+      ;(window as any).dumpProfilePreviewCentering = dump
+    }
+
+    const raf = requestAnimationFrame(dump)
 
     return () => cancelAnimationFrame(raf)
   }, [chatBackground, config, username])
