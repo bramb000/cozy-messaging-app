@@ -30,8 +30,9 @@ interface CharacterAvatarProps {
   /** Optional online/offline dot */
   showDot?: boolean
   dotOnline?: boolean
-  /** Optional optical centering offset (px). Used for preview variant. */
+  /** Optional optical centering offsets (px). Used for preview variant. */
   opticalCenterX?: number
+  opticalCenterY?: number
   className?: string
 }
 
@@ -41,6 +42,7 @@ export function CharacterAvatar({
   showDot = false,
   dotOnline = false,
   opticalCenterX,
+  opticalCenterY,
   className = '',
 }: CharacterAvatarProps) {
   const { spriteSize, viewW, viewH, cssWidthVar, cssHeightVar } = VARIANT_MAP[variant]
@@ -50,6 +52,7 @@ export function CharacterAvatar({
     height: `var(${cssHeightVar}, ${viewH}px)`,
   }
   if (opticalCenterX != null) styleDimension['--optical-x'] = `${opticalCenterX}px`
+  if (opticalCenterY != null) styleDimension['--optical-y'] = `${opticalCenterY}px`
 
   return (
     <div

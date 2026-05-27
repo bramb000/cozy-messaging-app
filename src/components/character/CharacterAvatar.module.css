@@ -49,13 +49,14 @@
   transform: translate(-50%, -12px); /* Centred horizontally, shifted vertically to crop out empty space */
 }
 
-/* Profile appearance panel — full-body lg sprite, centred on panel X axis */
+/* Profile appearance panel — full-body lg sprite, optically centred on X and Y */
 .preview {
   margin-inline: auto;
 }
 .preview .spriteViewport > div {
-  /* Centre the sprite container; an optional optical-centre offset may be applied via --optical-x */
-  transform: translate(-50%, -28px) translateX(var(--optical-x, 0px));
+  top: 50%;
+  transform: translate(-50%, -50%) translate(var(--optical-x, 0px), var(--optical-y, 0px));
+  transition: transform 220ms ease-out;
 }
 
 /* Online/offline pixel indicator — square, no glow, farm-themed */
