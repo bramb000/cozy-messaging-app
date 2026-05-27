@@ -28,8 +28,8 @@ export function ChatSceneBackground({ sceneId }: ChatSceneBackgroundProps) {
           style={
             animateMiddle
               ? {
-                  animationDuration: `${7 + (i % 3) * 1.5}s`,
-                  animationDelay: `${i * -1.2}s`,
+                  animationDuration: `${14 + (i % 3) * 3}s`,
+                  animationDelay: `${i * -2.4}s`,
                 }
               : undefined
           }

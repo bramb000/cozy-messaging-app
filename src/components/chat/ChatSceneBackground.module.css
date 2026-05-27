@@ -31,9 +31,9 @@
 
 @keyframes chatLayerSway {
   from {
-    transform: translate(-50%, -50%) translateX(-10px);
+    transform: translate(-50%, -50%) translateX(-5px);
   }
   to {
-    transform: translate(-50%, -50%) translateX(10px);
+    transform: translate(-50%, -50%) translateX(5px);
   }
 }
