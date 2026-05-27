@@ -699,12 +699,20 @@ a:hover { color: var(--gold); }
 /* ============================================================
    PIXEL EMOJIS
    ============================================================ */
+.pixel-emoji-wrapper {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  line-height: 0;
+  /* Lower wrapper so emoji bottom sits on the text baseline */
+  vertical-align: -0.2em;
+}
+
 .pixel-emoji {
-  width: 1.4em;
-  height: 1.4em;
+  display: block;
+  width: 100%;
+  height: 100%;
   image-rendering: pixelated;
-  vertical-align: middle;
-  transform: translateY(-0.1em);
 }
 
 /* ============================================================

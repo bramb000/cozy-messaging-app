@@ -213,6 +213,11 @@
   white-space: pre-wrap;
 }
 
+/* Slightly more offset at bubble font size */
+.bubbleContent :global(.pixel-emoji-wrapper) {
+  vertical-align: -0.22em;
+}
+
 .bubbleContent p { margin: 0; }
 .bubbleContent strong { color: var(--gold-light); }
 .bubbleContent em { color: var(--cream-dim); font-style: italic; }
