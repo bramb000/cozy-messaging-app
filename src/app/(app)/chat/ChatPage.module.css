@@ -54,14 +54,14 @@
 
 /* Extra gap and padding before a new group (chain-start) */
 .chainStart {
-  padding: var(--space-2) var(--space-3); /* 8px top/bottom, 16px left/right */
+  padding: 0;
   margin-top: var(--space-3); /* 16px */
 }
 
 /* Tighter padding for continuation messages (chain-follow) */
 .chainFollow {
-  padding: var(--space-1) var(--space-3); /* 4px top/bottom, 16px left/right */
-  margin-top: 0;
+  padding: 0;
+  margin-top: var(--space-1);
 }
 
 .chainEnd {
@@ -105,11 +105,84 @@
 }
 
 /* ── Bubble (text column) ──────────────────────────────────── */
-.bubble {
-  display: flex;
+.bubbleOutline {
+  /* Outer black outline (not full width) */
+  position: relative;
+  display: inline-flex;
   flex-direction: column;
-  flex: 1;
+  flex: 0 1 auto;
+  width: fit-content;
+  max-width: min(72ch, 70%);
   min-width: 0;
+
+  --bubble-fill: rgba(0, 0, 0, 0.62); /* intended semi-transparent black */
+  --bubble-border: rgba(255, 255, 255, 0.95);
+  --bubble-outline: rgba(0, 0, 0, 0.92);
+  --o: 2px; /* outline thickness */
+  --b: 2px; /* border thickness */
+  --tail: 16px; /* tail length to the left */
+  --cr: 6px; /* pixel corner radius (16-bit style) */
+
+  padding: var(--o);
+  background: var(--bubble-outline);
+  box-shadow: 6px 6px 0 rgba(0, 0, 0, 0.45);
+
+  /* Single union silhouette (bubble + tail) with stepped pixel corners */
+  clip-path: polygon(
+    /* Top-left pixel corner (stepped) */
+    calc(var(--tail) + var(--cr)) 0,
+    calc(var(--tail) + 2px) 0,
+    calc(var(--tail) + 2px) 2px,
+    var(--tail) 2px,
+    var(--tail) var(--cr),
+
+    /* Left edge down to tail base */
+    var(--tail) 18px,
+    /* Tail with wider base */
+    calc(var(--tail) - 12px) 24px,
+    calc(var(--tail) - 12px) 30px,
+    var(--tail) 36px,
+
+    /* Continue left edge */
+    var(--tail) calc(100% - var(--cr)),
+    /* Bottom-left pixel corner */
+    var(--tail) calc(100% - 2px),
+    calc(var(--tail) + 2px) calc(100% - 2px),
+    calc(var(--tail) + 2px) 100%,
+    calc(var(--tail) + var(--cr)) 100%,
+
+    /* Bottom-right pixel corner */
+    calc(100% - var(--cr)) 100%,
+    calc(100% - 2px) 100%,
+    calc(100% - 2px) calc(100% - 2px),
+    100% calc(100% - 2px),
+    100% calc(100% - var(--cr)),
+
+    /* Right edge */
+    100% var(--cr),
+    /* Top-right pixel corner */
+    100% 2px,
+    calc(100% - 2px) 2px,
+    calc(100% - 2px) 0,
+    calc(100% - var(--cr)) 0,
+
+    /* Back to top-left */
+    calc(var(--tail) + var(--cr)) 0
+  );
+}
+
+.bubbleBorder {
+  padding: var(--b);
+  background: var(--bubble-border);
+  clip-path: inherit;
+}
+
+.bubble {
+  /* Inner fill (actual readable surface) */
+  padding: var(--space-3) var(--space-4);
+  background: var(--bubble-fill);
+  clip-path: inherit;
+  background-clip: padding-box;
 }
 
 /* Chain-start header: username + full timestamp */
@@ -153,6 +226,16 @@
 .bubbleContent p { margin: 0; }
 .bubbleContent strong { color: var(--gold-light); }
 .bubbleContent em { color: var(--cream-dim); font-style: italic; }
+
+/* Ensure no leftover pseudo-borders render */
+.bubbleOutline::before,
+.bubbleOutline::after,
+.bubbleBorder::before,
+.bubbleBorder::after,
+.bubble::before,
+.bubble::after {
+  content: none;
+}
 
 /* ── Unread divider ─────────────────────────────────────────── */
 .unreadDivider {
