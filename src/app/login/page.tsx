@@ -8,14 +8,22 @@ import { Stack } from '@/components/ui/Layout/Stack'
 import { Box } from '@/components/ui/Layout/Box'
 import { Text } from '@/components/ui/Typography/Text'
 
-const LOGIN_CLOUDS = [
+type LoginCloud = {
+  src: string
+  delay: string
+  top: string
+  size: 'cloudSizeSm' | 'cloudSizeMd' | 'cloudSizeLg'
+  speed?: 'cloudSlow' | 'cloudFast'
+}
+
+const LOGIN_CLOUDS: LoginCloud[] = [
   { src: '/clouds/cloud-1.png', delay: '0s', top: '15%', size: 'cloudSizeMd' },
   { src: '/clouds/cloud-2.png', delay: '-12s', top: '20%', size: 'cloudSizeLg', speed: 'cloudSlow' },
   { src: '/clouds/cloud-1.png', delay: '-25s', top: '8%', size: 'cloudSizeSm' },
   { src: '/clouds/cloud-2.png', delay: '-40s', top: '12%', size: 'cloudSizeMd', speed: 'cloudFast' },
   { src: '/clouds/cloud-1.png', delay: '-55s', top: '3%', size: 'cloudSizeLg' },
   { src: '/clouds/cloud-2.png', delay: '-70s', top: '25%', size: 'cloudSizeMd', speed: 'cloudSlow' },
-] as const
+]
 
 function LoginSkyClouds() {
   return (

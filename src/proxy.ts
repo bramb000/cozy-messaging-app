@@ -1,14 +1,14 @@
 import { type NextRequest } from 'next/server'
 import { updateSession } from '@/lib/supabase/middleware'
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   return updateSession(request)
 }
 
 export const config = {
   matcher: [
     /*
-     * Run middleware on all paths EXCEPT:
+     * Run proxy on all paths EXCEPT:
      * - _next/static  (Next.js static chunks)
      * - _next/image   (image optimisation)
      * - favicon.ico
