@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { useAuth } from '@/context/AuthContext'
 import styles from './ProfilePage.module.css'
-import { CharacterSprite } from '@/components/character/CharacterSprite'
+import { CharacterAvatar } from '@/components/character/CharacterAvatar'
 import { ChatSceneBackground } from '@/components/chat/ChatSceneBackground'
 import {
   HAIR_STYLES, HAIR_COLORS,
@@ -149,7 +149,7 @@ export default function ProfilePage() {
         <div className={styles.previewScrim} aria-hidden="true" />
         <div className={styles.previewContent}>
           <div className={styles.spriteStage}>
-            <CharacterSprite config={config} size="lg" animated={false} />
+            <CharacterAvatar config={config} variant="preview" />
           </div>
           <div className={styles.previewName}>{username || myProfile.username}</div>
         </div>

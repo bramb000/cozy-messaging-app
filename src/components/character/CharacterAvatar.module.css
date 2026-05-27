@@ -49,6 +49,14 @@
   transform: translate(-50%, -12px); /* Centred horizontally, shifted vertically to crop out empty space */
 }
 
+/* Profile appearance panel — full-body lg sprite, centred on panel X axis */
+.preview {
+  margin-inline: auto;
+}
+.preview .spriteViewport > div {
+  transform: translate(-50%, -28px);
+}
+
 /* Online/offline pixel indicator — square, no glow, farm-themed */
 .dot {
   position: absolute;

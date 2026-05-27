@@ -4,7 +4,7 @@ import type { CharacterConfig } from '@/lib/sprites'
 import styles from './CharacterAvatar.module.css'
 
 // Avatar display variants — each maps to a specific inner sprite size and viewport
-export type AvatarVariant = 'roster' | 'chat' | 'panel'
+export type AvatarVariant = 'roster' | 'chat' | 'panel' | 'preview'
 
 const VARIANT_MAP: Record<AvatarVariant, {
   spriteSize: SpriteSize  // which CharacterSprite size to render inside
@@ -19,6 +19,8 @@ const VARIANT_MAP: Record<AvatarVariant, {
   chat:   { spriteSize: 'md', viewW: 64, viewH: 72, cssWidthVar: '--avatar-size-md-w', cssHeightVar: '--avatar-size-md-h' },
   // Sidebar user panel: 1x scale chest-up crop (48x56) to fit sidebar perfectly.
   panel:  { spriteSize: 'sm', viewW: 48, viewH: 56, cssWidthVar: '--avatar-size-panel-w', cssHeightVar: '--avatar-size-panel-h' },
+  // Profile preview: full lg sprite, centered in the appearance panel.
+  preview: { spriteSize: 'lg', viewW: 144, viewH: 192, cssWidthVar: '--avatar-size-lg-w', cssHeightVar: '--avatar-size-lg-h' },
 }
 
 interface CharacterAvatarProps {
