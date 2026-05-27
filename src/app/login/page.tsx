@@ -17,12 +17,9 @@ type LoginCloud = {
 }
 
 const LOGIN_CLOUDS: LoginCloud[] = [
-  { src: '/clouds/cloud-1.png', delay: '0s', top: '15%', size: 'cloudSizeMd' },
-  { src: '/clouds/cloud-2.png', delay: '-12s', top: '20%', size: 'cloudSizeLg', speed: 'cloudSlow' },
-  { src: '/clouds/cloud-1.png', delay: '-25s', top: '8%', size: 'cloudSizeSm' },
-  { src: '/clouds/cloud-2.png', delay: '-40s', top: '12%', size: 'cloudSizeMd', speed: 'cloudFast' },
-  { src: '/clouds/cloud-1.png', delay: '-55s', top: '3%', size: 'cloudSizeLg' },
-  { src: '/clouds/cloud-2.png', delay: '-70s', top: '25%', size: 'cloudSizeMd', speed: 'cloudSlow' },
+  // Keep the sky calm: only two cloud sprites on screen at once.
+  { src: '/clouds/cloud-1.png', delay: '0s', top: '12%', size: 'cloudSizeLg', speed: 'cloudSlow' },
+  { src: '/clouds/cloud-2.png', delay: '-240s', top: '22%', size: 'cloudSizeMd', speed: 'cloudSlow' },
 ]
 
 function LoginSkyClouds() {
@@ -82,7 +79,7 @@ export default function LoginPage() {
         <LoginSkyClouds />
         <div className="sky-grass" />
         <div className="sky-grass" />
-        <PixelPanel variant="wood-h">
+        <PixelPanel variant="wood-h" className={styles.panelNoShadow}>
           <Box p="space-8">
             <Stack align="center" gap="space-3" mb="space-4">
               <div className={styles.icon}>✉️</div>
@@ -100,7 +97,11 @@ export default function LoginPage() {
       <LoginSkyClouds />
       <div className="sky-grass" />
 
-      <PixelPanel variant="wood-h" style={{ width: '100%', maxWidth: '400px', position: 'relative', zIndex: 5 }}>
+      <PixelPanel
+        variant="wood-h"
+        className={styles.panelNoShadow}
+        style={{ width: '100%', maxWidth: '400px', position: 'relative', zIndex: 5 }}
+      >
         <Stack direction="column" gap="space-4" p="space-8">
           <Stack align="center" gap="space-3">
             <div className={styles.icon}>🌾</div>
