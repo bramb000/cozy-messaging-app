@@ -4,6 +4,7 @@ import { createClient } from '@/lib/supabase/client'
 import { useAuth } from '@/context/AuthContext'
 import styles from './ProfilePage.module.css'
 import { CharacterSprite } from '@/components/character/CharacterSprite'
+import { ChatSceneBackground } from '@/components/chat/ChatSceneBackground'
 import {
   HAIR_STYLES, HAIR_COLORS,
   TOP_STYLES, BOTTOM_STYLES, SHOE_COLORS,
@@ -13,7 +14,8 @@ import {
 import {
   CHAT_BACKGROUND_SCENES,
   DEFAULT_CHAT_BACKGROUND,
-  resolveChatBackground,
+  characterConfigWithChatBackground,
+  readChatBackgroundFromProfile,
   type ChatBackgroundId,
 } from '@/lib/chatBackgrounds'
 
@@ -51,8 +53,11 @@ export default function ProfilePage() {
       setUsername(myProfile.username)
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const cc = (myProfile as any).character_config
-      if (cc) setConfig({ ...DEFAULT_CHARACTER_CONFIG, ...cc })
-      setChatBackground(resolveChatBackground(myProfile.chat_background))
+      if (cc) {
+        const { chatBackground: _savedBg, ...appearance } = cc
+        setConfig({ ...DEFAULT_CHARACTER_CONFIG, ...appearance })
+      }
+      setChatBackground(readChatBackgroundFromProfile(myProfile))
     }, 0);
     return () => clearTimeout(timer);
   }, [myProfile])
@@ -100,12 +105,29 @@ export default function ProfilePage() {
       .eq('username', username.trim()).neq('id', user.id).maybeSingle()
     if (existing) { setError('Username already taken!'); setSaving(false); return }
 
-    // @ts-expect-error Supabase types misaligned
-    await supabase.from('profiles').update({
+    const payload = {
       username: username.trim(),
-      character_config: config,
+      character_config: characterConfigWithChatBackground(config, chatBackground),
       chat_background: chatBackground,
-    }).eq('id', user.id)
+    }
+
+    // @ts-expect-error Supabase types misaligned
+    let { error: saveError } = await supabase.from('profiles').update(payload).eq('id', user.id)
+
+    // Column may not exist until migration is applied — still persist via character_config
+    if (saveError?.message?.includes('chat_background')) {
+      // @ts-expect-error Supabase types misaligned
+      ;({ error: saveError } = await supabase.from('profiles').update({
+        username: payload.username,
+        character_config: payload.character_config,
+      }).eq('id', user.id))
+    }
+
+    if (saveError) {
+      setError(saveError.message)
+      setSaving(false)
+      return
+    }
 
     await refreshProfile()
     setSaving(false)
@@ -123,10 +145,14 @@ export default function ProfilePage() {
     <div className={styles.page}>
       {/* ── Left: Character Preview ──────────────────── */}
       <div className={styles.previewPanel}>
-        <div className={styles.spriteStage}>
-          <CharacterSprite config={config} size="lg" animated={false} />
+        <ChatSceneBackground sceneId={chatBackground} />
+        <div className={styles.previewScrim} aria-hidden="true" />
+        <div className={styles.previewContent}>
+          <div className={styles.spriteStage}>
+            <CharacterSprite config={config} size="lg" animated={false} />
+          </div>
+          <div className={styles.previewName}>{username || myProfile.username}</div>
         </div>
-        <div className={styles.previewName}>{username || myProfile.username}</div>
       </div>
 
       {/* ── Right: Customizer ───────────────────────── */}

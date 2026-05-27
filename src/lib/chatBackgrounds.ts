@@ -54,6 +54,37 @@ export function resolveChatBackground(stored: string | null | undefined): ChatBa
   return DEFAULT_CHAT_BACKGROUND
 }
 
+/** Profile row shape needed to resolve the saved scene. */
+export type ChatBackgroundProfile = {
+  chat_background?: string | null
+  character_config?: unknown
+}
+
+/**
+ * Reads chat background from the dedicated column, then character_config.chatBackground.
+ * Supports DBs that have not yet run the chat_background migration.
+ */
+export function readChatBackgroundFromProfile(
+  profile: ChatBackgroundProfile | null | undefined,
+): ChatBackgroundId {
+  if (!profile) return DEFAULT_CHAT_BACKGROUND
+
+  if (profile.chat_background && VALID_IDS.has(profile.chat_background)) {
+    return profile.chat_background as ChatBackgroundId
+  }
+
+  const cc = profile.character_config as { chatBackground?: string } | null | undefined
+  return resolveChatBackground(cc?.chatBackground)
+}
+
+/** Stored inside profiles.character_config alongside appearance fields. */
+export function characterConfigWithChatBackground<T extends object>(
+  config: T,
+  chatBackground: ChatBackgroundId,
+): T & { chatBackground: ChatBackgroundId } {
+  return { ...config, chatBackground }
+}
+
 function layerUrl(sceneId: ChatBackgroundId, index: number): string {
   return `${CHAT_BG_BASE}/${sceneId}/${index}.png`
 }

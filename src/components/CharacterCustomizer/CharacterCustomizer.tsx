@@ -6,7 +6,11 @@ import styles from './CharacterCustomizer.module.css'
 import { PhysicalCard } from '../ui/PhysicalCard'
 import { TactileButton } from '../ui/TactileButton'
 import { RevealText } from '../ui/RevealText'
-import { DEFAULT_CHAT_BACKGROUND } from '@/lib/chatBackgrounds'
+import {
+  DEFAULT_CHAT_BACKGROUND,
+  characterConfigWithChatBackground,
+  readChatBackgroundFromProfile,
+} from '@/lib/chatBackgrounds'
 
 const SKIN_TONES = ['#FDBCB4','#F1C27D','#E0AC69','#C68642','#8D5524','#4A2912']
 const HAIR_COLORS = ['#4A3728','#2C1810','#8B4513','#D2691E','#F4C430','#FF6B6B','#9B59B6','#2ECC71','#ECF0F1']
@@ -82,18 +86,30 @@ export default function CharacterCustomizer({ initialData, onComplete, buttonTex
       }
     }
 
-    const characterConfig = { skinTone, hairColor, hairStyle, outfitColor, pantsColor, hatIndex }
+    const chatBg = readChatBackgroundFromProfile(initialData) ?? DEFAULT_CHAT_BACKGROUND
+    const characterConfig = characterConfigWithChatBackground(
+      { skinTone, hairColor, hairStyle, outfitColor, pantsColor, hatIndex },
+      chatBg,
+    )
 
-    const { error: profileError } = await supabase
-      .from('profiles')
+    const payload = {
+      username: username.trim(),
+      avatar_url: avatarUrl,
+      character_config: characterConfig,
+      chat_background: chatBg,
+    }
+
+    // @ts-expect-error Supabase types misaligned
+    let { error: profileError } = await supabase.from('profiles').update(payload).eq('id', user.id)
+
+    if (profileError?.message?.includes('chat_background')) {
       // @ts-expect-error Supabase types misaligned
-      .update({
-        username: username.trim(),
-        avatar_url: avatarUrl,
-        character_config: characterConfig,
-        chat_background: initialData?.chat_background ?? DEFAULT_CHAT_BACKGROUND,
-      })
-      .eq('id', user.id)
+      ;({ error: profileError } = await supabase.from('profiles').update({
+        username: payload.username,
+        avatar_url: payload.avatar_url,
+        character_config: payload.character_config,
+      }).eq('id', user.id))
+    }
 
     if (profileError) {
       setError(profileError.message)

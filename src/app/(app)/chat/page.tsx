@@ -3,7 +3,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { useAuth } from '@/context/AuthContext'
 import { ChatSceneBackground } from '@/components/chat/ChatSceneBackground'
-import { resolveChatBackground } from '@/lib/chatBackgrounds'
+import { readChatBackgroundFromProfile } from '@/lib/chatBackgrounds'
 import type { MessageWithProfile } from '@/types/database'
 import styles from './ChatPage.module.css'
 import PixelEmojiPicker from '@/components/ui/PixelEmojiPicker'
@@ -14,7 +14,7 @@ const CHAIN_GAP_MS = 20_000 // 20 seconds — messages within this window are ch
 
 export default function ChatPage() {
   const { user, profile } = useAuth()
-  const chatBackground = resolveChatBackground(profile?.chat_background)
+  const chatBackground = readChatBackgroundFromProfile(profile)
   const supabase = createClient()
   const [messages, setMessages] = useState<MessageWithProfile[]>([])
   const [loading, setLoading]   = useState(true)
