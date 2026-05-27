@@ -1,4 +1,5 @@
 'use client'
+import type { CSSProperties } from 'react'
 import { CharacterSprite, type SpriteSize } from './CharacterSprite'
 import type { CharacterConfig } from '@/lib/sprites'
 import styles from './CharacterAvatar.module.css'
@@ -29,6 +30,8 @@ interface CharacterAvatarProps {
   /** Optional online/offline dot */
   showDot?: boolean
   dotOnline?: boolean
+  /** Optional optical centering offset (px). Used for preview variant. */
+  opticalCenterX?: number
   className?: string
 }
 
@@ -37,14 +40,16 @@ export function CharacterAvatar({
   variant = 'chat',
   showDot = false,
   dotOnline = false,
+  opticalCenterX,
   className = '',
 }: CharacterAvatarProps) {
   const { spriteSize, viewW, viewH, cssWidthVar, cssHeightVar } = VARIANT_MAP[variant]
 
-  const styleDimension = {
+  const styleDimension: CSSProperties & Record<string, string> = {
     width: `var(${cssWidthVar}, ${viewW}px)`,
     height: `var(${cssHeightVar}, ${viewH}px)`,
   }
+  if (opticalCenterX != null) styleDimension['--optical-x'] = `${opticalCenterX}px`
 
   return (
     <div

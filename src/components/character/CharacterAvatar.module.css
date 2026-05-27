@@ -54,7 +54,8 @@
   margin-inline: auto;
 }
 .preview .spriteViewport > div {
-  transform: translate(-50%, -28px);
+  /* Centre the sprite container; an optional optical-centre offset may be applied via --optical-x */
+  transform: translate(-50%, -28px) translateX(var(--optical-x, 0px));
 }
 
 /* Online/offline pixel indicator — square, no glow, farm-themed */

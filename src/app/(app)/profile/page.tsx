@@ -3,8 +3,8 @@ import { useEffect, useRef, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { useAuth } from '@/context/AuthContext'
 import styles from './ProfilePage.module.css'
-import { CharacterAvatar } from '@/components/character/CharacterAvatar'
 import { ChatSceneBackground } from '@/components/chat/ChatSceneBackground'
+import { OpticallyCenteredAvatarPreview } from '@/components/character/OpticallyCenteredAvatarPreview'
 import {
   HAIR_STYLES, HAIR_COLORS,
   TOP_STYLES, BOTTOM_STYLES, SHOE_COLORS,
@@ -184,7 +184,7 @@ export default function ProfilePage() {
         <div className={styles.previewScrim} aria-hidden="true" />
         <div className={styles.previewContent}>
           <div className={styles.spriteStage} ref={spriteStageRef}>
-            <CharacterAvatar config={config} variant="preview" className={styles.previewAvatar} />
+            <OpticallyCenteredAvatarPreview config={config} />
           </div>
           <div className={styles.previewName}>{username || myProfile.username}</div>
         </div>
