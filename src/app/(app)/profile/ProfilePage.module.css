@@ -81,6 +81,10 @@
   filter: drop-shadow(0 8px 12px rgba(255, 140, 0, 0.15));
 }
 
+.previewAvatar {
+  /* Hook for centering diagnostics */
+}
+
 .previewName {
   font-family: 'Press Start 2P', monospace;
   font-size: 0.55rem;

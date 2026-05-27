@@ -1,5 +1,5 @@
 'use client'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { useAuth } from '@/context/AuthContext'
 import styles from './ProfilePage.module.css'
@@ -38,6 +38,7 @@ const HEADWEAR_STYLES = [
 export default function ProfilePage() {
   const { user, profile: myProfile, refreshProfile } = useAuth()
   const supabase = createClient()
+  const spriteStageRef = useRef<HTMLDivElement | null>(null)
 
   const [username, setUsername]     = useState('')
   const [config, setConfig]         = useState<CharacterConfig>(DEFAULT_CHARACTER_CONFIG)
@@ -61,6 +62,34 @@ export default function ProfilePage() {
     }, 0);
     return () => clearTimeout(timer);
   }, [myProfile])
+
+  // Debug: measure whether preview avatar is centered.
+  useEffect(() => {
+    if (process.env.NODE_ENV === 'production') return
+    const el = spriteStageRef.current
+    if (!el) return
+
+    const raf = requestAnimationFrame(() => {
+      const stage = el.getBoundingClientRect()
+      const avatar = el.querySelector('[data-avatar-preview="true"]') as HTMLElement | null
+      const spriteRoot = avatar?.querySelector('div') as HTMLElement | null
+      const avatarRect = avatar?.getBoundingClientRect()
+      const spriteRect = spriteRoot?.getBoundingClientRect()
+
+      const stageCx = stage.left + stage.width / 2
+      const avatarCx = avatarRect ? avatarRect.left + avatarRect.width / 2 : null
+      const spriteCx = spriteRect ? spriteRect.left + spriteRect.width / 2 : null
+
+      // eslint-disable-next-line no-console
+      console.debug('[profile preview centering]', {
+        stage: { w: stage.width, h: stage.height, cx: stageCx },
+        avatar: avatarRect ? { w: avatarRect.width, h: avatarRect.height, cx: avatarCx, dx: avatarCx! - stageCx } : null,
+        sprite: spriteRect ? { w: spriteRect.width, h: spriteRect.height, cx: spriteCx, dx: spriteCx! - stageCx } : null,
+      })
+    })
+
+    return () => cancelAnimationFrame(raf)
+  }, [chatBackground, config, username])
 
   function set<K extends keyof CharacterConfig>(key: K, value: CharacterConfig[K]) {
     setConfig(prev => ({ ...prev, [key]: value }))
@@ -148,8 +177,8 @@ export default function ProfilePage() {
         <ChatSceneBackground sceneId={chatBackground} />
         <div className={styles.previewScrim} aria-hidden="true" />
         <div className={styles.previewContent}>
-          <div className={styles.spriteStage}>
-            <CharacterAvatar config={config} variant="preview" />
+          <div className={styles.spriteStage} ref={spriteStageRef}>
+            <CharacterAvatar config={config} variant="preview" className={styles.previewAvatar} />
           </div>
           <div className={styles.previewName}>{username || myProfile.username}</div>
         </div>

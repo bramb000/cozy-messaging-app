@@ -50,6 +50,7 @@ export function CharacterAvatar({
     <div
       className={`${styles.avatar} ${styles[variant]} ${className}`}
       style={styleDimension}
+      data-avatar-preview={variant === 'preview' ? 'true' : undefined}
     >
       {/* The sprite is rendered at its natural size then the viewport clips it */}
       <div className={styles.spriteViewport} style={styleDimension}>
